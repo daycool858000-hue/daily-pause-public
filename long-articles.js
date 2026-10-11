@@ -113,7 +113,7 @@ window.longArticlesData = [
   {
     title: '從海邊到森林：自然景色為什麼讓人想慢一點', category: '自然與旅行', language: '繁體中文', art: 'wave',
     description: '把海洋、森林與山景當作感官與文化經驗來閱讀，而不是保證療效的景點清單。', note: '本站原創整理｜自然與文化閱讀，非療效宣稱',
-    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方研究；本站自行整理'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '官方資料；本站未複製圖片'), source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要')],
+    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方研究；本站自行整理'), source('EEA｜Health and well-being benefits of urban green space', 'https://www.eea.europa.eu/en/analysis/publications/who-benefits-from-nature-in-cities-social-inequalities-in-access-to-urban-green-and-blue-spaces-across-europe/health-and-well-being-benefits-of-urban-green-space', '歐洲環境署公開資料；本站自行整理'), source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要')],
     sections: [section('景色不會替每個人做同一件事', '海浪、樹影與山的尺度可能讓注意力暫時移動，但自然經驗也會因天氣、記憶、身體狀態與文化背景而不同。'), section('用感官取代打卡清單', '可以注意一種聲音、一個光影變化或腳下的觸感；不必把旅行排滿，也不必把「放鬆」變成必須成功的任務。'), section('勝地也有地方與居民', '進入自然保護區、宗教空間或社群生活前，遵守管理規範、攝影同意與環境承載限制，支持在地且公平的方式。'), section('回家之後帶回一個小改變', '旅行的意義也可以是重新看見住家附近的路、河岸或公園。慢下來不一定需要遠行。')]
   },
   {
@@ -137,7 +137,7 @@ window.longArticlesData = [
   {
     title: '看星星的時候，我們為什麼會感到渺小又安定', category: '宇宙與哲思', language: '繁體中文', art: 'star',
     description: '從夜空、尺度與敬畏感出發，理解壯觀不必讓人焦慮，也可以帶來一種溫柔的比例感。', note: '本站原創整理｜天文科普與哲思，非宗教結論',
-    sources: [source('NASA｜Solar System Exploration', 'https://solarsystem.nasa.gov/', 'NASA 公開科普資料；本站自行改寫'), source('NASA｜Universe', 'https://science.nasa.gov/universe/', 'NASA 公開科普資料；本站未複製原文'), source('ESA｜Space science', 'https://www.esa.int/Science_Exploration/Space_Science', 'ESA 公開科普入口；本站只作查證')],
+    sources: [source('NASA｜Solar System Exploration', 'https://science.nasa.gov/solar-system/', 'NASA 公開科普資料；本站自行改寫'), source('NASA｜Universe', 'https://science.nasa.gov/universe/', 'NASA 公開科普資料；本站未複製原文'), source('ESA｜Space science', 'https://www.esa.int/Science_Exploration/Space_Science', 'ESA 公開科普入口；本站只作查證')],
     sections: [section('尺度會改變問題的形狀', '當我們抬頭看見月亮、行星或星河，日常的煩惱沒有因此消失，但它不再是唯一的尺度。這種比例感有時能讓呼吸變得比較深。'), section('敬畏不是否定自己', '感到渺小不必等於沒有價值。人可以很小，仍然能照顧一個人、一株植物與一個承諾。意義不只由大小決定。'), section('用科學保留想像力', '天文知識讓我們知道光年、引力與星體演化；想像力則讓這些知識與人生經驗連在一起。兩者可以同時存在，不必互相取代。'), section('把一點宇宙帶回今天', '找一個天氣好的晚上，抬頭幾分鐘，或只看一張可靠的天文照片。你不必理解全部，只要讓眼睛暫時離開近距離的螢幕。')]
   },
   {
