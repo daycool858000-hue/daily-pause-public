@@ -125,7 +125,7 @@ window.longArticlesData = [
   {
     title: '讓好奇心有地圖：如何核對一個問題的資料', category: '學習與探索', language: '繁體中文', art: 'orbit',
     description: '示範如何把一個問題拆成定義、證據、不同觀點與生活情境，避免只尋找支持自己答案的文章。', note: '本站原創整理｜閱讀方法，非專業結論',
-    sources: [source('MedlinePlus｜Evaluating Health Information', 'https://medlineplus.gov/evaluatinghealthinformation.html', '美國國家醫學圖書館公開衛教資料；本站自行整理'), source('NIH ODS｜How To Evaluate Health Information on the Internet', 'https://ods.od.nih.gov/HealthInformation/how_to_evaluate_health_information_on_the_internet_questions_and_answers.aspx', '美國 NIH 官方健康資訊評估指引；本站自行整理'), source('MedlinePlus｜Evaluating Health Information', 'https://medlineplus.gov/evaluatinghealthinformation.html', '美國政府健康資訊；本站自行整理')],
+    sources: [source('MedlinePlus｜Evaluating Health Information', 'https://medlineplus.gov/evaluatinghealthinformation.html', '美國國家醫學圖書館公開衛教資料；本站自行整理'), source('NIH ODS｜How To Evaluate Health Information on the Internet', 'https://ods.od.nih.gov/HealthInformation/how_to_evaluate_health_information_on_the_internet_questions_and_answers.aspx', '美國 NIH 官方健康資訊評估指引；本站自行整理'), source('Stanford Encyclopedia of Philosophy｜Scientific Method', 'https://plato.stanford.edu/entries/scientific-method/', '學術百科科學方法導讀；本站自行整理')],
     sections: [section('先問自己真正想知道什麼', '「為什麼人會孤單」可以拆成感受、社會關係、公共衛生、文化與個人故事。問題越清楚，越不容易被一個漂亮標題帶走。'), section('定義比答案更重要', '先把問題中的詞拆開：孤獨通常描述主觀感受，社會隔離偏向客觀的互動或支持不足，獨處則可能是主動選擇的狀態；不同來源的定義不一定完全相同，應看原文脈絡。'), section('把證據和觀點分開', '把原始研究、機構說明、新聞報導與個人觀點分開記錄：作者是誰、何時發布、引用了什麼、哪些只是推測。先用兩個彼此獨立的可靠來源核對，再決定是否延伸閱讀。'), section('讓閱讀回到生活而不是自我診斷', '讀完只記下一個值得繼續查證的問題與一個低風險行動。重大健康或安全判斷，仍需合資格專業人士。')]
   },
   {
