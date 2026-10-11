@@ -5,7 +5,7 @@
   const localRoomDate = (() => { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; })();
   const roomKey = `xinli-quiet-room-${localRoomDate}`;
   const safeRead = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } };
-  const safeWrite = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
+  const safeWrite = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
   const fmtDate = value => new Intl.DateTimeFormat('zh-Hant-TW', { month: 'long', day: 'numeric' }).format(new Date(value));
   const addDays = days => { const date = new Date(); date.setHours(0, 0, 0, 0); date.setDate(date.getDate() + days); return date.getTime(); };
 
@@ -47,6 +47,7 @@
         return;
       }
       setTimeout(() => { lockerEditor.hidden = false;
+      lockerEditor.dataset.days = '1';
       lockerEditor.innerHTML = `<div class="locker-compose"><div class="paper-sheet"><span class="paper-rule"></span><span class="paper-rule"></span><span class="paper-rule"></span></div><div><p class="section-kicker">THE DOOR IS OPEN</p><h2 id="lockerEditorTitle">紙張在裡面，等你寫下來。</h2><p class="locker-private-note">這裡只替你保管在這台裝置上。你放進櫃子的文字只儲存在目前這個瀏覽器，不會傳送到「今日一息」，也不會用來分析你。</p><textarea id="lockerText" maxlength="1200" placeholder="把一件事寫在這張紙上。"></textarea><div class="locker-dates"><span>約好的取回日</span><button type="button" data-locker-days="1">明天</button><button type="button" data-locker-days="3">3 天後</button><button type="button" data-locker-days="7">7 天後</button><button type="button" data-locker-days="30">30 天後</button></div><div class="locker-compose-actions"><button type="button" class="soft-action" data-close-locker>關上櫃門</button><button type="button" class="primary-button" data-locker-save="${id}"><span>折起並放入</span><b>⌑</b></button></div><p class="locker-warn">清除瀏覽資料、使用無痕模式或更換裝置，寄放內容可能會一起消失。</p></div></div>`;
       lockerEditor.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 560);
     }
@@ -62,14 +63,22 @@
         const days = Number(lockerEditor.dataset.days || 1);
         if (!text) { $('#lockerText', lockerEditor).focus(); return; }
         const id = Number(save.dataset.lockerSave);
-        lockers = lockers.filter(item => item.id !== id);
-        lockers.push({ id, text, unlockAt: addDays(days), createdAt: Date.now() });
-        safeWrite(lockerKey, lockers);
+        const nextLockers = lockers.filter(item => item.id !== id);
+        nextLockers.push({ id, text, unlockAt: addDays(days), createdAt: Date.now() });
+        if (!safeWrite(lockerKey, nextLockers)) {
+          const warning = document.createElement('p');
+          warning.className = 'locker-warn';
+          warning.setAttribute('role', 'alert');
+          warning.textContent = '瀏覽器無法儲存這張紙。請先複製文字保存，並確認瀏覽器儲存空間設定；這次沒有成功寄放。';
+          lockerEditor.querySelector('.locker-warn')?.replaceWith(warning);
+          return;
+        }
+        lockers = nextLockers;
         lockerEditor.innerHTML = `<div class="locker-sealed"><div class="paper-fold">✦</div><div><p class="section-kicker">DOOR CLOSED</p><h2>紙張折好，木栓扣上了。</h2><p>${fmtDate(addDays(days))} 再回來拿。門已關上，卡榫也扣好了。</p><button type="button" class="soft-action" data-close-locker>回到櫃子前</button></div></div>`;
         renderLockers();
       }
       const release = event.target.closest('[data-release-locker]');
-      if (release) { lockers = lockers.filter(item => item.id !== Number(release.dataset.releaseLocker)); safeWrite(lockerKey, lockers); lockerEditor.hidden = true; lockerEditor.innerHTML = ''; renderLockers(); }
+      if (release) { const remaining = lockers.filter(item => item.id !== Number(release.dataset.releaseLocker)); if (!safeWrite(lockerKey, remaining)) { const warning = document.createElement('p'); warning.className = 'locker-warn'; warning.setAttribute('role', 'alert'); warning.textContent = '無法更新本機儲存，請確認瀏覽器設定後再試。'; lockerEditor.appendChild(warning); return; } lockers = remaining; lockerEditor.hidden = true; lockerEditor.innerHTML = ''; renderLockers(); }
     });
     renderLockers();
   }
