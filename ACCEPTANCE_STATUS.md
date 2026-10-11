@@ -25,3 +25,5 @@
 ## 88 篇審核索引
 
 已建立 [CONTENT_88_REVIEW.md](CONTENT_88_REVIEW.md) 逐項追蹤 27 長文、25 短文、36 抽屜。索引不代表全部事實查核完成。Manus 交接請見 [MANUS_HANDOFF.md](MANUS_HANDOFF.md)。
+
+2026-10-11：88/88 全文編輯檢視完成；逐句外部來源核證仍待完成。新增兩處生理效果措辭修正，見 CONTENT_88_REVIEW.md。
