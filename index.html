@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="每天抽五張小卡，留一點空間給自己。探索可信、溫和的身心照顧內容。" />
+    <meta name="theme-color" content="#f6f1e8" />
+    <title>今日一息｜每日療癒小卡</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css?v=20261011-19" />
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="wordmark" href="#today" aria-label="回到今日一息首頁">
+        <span class="wordmark-mark" aria-hidden="true"><span></span></span>
+        <span><strong>今日一息</strong><small>給自己一點空間</small></span>
+      </a>
+      <nav class="site-nav" aria-label="主要導覽">
+        <button class="nav-link active" data-view="today">今日五卡</button>
+        <button class="nav-link" data-view="read">找文章</button>
+        <button class="nav-link" data-view="curiosity">好奇心抽屜</button>
+        <button class="nav-link" data-view="palette">情緒調色盤</button>
+        <button class="nav-link" data-view="holding">寄放所</button>
+        <button class="nav-link" data-view="principles">內容原則</button>
+      </nav>
+      <button class="quiet-button" id="reopenWelcome" type="button">今日陪伴語</button>
+    </header>
+
+    <main>
+      <section class="view active" id="today" data-view-panel>
+        <div class="hero-shell">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> DAILY PAUSE <span>／</span> 每日一息</p>
+            <h1>今天，也可以<br /><em>慢一點。</em></h1>
+            <p class="hero-lede">五張小卡，從經典引文、覺察、呼吸、身體到陪伴，陪你把注意力輕輕帶回自己。</p>
+            <div class="hero-meta">
+              <span class="date-chip" id="todayDate">—</span>
+              <span class="meta-separator"></span>
+              <span>免費使用 · 不需登入</span>
+            </div>
+          </div>
+          <div class="hero-orbit" aria-hidden="true">
+            <div class="orbit-ring ring-one"></div>
+            <div class="orbit-ring ring-two"></div>
+            <div class="orbit-card">
+              <span class="orbit-spark spark-one">✦</span>
+              <span class="orbit-spark spark-two">·</span>
+              <span class="orbit-card-label">今日提醒</span>
+              <span class="orbit-card-quote" id="dailyReminder">—</span>
+              <span class="orbit-card-line"></span>
+            </div>
+          </div>
+        </div>
+
+        <section class="draw-panel" id="drawPanel" aria-labelledby="drawTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">YOUR FIVE CARDS</p>
+              <h2 id="drawTitle">今天的五張小卡</h2>
+            </div>
+            <div class="progress-wrap" aria-label="抽卡進度">
+              <span id="progressText">0 / 5</span>
+              <div class="progress-track"><span id="progressBar"></span></div>
+            </div>
+          </div>
+
+          <div class="cards-grid" id="cardsGrid" aria-live="polite"></div>
+
+          <div class="draw-actions">
+            <p id="drawHint">準備好了嗎？先抽第一張，讓今天有一個柔軟的開頭。</p>
+            <button class="primary-button" id="drawButton" type="button"><span>抽下一張</span><b>→</b></button>
+          </div>
+        </section>
+
+        <section class="mood-panel" aria-labelledby="moodTitle">
+          <div class="mood-copy">
+            <p class="section-kicker">A SMALL CHECK-IN</p>
+            <h2 id="moodTitle">現在的你，<br /><em>比較接近哪一種天氣？</em></h2>
+            <p id="moodReply">不需要解釋太多，選一個最接近現在的感覺就好。</p>
+          </div>
+          <div class="mood-choices" id="moodChoices" role="group" aria-label="今日心情選擇">
+            <button class="mood-choice" type="button" data-mood="平靜" aria-pressed="false"><span>☼</span>平靜</button>
+            <button class="mood-choice" type="button" data-mood="有點累" aria-pressed="false"><span>☁</span>有點累</button>
+            <button class="mood-choice" type="button" data-mood="想專注" aria-pressed="false"><span>✦</span>想專注</button>
+            <button class="mood-choice" type="button" data-mood="需要鼓勵" aria-pressed="false"><span>♡</span>需要鼓勵</button>
+            <button class="mood-choice" type="button" data-mood="只是路過" aria-pressed="false"><span>⌁</span>只是路過</button>
+          </div>
+          <div class="mood-action-area" id="moodAction" aria-live="polite"></div>
+          <div class="mood-burst" id="moodBurst" hidden aria-live="assertive"><span id="moodBurstIcon" aria-hidden="true">✦</span><strong id="moodBurstTitle">給自己一點光</strong><small id="moodBurstText">你正在照顧此刻的自己。</small></div>
+        </section>
+
+        <section class="experience-panel" aria-labelledby="experienceTitle">
+          <div class="experience-intro">
+            <p class="section-kicker">CHOOSE YOUR ENTRANCE</p>
+            <h2 id="experienceTitle">今天，你想從哪裡開始？</h2>
+            <p>不必把休息、理解與探索混在一起。選一個現在比較需要的入口。</p>
+          </div>
+          <div class="experience-tabs" role="tablist" aria-label="三種體驗入口">
+            <button class="experience-tab active" type="button" data-experience="rest" role="tab" aria-selected="true"><span>01</span><strong>休息一下</strong><small>不必回答，也不必分析。</small></button>
+            <button class="experience-tab" type="button" data-experience="know" role="tab" aria-selected="false"><span>02</span><strong>認識自己</strong><small>從一個生活情境開始。</small></button>
+            <button class="experience-tab" type="button" data-experience="why" role="tab" aria-selected="false"><span>03</span><strong>知道為什麼</strong><small>讓好奇心帶你多走一步。</small></button>
+          </div>
+          <div class="explore-content" id="exploreContent" aria-live="polite"></div>
+        </section>
+
+        <section class="mini-note" aria-label="使用提醒">
+          <span class="note-icon">○</span>
+          <p>這些文字是日常陪伴，不是診斷或治療。如果你正在經歷危機，請向身邊可信任的人、當地緊急服務或專業機構求助。</p>
+        </section>
+      </section>
+
+      <section class="view read-view" id="read" data-view-panel hidden>
+        <div class="read-intro">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-dot"></span> GENTLE READING <span>／</span> 溫柔閱讀</p>
+            <h1>找一篇，<br /><em>剛好適合現在的文章。</em></h1>
+          </div>
+          <p>短文適合現在就讀完；長篇整理則提供更多背景、身體訊號與可查證來源。兩種閱讀方式都留在本站完成。</p>
+        </div>
+        <div class="library-switcher" role="tablist" aria-label="文章長度選擇">
+          <button class="library-tab active" type="button" data-library-mode="short" role="tab" aria-selected="true"><span>01</span>短文與語錄 <em>45 篇</em></button>
+          <button class="library-tab" type="button" data-library-mode="long" role="tab" aria-selected="false"><span>02</span>長篇文章 <em>27 篇</em></button>
+        </div>
+        <figure class="media-deck" id="mediaDeck">
+          <img id="mediaImage" src="./media/forest-public-domain.jpg" alt="" />
+          <figcaption><div><span class="media-kicker">A LITTLE VISUAL PAUSE</span><strong id="mediaTitle">老林的光</strong><small id="mediaCredit">圖片來源與授權已完成整理</small></div><button type="button" id="nextMedia">換一張 ↗</button></figcaption>
+        </figure>
+        <div class="media-gallery-heading"><span>15 張視覺素材</span><small>含 12 張新實景風格原創圖，點選縮圖查看來源與授權</small></div>
+        <div class="media-gallery" id="mediaGallery" aria-label="全部圖片素材"></div>
+        <div class="short-library" id="shortLibrary">
+          <div class="search-row">
+          <label class="search-box" for="articleSearch">
+            <span aria-hidden="true">⌕</span>
+            <input id="articleSearch" type="search" placeholder="搜尋壓力、睡眠、呼吸、界線……" autocomplete="off" />
+          </label>
+          <div class="filter-pills" id="filterPills" aria-label="文章分類"></div>
+          </div>
+          <div class="article-grid" id="articleGrid"></div>
+          <div class="empty-state" id="emptyState" hidden>還沒有找到符合的文章。試試另一個詞，或換一個分類。</div>
+        </div>
+        <section class="long-reading" aria-labelledby="longReadingTitle">
+          <div class="long-reading-heading">
+            <div><p class="section-kicker">LONG-FORM READING</p><h2 id="longReadingTitle">想再多走一段？</h2></div>
+            <p>這裡收錄本站重新整理的長篇文章。不是複製原文，而是把公開資料轉成容易閱讀、來源清楚的知識入口。</p>
+          </div>
+          <div class="long-article-grid" id="longArticleGrid"></div>
+        </section>
+      </section>
+
+      <section class="view curiosity-view" id="curiosity" data-view-panel hidden>
+        <div class="directory-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> CURIOSITY DRAWERS ／ 好奇心抽屜</p><h1>打開一格，<br /><em>讓問題帶你走遠。</em></h1><p>這是一間可以隨時離開的知識收藏室。抽屜裡有問題、背景、不同領域的觀點與下一個入口，不替你下結論。</p></div>
+        <div class="curiosity-tools"><button class="primary-button" id="randomDrawer" type="button"><span>隨機開一格</span><b>✦</b></button><div class="curiosity-filters" id="curiosityFilters"></div></div>
+        <div class="drawer-room" id="drawerRoom" aria-live="polite"></div>
+        <section class="drawer-reader" id="drawerReader" hidden></section>
+      </section>
+
+      <section class="view palette-view" id="palette" data-view-panel hidden>
+        <div class="directory-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> EMOTION PALETTE ／ 情緒調色盤</p><h1>不用解釋，<br /><em>先讓顏色流動。</em></h1><p>畫布是主角。選一個小工具，讓它只在需要時展開；每一次觸碰都會把目前的顏色、材質與空間感留在作品裡。</p></div>
+        <div class="palette-emotion-strip" aria-label="情緒入口">
+          <span class="palette-section-label">先選一個此刻的情緒</span>
+          <div class="palette-emotions" id="paletteEmotions"></div>
+        </div>
+        <div class="palette-workspace">
+          <div class="palette-canvas-wrap" id="paletteCanvasWrap"><canvas id="paletteCanvas" width="900" height="620" aria-label="可互動的情緒調色盤畫布"></canvas><div class="palette-overlay"><span id="paletteStatus">觸碰畫面，讓光點留下來。</span><button id="palettePause" type="button">暫停動畫</button></div></div>
+          <aside class="palette-controls" id="paletteControls" aria-label="畫布工具">
+            <div class="palette-current"><span class="palette-current-dot" id="paletteCurrentDot"></span><div><strong id="paletteCurrentLabel">珊瑚</strong><small>下一次觸碰會使用目前選擇</small></div></div>
+            <div class="palette-toolbar" role="tablist" aria-label="調色盤工具分類"><button type="button" class="palette-tool-tab active" data-palette-tab="color" role="tab" aria-selected="true">顏色</button><button type="button" class="palette-tool-tab" data-palette-tab="material" role="tab" aria-selected="false">筆觸／材質</button><button type="button" class="palette-tool-tab" data-palette-tab="force" role="tab" aria-selected="false">動態</button><button type="button" class="palette-tool-tab" data-palette-tab="layer" role="tab" aria-selected="false">空間</button><button type="button" class="palette-tool-tab" data-palette-tab="transform" role="tab" aria-selected="false">作品轉換</button><button type="button" class="palette-tool-tab" data-palette-tab="objects" role="tab" aria-selected="false">生活物件</button></div>
+            <div class="palette-tool-panels">
+              <section class="palette-tool-panel" data-palette-panel="color" role="tabpanel"><span class="palette-section-label">色票</span><div class="palette-swatches" id="paletteSwatches"></div><div class="palette-custom"><button type="button" id="paletteCustomToggle">自選顏色</button><input id="paletteCustomColor" type="color" value="#e78b72" aria-label="自選顏色" /></div></section>
+              <section class="palette-tool-panel" data-palette-panel="material" role="tabpanel" hidden><span class="palette-section-label">材質</span><div id="paletteMaterials" class="advanced-buttons"></div><span class="palette-section-label">筆觸</span><div class="palette-effects" id="paletteEffects"></div></section>
+              <section class="palette-tool-panel" data-palette-panel="force" role="tabpanel" hidden><span class="palette-section-label">環境力</span><div id="paletteForces" class="advanced-buttons"></div><p class="palette-tool-note">動態會直接作用在已留下的元素，也不會阻止你繼續畫。</p></section>
+              <section class="palette-tool-panel" data-palette-panel="layer" role="tabpanel" hidden><span class="palette-section-label">空間</span><div id="paletteLayers" class="advanced-buttons"></div><p class="palette-tool-note">前景、中景與背景會改變元素的大小、透明度與移動速度。</p></section>
+              <section class="palette-tool-panel" data-palette-panel="transform" role="tabpanel" hidden><span class="palette-section-label">自然元素與形狀</span><div class="palette-shapes" id="paletteShapes"></div><span class="palette-section-label">把目前作品轉成自然景觀</span><div id="paletteTransforms" class="advanced-buttons"></div><div class="advanced-actions palette-canvas-actions"><button type="button" data-palette-action="restore">復原原作</button><button type="button" data-palette-action="scatter">讓它散開</button><button type="button" data-palette-action="wind">吹一陣風</button><button type="button" data-palette-action="rain">下一場雨</button><button type="button" data-palette-action="still">全部停住</button><button type="button" data-palette-action="grow">重新長出來</button></div></section>
+              <section class="palette-tool-panel palette-objects-panel" data-palette-panel="objects" role="tabpanel" hidden><span class="palette-section-label">生活物件</span><p class="palette-tool-note">選一個物件放入畫布，再直接拖曳它。物件可以縮放、旋轉、前後移動或單獨刪除。</p><div id="paletteObjects" class="palette-object-grid"></div><div id="paletteObjectEditor" class="palette-object-editor" hidden></div></section>
+            </div>
+            <div class="palette-ranges"><label>光影強度 <input id="paletteIntensity" type="range" min="0.2" max="1" step="0.05" value="0.7" /></label><label>流動速度 <input id="paletteSpeed" type="range" min="0" max="2" step="0.1" value="0.8" /></label></div>
+            <div class="palette-actions"><button id="paletteRandom" type="button">隨機生成</button><button id="paletteClear" type="button">清空</button><button id="paletteDownload" type="button">保存 PNG</button></div><p class="palette-note">作品只保存在你的瀏覽器。匯出 PNG 會保存最後看到的顏色、材質、空間與作品轉換效果。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view holding-view" id="holding" data-view-panel hidden>
+        <div class="directory-intro holding-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> HOLDING PLACE ／ 寄放所</p><h1>有些事，今天先不用<br /><em>一直拿著。</em></h1><p>選一個櫃子，把它放進去。到了你約好的那一天，再回來拿。這不是日記、心理測驗或 AI 分析工具。</p></div>
+        <div class="holding-notice"><strong>只替你保管在這台裝置上。</strong><span>你放進櫃子的文字只儲存在目前這個瀏覽器，不會傳送到「今日一息」，也不會用來分析你。清除瀏覽資料、使用無痕模式或更換裝置，寄放內容可能會一起消失。</span></div>
+        <div class="locker-room" id="lockerRoom" aria-live="polite"></div>
+        <section class="locker-editor" id="lockerEditor" hidden aria-labelledby="lockerEditorTitle"></section>
+      </section>
+
+      <section class="view principles-view" id="principles" data-view-panel hidden>
+        <div class="principles-intro">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> OUR PROMISE <span>／</span> 我們的原則</p>
+          <h1>療癒可以溫柔，<br /><em>也可以很誠實。</em></h1>
+          <p>今日一息不急著給答案。我們只想提供一個安全、清楚、不增加壓力的入口。</p>
+        </div>
+        <div class="principle-list">
+          <article class="principle-card"><span>01</span><div><h2>來源說清楚</h2><p>人物引文會標示人物、作品或可核實來源；無法確認的內容，不會包裝成確定名言。我們也會區分逐字引文與中文意譯。</p></div></article>
+          <article class="principle-card"><span>02</span><div><h2>不把陪伴說成治療</h2><p>小卡與文章提供的是日常覺察與自我照顧，不是診斷、處方或醫療建議。需要時，尋求專業協助是一種照顧自己的方式。</p></div></article>
+          <article class="principle-card"><span>03</span><div><h2>避開傷人的話題</h2><p>內容會排除政治煽動、歧視仇恨、危險建議、爭議性操弄與不當權威崇拜，並維持尊重多元的語氣。</p></div></article>
+          <article class="principle-card"><span>04</span><div><h2>優先使用清楚授權</h2><p>短文與長篇文章由本站自行撰寫或整理，不任意複製全文；圖片與文字優先採用自製、CC0、公版或授權清楚的內容，並在文章中保留來源與使用說明。</p></div></article>
+          <article class="principle-card"><span>05</span><div><h2>資料留在你的裝置</h2><p>目前的收藏、翻卡進度、抽屜探索狀態與調色盤作品只保存在瀏覽器的本機儲存空間；本站不要求登入、不使用分析追蹤，也不把情緒、作品或筆記上傳到伺服器。</p></div></article>
+          <article class="principle-card"><span>06</span><div><h2>看見來源，也保留懷疑</h2><p>外部資料只作查證與主題參考，本站正文由本站自行整理；人物名言會區分原文、意譯與一般說明。詳細清單與審核紀錄保存在專案的 MEDIA_SOURCES.md 與 CONTENT_AUDIT.md。</p></div></article>
+        </div>
+        <div class="source-note"><strong>內容狀態</strong><span>目前為第一版，內容將持續整理與更新。網站內容以本站自行撰寫與整理為主，引用及視覺素材依來源性質標示。這些說明不是正式法律保證；無法確認的素材會先替換或標示待查。</span></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>今日一息 · 給自己一點空間</span>
+      <span>© 2026 ／ 內容持續整理中</span>
+    </footer>
+
+    <div class="welcome-backdrop" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+      <div class="welcome-modal">
+        <button class="modal-close" id="closeWelcome" type="button" aria-label="關閉陪伴語">×</button>
+        <span class="modal-breath" aria-hidden="true"><i></i><i></i><i></i></span>
+        <p class="modal-kicker">給今天的你</p>
+        <h2 id="welcomeTitle">辛苦了，<br /><em>先休息一下。</em></h2>
+        <p id="welcomeText">不用急著變得更好。此刻，先讓自己被好好接住。</p>
+        <button class="primary-button modal-button" id="enterToday" type="button"><span>我收到這份陪伴了</span><b>→</b></button>
+      </div>
+    </div>
+
+    <div class="article-reader-backdrop" id="articleReader" role="dialog" aria-modal="true" aria-labelledby="articleReaderTitle" hidden>
+      <article class="article-reader">
+        <button class="modal-close" id="articleReaderClose" type="button" aria-label="關閉文章閱讀器">×</button>
+        <span class="article-reader-art" id="articleReaderArt" aria-hidden="true"></span>
+        <p class="modal-kicker" id="articleReaderMeta">站內短文</p>
+        <h2 id="articleReaderTitle">文章標題</h2>
+        <div class="article-reader-body" id="articleReaderBody"></div>
+        <p class="article-reader-source" id="articleReaderSource"></p>
+      </article>
+    </div>
+
+    <script src="./media.js?v=20261010-7" defer></script>
+    <script src="./long-articles.js?v=20261010-4" defer></script>
+    <script src="./short-articles.js?v=20261010-4" defer></script>
+    <script src="./cards-data.js?v=20261010-6" defer></script>
+    <script src="./curiosity.js?v=20261010-6" defer></script>
+    <script src="./daily-content.js?v=20261010-1" defer></script>
+    <script src="./app.js?v=20261011-22" defer></script>
+    <script src="./quiet-spaces.js?v=20261011-6" defer></script>
+  </body>
+</html>
