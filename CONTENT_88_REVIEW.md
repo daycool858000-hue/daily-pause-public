@@ -115,3 +115,13 @@
 - 長文「讓好奇心有地圖」原本引用 CDC 社會連結風險頁與 WHO 社會連結問答，與核對資訊方法的主題不符；改用 MedlinePlus 資訊評估指引及 NIH ODS 網路健康資訊查核指引，並保留 MedlinePlus 原有第三筆來源。
 - 好奇抽屜 sci-03「科學為什麼需要承認不知道」原本指向可能過時的 National Academies 路徑，改成 National Academies Press 的正式出版品頁面（Science, Evolution, and Creationism，2008）。
 - 以上是來源直接性及連結修正；未核對每一篇所有句子的外部佐證，因此不可自動把 88 列狀態改成通過。
+
+## 2026-10-11 實際來源核對紀錄（可複核）
+
+| 項目 | 已對照的資料 | 結論 |
+|---|---|---|
+| dream-03 閉眼見光與視網膜警訊 | 美國 National Eye Institute〈Retinal Detachment〉 https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment | 原文所列突發閃光、飛蚊增加、視野如布幕遮擋需緊急就醫的警訊與官方資料相符；已更正來源網址。閉眼光感的一般機制未由此頁直接佐證，仍需獨立來源。 |
+| rel-02 冥想與健康 | 美國 NCCIH〈Meditation and Mindfulness: Effectiveness and Safety〉 https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety | 官方資料承認研究結果有差異、少數人可能有負面經驗；原文未承諾療效，方向相符。宗教史段落仍需宗教史資料。 |
+| body-01 睡眠不足與注意力 | 2024 年系統性回顧 https://pubmed.ncbi.nlm.nih.gov/38759474/ | 研究支持單晚限制睡眠與持續注意力下降的關聯；原文「可能」用語合理，並非每項認知功能都同樣受影響。 |
+
+**注意**：上表是指定主張的外部來源核對，並不構成整篇、全部段落或 88 篇的完整驗收。對尚未查到直接證據的句子保持待證狀態。
