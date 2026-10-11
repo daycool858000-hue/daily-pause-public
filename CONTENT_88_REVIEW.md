@@ -125,3 +125,12 @@
 | body-01 睡眠不足與注意力 | 2024 年系統性回顧 https://pubmed.ncbi.nlm.nih.gov/38759474/ | 研究支持單晚限制睡眠與持續注意力下降的關聯；原文「可能」用語合理，並非每項認知功能都同樣受影響。 |
 
 **注意**：上表是指定主張的外部來源核對，並不構成整篇、全部段落或 88 篇的完整驗收。對尚未查到直接證據的句子保持待證狀態。
+
+## 2026-10-11 外部來源實際核對
+
+| 項目 | 官方來源 | 核對結果 |
+|---|---|---|
+| dream-03 視網膜警訊 | https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment | NEI 列出突發飛蚊、閃光及視野布幕狀陰影，建議立即就醫；該段相符。閉眼見光的其他機制仍需不同資料直接支持。 |
+| rel-02 冥想 | https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety | NCCIH 指出研究品質與成效有限制，亦有負面經驗報告；文中避免承諾療效的方向相符。宗教史描述未由該頁完整佐證。 |
+
+這是部分主張的核對，不代表整篇通過，更不代表 88 篇已全部驗收。不得將「已盤點」自動改為「通過」。
