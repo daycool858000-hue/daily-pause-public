@@ -180,3 +180,10 @@
 | life-03 | 雨滴打到多孔表面產生氣泡與氣膠；氣膠可能將土壤氣味物質帶入空氣 | MIT 2015〈Rainfall Can Release Aerosols〉 https://news.mit.edu/2015/rainfall-can-release-aerosols-0114 ：直接支持雨滴產生氣膠的實驗；氣膠攜帶氣味是作者提出的可能機制，不能寫成已獨立證實所有氣味分子的因果鏈。geosmin 來源另見 Texas A&M https://stories.tamu.edu/news/2018/09/03/why-you-can-smell-rain/ | 將 Britannica 一般百科連結改為 MIT 研究介紹 |
 
 這 4 則的**答案核心科學敘述**已核對，延伸觀點、跨領域詮釋與原創性仍須分別檢視，不能以此宣告整篇全項通過。
+
+## 2026-10-12 外部原文查證：his-01、body-03
+
+- **his-01 古代城市與河流**：Smithsonian〈Ancient Mesopotamia〉具體指出兩河流域的灌溉支持農業與城市，也指出灌溉引起鹽化的環境代價。https://forces.si.edu/soils/02_08_01.html 。Smithsonian〈Reclaiming the Edge〉介紹河道作為貿易與交通路線。https://anacostia.si.edu/urbanwaterways/wp-content/uploads/2021/08/Reclaiming-the-Edge-Brochure.pdf 。原本 UNESCO 世界遺產清單無法直接支持因果敘述，已換成美索不達米亞具體案例。原文關於疾病風險、權力因素是跨地區的概括，**這兩份資料未直接證明每一項，仍不標為整則通過**。
+- **body-03 情緒、心跳與呼吸**：NHLBI〈How Your Body Controls Breathing〉明確說明交感神經會提高心率與呼吸速率、副交感神經則相反。https://www.nhlbi.nih.gov/health/lungs/body-controls-breathing 。NHLBI〈Why Mental Stress Can Take a Toll on the Heart〉說明精神壓力下的交感／副交感調節。https://www.nhlbi.nih.gov/news/2024/why-mental-stress-can-take-toll-heart 。NHLBI〈Arrhythmias: Causes and Triggers〉指出情緒壓力也可能觸發某些心律不整，不能把心悸一概解釋為情緒。https://www.nhlbi.nih.gov/health/arrhythmias/causes 。已將原先心臟健康總入口改成生理機制專題。**胸痛與昏厥的急診判準仍須另查專門急救來源**。
+
+此批只就列明主張核實；其他條目仍依原審核表標示待證。
