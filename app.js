@@ -515,6 +515,7 @@ function setupPalette() {
   let activeLayer = 'middle';
   let sceneMode = 'none';
   let paused = false;
+  let animationFrameId = null;
   let motionStopped = true;
   let intensity = .78;
   let speed = .8;
@@ -799,7 +800,7 @@ function setupPalette() {
     points.forEach((point, index) => drawPoint(point, frameTime, index, w, h, originalAlpha));
     if (includeSelection) drawSelection(selectedObject());
     ctx.restore();
-    if (!paused) requestAnimationFrame(draw);
+    if (!paused) animationFrameId = requestAnimationFrame(draw);
   };
   const addPoint = (x, y, px = x, py = y) => {
     const naturalShapes = ['wave', 'mountain', 'cloud', 'flower', 'grass', 'tree'];
@@ -832,13 +833,13 @@ function setupPalette() {
   const finishPointer = event => { if (draggingObject?.pointerId === event.pointerId) { canvas.releasePointerCapture?.(event.pointerId); draggingObject = null; return; } if (activePointer?.id === event.pointerId) { canvas.releasePointerCapture?.(event.pointerId); activePointer = null; } };
   canvas.addEventListener('pointerup', finishPointer); canvas.addEventListener('pointercancel', finishPointer); canvas.addEventListener('pointerleave', event => { if (activePointer?.id === event.pointerId || draggingObject?.pointerId === event.pointerId) finishPointer(event); });
   $('#paletteIntensity').addEventListener('input', event => { intensity = Number(event.target.value); setStatus('光影強度已更新。'); refresh(); }); $('#paletteSpeed').addEventListener('input', event => { speed = Number(event.target.value); setStatus('流動速度已更新。'); });
-  $('#palettePause').addEventListener('click', event => { paused = !paused; event.target.textContent = paused ? '恢復動畫' : '暫停動畫'; if (!paused) requestAnimationFrame(draw); else draw(performance.now()); });
+  $('#palettePause').addEventListener('click', event => { paused = !paused; event.target.textContent = paused ? '恢復動畫' : '暫停動畫'; if (paused) { if (animationFrameId !== null) cancelAnimationFrame(animationFrameId); animationFrameId = null; draw(performance.now()); } else if (animationFrameId === null) animationFrameId = requestAnimationFrame(draw); });
   $$('[data-palette-action]').forEach(button => button.addEventListener('click', () => { const action = button.dataset.paletteAction; if (action === 'restore') { enterScene('none'); return; } if (action === 'scatter') { points.forEach(point => { point.x += (point.x - canvas.clientWidth / 2) * .18; point.y += (point.y - canvas.clientHeight / 2) * .18; point.force = 'spread'; }); activeForce = 'spread'; } if (action === 'wind') { activeForce = 'wind'; points.forEach(point => { point.force = 'wind'; point.x += 10; }); } if (action === 'rain') { for (let i = 0; i < 10; i++) addPoint(Math.random() * canvas.clientWidth, -10 - Math.random() * 50, Math.random() * canvas.clientWidth, -30); } if (action === 'still') { motionStopped = true; activeForce = 'still'; } if (action === 'grow') { motionStopped = false; points.forEach(point => { point.r = Math.min(64, point.r * 1.12); }); } setStatus(`${button.textContent} 已直接作用在目前作品，畫布仍可繼續繪製。`); refresh(); }));
   $('#paletteRandom').addEventListener('click', () => { const picked = swatches[Math.floor(Math.random() * swatches.length)]; activeColor = picked[1]; setStatus(`換到${picked[0]}；下一次觸碰會使用它。`); });
-  $('#paletteClear').addEventListener('click', () => { points = []; objects = []; selectedObjectId = null; renderObjectEditor(); resetSceneMarks(); setStatus('畫布清空了，可以從任何地方開始。'); refresh(); });
-  $('#paletteDownload').addEventListener('click', () => { draw(performance.now(), false); const link = document.createElement('a'); link.download = `今日一息-情緒調色盤-${Date.now()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); draw(performance.now()); });
+  $('#paletteClear').addEventListener('click', () => { points = []; objects = []; sceneSnapshot = null; selectedObjectId = null; renderObjectEditor(); resetSceneMarks(); setStatus('畫布清空了，可以從任何地方開始。'); refresh(); });
+  $('#paletteDownload').addEventListener('click', () => { const wasPaused = paused; paused = true; draw(performance.now(), false); try { const link = document.createElement('a'); link.download = `今日一息-情緒調色盤-${Date.now()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); setStatus('圖片已送交瀏覽器下載；可到下載項目查看。'); } catch (_) { setStatus('圖片匯出失敗，請確認瀏覽器是否允許下載。'); } finally { paused = wasPaused; draw(performance.now()); } });
   window.addEventListener('resize', resize); if ('ResizeObserver' in window) new ResizeObserver(() => { if (wrap.clientWidth) resize(); }).observe(wrap);
-  resize(); points = []; for (let i = 0; i < 8; i++) addPoint((i + 1) / 9 * canvas.clientWidth, canvas.clientHeight * (.32 + rand(i + 3) * .4)); setStatus('平靜氛圍已準備好；觸碰、拖曳或放入生活物件開始。'); requestAnimationFrame(draw);
+  resize(); points = []; for (let i = 0; i < 8; i++) addPoint((i + 1) / 9 * canvas.clientWidth, canvas.clientHeight * (.32 + rand(i + 3) * .4)); setStatus('平靜氛圍已準備好；觸碰、拖曳或放入生活物件開始。'); animationFrameId = requestAnimationFrame(draw);
 }
 function switchView(view) {
   $$('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.view === view));
