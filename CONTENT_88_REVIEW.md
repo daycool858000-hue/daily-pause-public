@@ -149,3 +149,8 @@
 - 長文〈把身體動起來〉：WHO 2020 年身體活動指南可作活動量建議的參考，但「CC BY-NC-SA 3.0 IGO」屬特定出版物的權利條款，不能直接由書目推定；已移除未經核實的授權斷言。
 
 本批為可識別的來源適配修正；88 篇逐句核實仍未完成。
+
+## 2026-10-11 彩虹來源實證核對
+
+- sci-02 彩虹：以 NOAA NESDIS〈What Causes a Rainbow?〉（2025-09-02）核對折射、內部反射、色散及觀察者位置。https://www.nesdis.noaa.gov/about/k-12-education/optical-phenomena/what-causes-rainbow 。四項機制均有來源直接支持；原 NASA Earth Observatory 主題首頁不夠直接，已改為 NOAA 專題頁。
+- sci-03 科學承認未知：National Academies〈Science, Evolution, and Creationism〉（2008）確實存在，書中第 1 章談科學方法；該書主要是演化與創造論脈絡，不能當作所有科學哲學主張的通用證據。https://www.nationalacademies.org/read/11876/chapter/2 。
