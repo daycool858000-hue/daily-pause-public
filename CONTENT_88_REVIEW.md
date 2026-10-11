@@ -109,3 +109,9 @@
 - NCCIH Meditation and Mindfulness: https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety — 說明正念研究的侷限與可能負面經驗。
 
 其餘項目仍需逐篇來源比對。12 張 AI 圖片的原始生成證據另由 Manus 額度恢復後追查，不列為本次 88 篇內容已通過的證據。
+
+## 2026-10-11 來源直接性修正
+
+- 長文「讓好奇心有地圖」原本引用 CDC 社會連結風險頁與 WHO 社會連結問答，與核對資訊方法的主題不符；改用 MedlinePlus 資訊評估指引及 NIH ODS 網路健康資訊查核指引，並保留 MedlinePlus 原有第三筆來源。
+- 好奇抽屜 sci-03「科學為什麼需要承認不知道」原本指向可能過時的 National Academies 路徑，改成 National Academies Press 的正式出版品頁面（Science, Evolution, and Creationism，2008）。
+- 以上是來源直接性及連結修正；未核對每一篇所有句子的外部佐證，因此不可自動把 88 列狀態改成通過。
