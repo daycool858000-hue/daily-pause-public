@@ -138,13 +138,13 @@ window.longArticlesData = [
     title: '看星星的時候，我們為什麼會感到渺小又安定', category: '宇宙與哲思', language: '繁體中文', art: 'star',
     description: '從夜空、尺度與敬畏感出發，理解壯觀不必讓人焦慮，也可以帶來一種溫柔的比例感。', note: '本站原創整理｜天文科普與哲思，非宗教結論',
     sources: [source('NASA｜Solar System Exploration', 'https://science.nasa.gov/solar-system/', 'NASA 公開科普資料；本站自行改寫'), source('NASA｜Universe', 'https://science.nasa.gov/universe/', 'NASA 公開科普資料；本站未複製原文'), source('ESA｜Space science', 'https://www.esa.int/Science_Exploration/Space_Science', 'ESA 公開科普入口；本站只作查證')],
-    sections: [section('尺度會改變問題的形狀', '當我們抬頭看見月亮、行星或星河，日常的煩惱沒有因此消失，但它不再是唯一的尺度。這種比例感有時能讓呼吸變得比較深。'), section('敬畏不是否定自己', '感到渺小不必等於沒有價值。人可以很小，仍然能照顧一個人、一株植物與一個承諾。意義不只由大小決定。'), section('用科學保留想像力', '天文知識讓我們知道光年、引力與星體演化；想像力則讓這些知識與人生經驗連在一起。兩者可以同時存在，不必互相取代。'), section('把一點宇宙帶回今天', '找一個天氣好的晚上，抬頭幾分鐘，或只看一張可靠的天文照片。你不必理解全部，只要讓眼睛暫時離開近距離的螢幕。')]
+    sections: [section('尺度會改變問題的形狀', '當我們抬頭看見月亮、行星或星河，日常的煩惱沒有因此消失，但它不再是唯一的尺度。這種比例感有時讓人主觀感到放鬆，也可能帶來其他感受。'), section('敬畏不是否定自己', '感到渺小不必等於沒有價值。人可以很小，仍然能照顧一個人、一株植物與一個承諾。意義不只由大小決定。'), section('用科學保留想像力', '天文知識讓我們知道光年、引力與星體演化；想像力則讓這些知識與人生經驗連在一起。兩者可以同時存在，不必互相取代。'), section('把一點宇宙帶回今天', '找一個天氣好的晚上，抬頭幾分鐘，或只看一張可靠的天文照片。你不必理解全部，只要讓眼睛暫時離開近距離的螢幕。')]
   },
   {
     title: '幽默為什麼能替困難打開一扇小窗', category: '幽默與生活', language: '繁體中文', art: 'cat',
     description: '笑聲不是逃避現實的萬用藥，但在安全與尊重的前提下，它能讓人暫時看見不同角度。', note: '本站原創整理｜生活觀察，非心理治療建議',
     sources: [source('Stanford Encyclopedia of Philosophy｜Humor', 'https://plato.stanford.edu/entries/humor/', '公開學術百科；本站自行整理'), source('OpenStax｜Psychology 2e', 'https://openstax.org/details/books/psychology-2e', '外部教材參考連結；本站未轉載教材'), source('Wikimedia Commons｜Vintage Cat Illustration', 'https://commons.wikimedia.org/wiki/File:Vintage_Cat_Illustration.jpg', 'Public domain 圖片；本站保留來源與授權')],
-    sections: [section('笑不等於事情不嚴重', '人在困難裡仍然笑，並不表示他不在乎。幽默有時是讓神經系統短暫放鬆，也有時只是人想和另一個人連結。'), section('安全的笑話需要同意與脈絡', '以弱勢、創傷或真實痛苦當作笑點，可能會增加傷害。讓笑聲往自己、日常荒謬或溫和觀察靠近，通常更容易保留尊重。'), section('把荒謬感留給生活', '一隻貓對紙箱的堅持、雨傘在風裡翻面、煮飯時忘了放鹽，都是不必解決世界卻能讓人微笑的時刻。'), section('笑過之後仍可回到正事', '短暫的輕鬆不是否認問題，而是替自己補一點力氣。笑聲結束後，如果事情仍重要，就用比較有空間的狀態回去面對。')]
+    sections: [section('笑不等於事情不嚴重', '人在困難裡仍然笑，並不表示他不在乎。幽默有時讓人主觀感到短暫輕鬆，也有時是人與人連結的方式。'), section('安全的笑話需要同意與脈絡', '以弱勢、創傷或真實痛苦當作笑點，可能會增加傷害。讓笑聲往自己、日常荒謬或溫和觀察靠近，通常更容易保留尊重。'), section('把荒謬感留給生活', '一隻貓對紙箱的堅持、雨傘在風裡翻面、煮飯時忘了放鹽，都是不必解決世界卻能讓人微笑的時刻。'), section('笑過之後仍可回到正事', '短暫的輕鬆不是否認問題，而是替自己補一點力氣。笑聲結束後，如果事情仍重要，就用比較有空間的狀態回去面對。')]
   },
   {
     title: '藝術不一定要看懂：從觀看開始的內在空間', category: '藝術與感受', language: '繁體中文', art: 'flower',
