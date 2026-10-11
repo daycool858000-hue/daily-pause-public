@@ -1,3 +1,20 @@
+// Keep the site usable when private browsing or browser settings block local storage.
+const memoryStore = new Map();
+const safeStorage = {
+  getItem(key) {
+    try { return window.localStorage.getItem(key); }
+    catch { return memoryStore.has(key) ? memoryStore.get(key) : null; }
+  },
+  setItem(key, value) {
+    try { window.localStorage.setItem(key, String(value)); }
+    catch { memoryStore.set(key, String(value)); }
+  },
+  removeItem(key) {
+    try { window.localStorage.removeItem(key); }
+    catch { memoryStore.delete(key); }
+  }
+};
+
 const companionLines = (window.dailyContent && window.dailyContent.companionLines) || [];
 const dailyExperiences = (window.dailyContent && window.dailyContent.experiences) || [];
 
@@ -31,7 +48,7 @@ const dailyCardsKey = `xinli-daily-cards-${todayKey}`;
 const dailyProgressKey = `xinli-progress-${todayKey}`;
 function loadDailyCards() {
   try {
-    const storedIndexes = JSON.parse(localStorage.getItem(dailyCardsKey) || 'null');
+    const storedIndexes = JSON.parse(safeStorage.getItem(dailyCardsKey) || 'null');
     if (Array.isArray(storedIndexes) && storedIndexes.length === Math.min(5, cards.length)
       && new Set(storedIndexes).size === storedIndexes.length
       && storedIndexes.every(index => Number.isInteger(index) && cards[index])) {
@@ -39,8 +56,8 @@ function loadDailyCards() {
     }
   } catch (_) { /* ignore malformed local storage and create a fresh daily set */ }
   const selected = pickRandomCards();
-  localStorage.setItem(dailyCardsKey, JSON.stringify(selected.map(card => cards.indexOf(card))));
-  localStorage.removeItem(dailyProgressKey);
+  safeStorage.setItem(dailyCardsKey, JSON.stringify(selected.map(card => cards.indexOf(card))));
+  safeStorage.removeItem(dailyProgressKey);
   return selected;
 }
 const dailyCards = loadDailyCards();
@@ -150,7 +167,7 @@ function mediaMarkup(item = pickMedia()) {
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-const storedProgress = Number(localStorage.getItem(dailyProgressKey) || 0);
+const storedProgress = Number(safeStorage.getItem(dailyProgressKey) || 0);
 const state = { revealed: Number.isFinite(storedProgress) ? Math.min(dailyCards.length, Math.max(0, storedProgress)) : 0, filter: '全部', query: '' };
 const openingScenes = ['dawn', 'tide', 'garden', 'star'];
 const openingScene = openingScenes[Math.floor(Math.random() * openingScenes.length)];
@@ -173,8 +190,8 @@ function cardStorageKey(card) {
 }
 
 function isCardSaved(card, index) {
-  return localStorage.getItem(cardStorageKey(card)) === 'yes'
-    || localStorage.getItem(`xinli-saved-card-${index}`) === 'yes';
+  return safeStorage.getItem(cardStorageKey(card)) === 'yes'
+    || safeStorage.getItem(`xinli-saved-card-${index}`) === 'yes';
 }
 
 function showWelcome() {
@@ -235,7 +252,7 @@ function renderCards() {
 function drawCard() {
   if (state.revealed >= dailyCards.length) return;
   state.revealed += 1;
-  localStorage.setItem(dailyProgressKey, String(state.revealed));
+  safeStorage.setItem(dailyProgressKey, String(state.revealed));
   renderCards();
   const drawPanel = $('#drawPanel');
   drawPanel.classList.remove('draw-bloom');
@@ -280,7 +297,7 @@ function renderLongArticles() {
 }
 
 function renderMood() {
-  const chosen = localStorage.getItem(`xinli-mood-${todayKey}`) || '';
+  const chosen = safeStorage.getItem(`xinli-mood-${todayKey}`) || '';
   $$('.mood-choice').forEach(button => {
     const active = button.dataset.mood === chosen;
     button.classList.toggle('active', active);
@@ -416,7 +433,7 @@ function renderCuriosityFilters() {
 
 function renderDrawers() {
   const items = (window.curiosityData || []).filter(item => curiosityFilter === '全部' || item.category === curiosityFilter);
-  $('#drawerRoom').innerHTML = items.map((item, index) => `<button class="drawer-card drawer-size-${(index % 3) + 1}" type="button" data-drawer-id="${item.id}"><span class="drawer-handle"></span><small>${item.category}</small><strong>${item.question}</strong><i>${localStorage.getItem(`xinli-drawer-${item.id}`) === 'yes' ? '已探索' : '拉開抽屜'}</i></button>`).join('');
+  $('#drawerRoom').innerHTML = items.map((item, index) => `<button class="drawer-card drawer-size-${(index % 3) + 1}" type="button" data-drawer-id="${item.id}"><span class="drawer-handle"></span><small>${item.category}</small><strong>${item.question}</strong><i>${safeStorage.getItem(`xinli-drawer-${item.id}`) === 'yes' ? '已探索' : '拉開抽屜'}</i></button>`).join('');
 }
 
 function openDrawer(id) {
@@ -424,7 +441,7 @@ function openDrawer(id) {
   if (!item) return;
   currentDrawer = item;
   const relatedItems = (window.curiosityData || []).filter(entry => entry.id !== item.id).sort((a, b) => (a.category === item.category ? -1 : 1) - (b.category === item.category ? -1 : 1)).slice(0, 3);
-  localStorage.setItem(`xinli-drawer-${id}`, 'yes');
+  safeStorage.setItem(`xinli-drawer-${id}`, 'yes');
   $('#drawerReader').hidden = false;
   $('#drawerReader').innerHTML = `<div class="drawer-reader-head"><span>${item.category}</span><button type="button" id="closeDrawer">收回抽屜 ×</button></div><h2>${item.question}</h2><p class="drawer-answer">${item.answer}</p><div class="perspective-tabs">${Object.keys(item.perspectives).map((key, index) => `<button type="button" class="perspective-tab ${index === 0 ? 'active' : ''}" data-perspective="${key}">${key}</button>`).join('')}</div><div class="perspective-content" id="perspectiveContent">${Object.values(item.perspectives)[0]}</div><div class="drawer-related"><small>沿著好奇心繼續｜每一格都可以再打開</small>${relatedItems.map(next => `<button type="button" data-related-id="${next.id}">${next.question} →</button>`).join('')}</div><p class="drawer-source">參考來源：<a href="${item.sourceUrl}" target="_blank" rel="noreferrer">${item.sourceLabel}</a>。本文為本站自行整理，不把來源文章全文搬入。</p>`;
   $('#drawerReader').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -918,8 +935,8 @@ $('#cardsGrid').addEventListener('click', (event) => {
     const key = cardStorageKey(card);
     const legacyKey = `xinli-saved-card-${index}`;
     const saved = isCardSaved(card, index);
-    localStorage.setItem(key, saved ? 'no' : 'yes');
-    if (saved) localStorage.setItem(legacyKey, 'no');
+    safeStorage.setItem(key, saved ? 'no' : 'yes');
+    if (saved) safeStorage.setItem(legacyKey, 'no');
     renderCards();
     return;
   }
@@ -928,7 +945,7 @@ $('#cardsGrid').addEventListener('click', (event) => {
 $('#moodChoices').addEventListener('click', (event) => {
   const button = event.target.closest('[data-mood]');
   if (!button) return;
-  localStorage.setItem(`xinli-mood-${todayKey}`, button.dataset.mood);
+  safeStorage.setItem(`xinli-mood-${todayKey}`, button.dataset.mood);
   renderMood();
   button.classList.remove('mood-pop');
   void button.offsetWidth;
