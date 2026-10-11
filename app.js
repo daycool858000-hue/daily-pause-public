@@ -677,7 +677,26 @@ function setupPalette() {
   const drawMountain = (w, h) => { const sky = ctx.createLinearGradient(0, 0, 0, h * .7); sky.addColorStop(0, mixHex(activeColor, '#e5eff0', .62)); sky.addColorStop(1, '#b8ccd0'); ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h * .7); ctx.fillStyle = '#f0d69d'; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(w * .72, h * .2, Math.min(w, h) * .06, 0, Math.PI * 2); ctx.fill(); landscapeRidge([[0, h * .58], [w * .12, h * .43], [w * .28, h * .37], [w * .42, h * .5], [w * .58, h * .31], [w * .72, h * .46], [w * .86, h * .33], [w, h * .42]], '#9aabb0', '#73898f', .68); landscapeRidge([[0, h * .76], [w * .16, h * .6], [w * .3, h * .51], [w * .44, h * .68], [w * .58, h * .45], [w * .72, h * .59], [w * .87, h * .48], [w, h * .61]], mixHex(activeColor, '#405461', .48), '#415a62', .88); ctx.strokeStyle = '#eef1e7'; ctx.globalAlpha = .38; ctx.lineWidth = 12; for (let y = h * .52; y < h * .72; y += 22) { ctx.beginPath(); ctx.moveTo(0, y); ctx.quadraticCurveTo(w * .45, y - 9, w, y + 4); ctx.stroke(); } };
   const drawGarden = (w, h) => { const sky = ctx.createLinearGradient(0, 0, 0, h * .68); sky.addColorStop(0, '#dce8df'); sky.addColorStop(1, mixHex(activeColor, '#d8e4cb', .7)); ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h * .7); ctx.fillStyle = '#a8bf8c'; ctx.globalAlpha = .92; ctx.fillRect(0, h * .62, w, h * .38); ctx.fillStyle = '#e7c991'; ctx.globalAlpha = .7; ctx.beginPath(); ctx.arc(w * .18, h * .2, Math.min(w, h) * .05, 0, Math.PI * 2); ctx.fill(); for (let n = 0; n < 21; n++) { const x = rand(n * 4.8 + 2) * w; const base = h * (.72 + rand(n * 6.2) * .22); const height = 24 + rand(n * 6) * 48; ctx.strokeStyle = n % 3 ? '#557b5a' : '#6e8f63'; ctx.globalAlpha = .72; ctx.lineWidth = 2 + rand(n) * 1.2; ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x - 9, base - height * .55, x + (rand(n) - .5) * 26, base - height); ctx.stroke(); if (n % 3 === 0) { ctx.beginPath(); ctx.ellipse(x - 10, base - height * .6, 9, 4, -.5, 0, Math.PI * 2); ctx.ellipse(x + 9, base - height * .72, 10, 4, .5, 0, Math.PI * 2); ctx.fillStyle = '#6f956d'; ctx.fill(); } } for (let n = 0; n < 12; n++) { const x = rand(n * 4.8 + 2) * w; const y = h * (.6 + rand(n * 3.1) * .32); const r = 5 + rand(n * 8) * 5; drawShape({ shape: 'flower', x, y, r, color: n % 2 ? '#d47b92' : '#e6c65c', effect: 'glow', symbol: '✦' }, cssColor(n % 2 ? '#d47b92' : '#e6c65c', 1), .78); } };
   const drawNight = (w, h, time) => { const sky = ctx.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, '#111d3c'); sky.addColorStop(.62, mixHex(activeColor, '#1c2948', .72)); sky.addColorStop(1, '#0d1828'); ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h); ctx.fillStyle = '#f3e7bf'; ctx.globalAlpha = .94; ctx.beginPath(); ctx.arc(w * .75, h * .22, Math.min(w, h) * .07, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#182744'; ctx.globalAlpha = .96; ctx.beginPath(); ctx.arc(w * .78, h * .19, Math.min(w, h) * .065, 0, Math.PI * 2); ctx.fill(); ensureSceneMarks(w, h); sceneMarks.forEach((mark, index) => { if (mark.y > h * .62) return; ctx.fillStyle = index % 4 ? '#f8e7a9' : activeColor; ctx.globalAlpha = .42 + (Math.sin(time / 900 + mark.phase) + 1) * .2; ctx.beginPath(); ctx.arc(mark.x, mark.y, mark.r, 0, Math.PI * 2); ctx.fill(); }); landscapeRidge([[0, h * .76], [w * .2, h * .66], [w * .42, h * .75], [w * .62, h * .63], [w * .83, h * .72], [w, h * .65]], '#111d31', '#233451', 1); ctx.fillStyle = '#0b1523'; ctx.globalAlpha = .94; ctx.fillRect(0, h * .78, w, h * .22); };
-  const drawScene = (w, h, time) => { if (sceneMode === 'ocean') drawOcean(w, h, time); else if (sceneMode === 'mountain') drawMountain(w, h); else if (sceneMode === 'garden') drawGarden(w, h); else if (sceneMode === 'night') drawNight(w, h, time); else drawAtmosphere(w, h, time); };
+  const drawScene = (w, h, time) => {
+    if (sceneMode === 'ocean') drawOcean(w, h, time);
+    else if (sceneMode === 'mountain') drawMountain(w, h);
+    else if (sceneMode === 'garden') drawGarden(w, h);
+    else if (sceneMode === 'night') drawNight(w, h, time);
+    else if (sceneMode === 'island') {
+      drawOcean(w, h, time);
+      landscapeRidge([[w * .13, h * .62], [w * .29, h * .46], [w * .42, h * .36], [w * .54, h * .48], [w * .7, h * .58], [w * .82, h * .67]], '#668d75', '#456b61', .96);
+    } else if (sceneMode === 'weather') {
+      drawAtmosphere(w, h, time);
+      ctx.save(); ctx.strokeStyle = '#779caa'; ctx.globalAlpha = .48; ctx.lineWidth = 1.8;
+      for (let i = 0; i < 42; i++) { const x = rand(i * 7 + 13) * w; const y = (rand(i * 11 + 5) * h + (motionStopped ? 0 : time * .045)) % h; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 8, y + 18); ctx.stroke(); }
+      ctx.restore();
+    } else if (sceneMode === 'terrain') {
+      drawMountain(w, h);
+      ctx.save(); ctx.strokeStyle = cssColor(activeColor, .75); ctx.globalAlpha = .45; ctx.lineWidth = 2;
+      for (let i = 0; i < 9; i++) { const y = h * (.48 + i * .055); ctx.beginPath(); ctx.moveTo(0, y); ctx.bezierCurveTo(w * .3, y - 30 - i * 3, w * .65, y + 24 + i * 2, w, y - 8); ctx.stroke(); }
+      ctx.restore();
+    } else drawAtmosphere(w, h, time);
+  };
   const drawEmotionTint = (w, h) => { const gradient = ctx.createRadialGradient(w * .22, h * .18, 0, w * .22, h * .18, Math.max(w, h) * .72); gradient.addColorStop(0, cssColor(activeEmotion.glow, .18)); gradient.addColorStop(1, cssColor(activeEmotion.bg2, 0)); ctx.fillStyle = gradient; ctx.globalAlpha = 1; ctx.fillRect(0, 0, w, h); };
   const objectPreview = type => {
     const art = {
