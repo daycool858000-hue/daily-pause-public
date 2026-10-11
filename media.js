@@ -21,10 +21,10 @@ window.mediaData = [
     file: './media/cat-public-domain.jpg',
     title: '一隻有自己節奏的貓',
     alt: '1850 年出版的復古彩色貓插畫',
-    credit: 'George W. Hobbs',
+    credit: 'George W. Hobbs（1850 年出版者；原繪者未確認）',
     source: 'Wikimedia Commons：Vintage Cat Illustration',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Vintage_Cat_Illustration.jpg',
-    license: 'Public domain／公版'
+    license: '美國公有領域（1850 年出版）；其他地區權利需依適用法律確認'
   }
 ];
 
