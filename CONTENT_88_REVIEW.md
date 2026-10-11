@@ -163,3 +163,7 @@
 - **dream-03 視網膜緊急警訊**：NEI 直接列出突然增加的飛蚊、閃光、視野如布幕遮住，並要求立即求診。https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment
 
 **核對範圍限制**：上述是具體主張的直接資料核對；不涵蓋每則其他角度、完整原創性、所有 88 篇的逐句驗收。
+
+## 2026-10-11 重要勘誤：psy-01 先前誤引
+
+已開啟並閱讀 NCBI Bookshelf NBK207191 的實際頁面：其真正標題是〈Understanding the Impact of Trauma〉（SAMHSA 2014），**不是**〈Memory Distortion〉。先前僅依網址推定書名並宣稱修正，屬來源查核錯誤，現正式撤回該項聲稱。已改為實際開啟可確認的 National Academies（2008）附錄〈True and False Memories as an Illustrative Case...〉，NCBI Bookshelf NBK207945；內容明確討論誤導訊息改變記憶與真偽記憶難以僅靠確信度判斷。https://www.ncbi.nlm.nih.gov/books/NBK207945/ 。本項的來源與核心科學敘述已核對，但不代表其他 87 項通過。
