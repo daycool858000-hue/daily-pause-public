@@ -154,3 +154,12 @@
 
 - sci-02 彩虹：以 NOAA NESDIS〈What Causes a Rainbow?〉（2025-09-02）核對折射、內部反射、色散及觀察者位置。https://www.nesdis.noaa.gov/about/k-12-education/optical-phenomena/what-causes-rainbow 。四項機制均有來源直接支持；原 NASA Earth Observatory 主題首頁不夠直接，已改為 NOAA 專題頁。
 - sci-03 科學承認未知：National Academies〈Science, Evolution, and Creationism〉（2008）確實存在，書中第 1 章談科學方法；該書主要是演化與創造論脈絡，不能當作所有科學哲學主張的通用證據。https://www.nationalacademies.org/read/11876/chapter/2 。
+
+## 2026-10-11 原始資料內容比對：睡眠、正念與視網膜
+
+- **body-01 睡眠與注意力**：NIH/NHLBI〈Why Is Sleep Important?〉直接說明睡眠有助學習及長期記憶形成，睡眠不足可影響專注與思考。原文前兩句有直接支持，已將籠統的睡眠首頁改成專題頁。https://www.nhlbi.nih.gov/health/sleep/why-sleep-important
+- **body-01 情緒敏感**：NHLBI〈How Sleep Affects Your Health〉說明睡眠不足可能影響情緒與行為調節。https://www.nhlbi.nih.gov/health/sleep-deprivation/health-effects
+- **rel-02 正念**：NCCIH 專題明確指出研究品質與解釋限制、部分人可能出現焦慮等負面經驗，且不應以冥想取代常規醫療。https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety
+- **dream-03 視網膜緊急警訊**：NEI 直接列出突然增加的飛蚊、閃光、視野如布幕遮住，並要求立即求診。https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment
+
+**核對範圍限制**：上述是具體主張的直接資料核對；不涵蓋每則其他角度、完整原創性、所有 88 篇的逐句驗收。

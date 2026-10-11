@@ -37,3 +37,5 @@
 2026-10-11 來源更新：psy-01 改用記憶失真專題來源；WHO 身體活動指南的授權說明移除未驗證的 CC 宣稱。詳見 CONTENT_88_REVIEW.md。
 
 2026-10-11：sci-02 彩虹來源已改為 NOAA 專題頁；詳細查證記錄在 CONTENT_88_REVIEW.md。
+
+2026-10-11：body-01 睡眠來源已改為 NHLBI 專題頁；正念與視網膜警訊的逐項資料核對詳見 CONTENT_88_REVIEW.md。
