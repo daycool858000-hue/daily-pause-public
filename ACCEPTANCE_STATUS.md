@@ -21,3 +21,7 @@
 ## 內容與素材查核更新（2026-10-11）
 
 已盤點 27 篇長文、25 篇短文、36 則好奇抽屜；已核對 3 張照片的來源頁權利標示。逐篇事實查證、圖片生成紀錄與檔案比對仍待完成。詳見 [CONTENT_RIGHTS_AUDIT.md](CONTENT_RIGHTS_AUDIT.md)。
+
+## 88 篇審核索引
+
+已建立 [CONTENT_88_REVIEW.md](CONTENT_88_REVIEW.md) 逐項追蹤 27 長文、25 短文、36 抽屜。索引不代表全部事實查核完成。Manus 交接請見 [MANUS_HANDOFF.md](MANUS_HANDOFF.md)。
