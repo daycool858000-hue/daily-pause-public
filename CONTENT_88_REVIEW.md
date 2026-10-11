@@ -167,3 +167,16 @@
 ## 2026-10-11 重要勘誤：psy-01 先前誤引
 
 已開啟並閱讀 NCBI Bookshelf NBK207191 的實際頁面：其真正標題是〈Understanding the Impact of Trauma〉（SAMHSA 2014），**不是**〈Memory Distortion〉。先前僅依網址推定書名並宣稱修正，屬來源查核錯誤，現正式撤回該項聲稱。已改為實際開啟可確認的 National Academies（2008）附錄〈True and False Memories as an Illustrative Case...〉，NCBI Bookshelf NBK207945；內容明確討論誤導訊息改變記憶與真偽記憶難以僅靠確信度判斷。https://www.ncbi.nlm.nih.gov/books/NBK207945/ 。本項的來源與核心科學敘述已核對，但不代表其他 87 項通過。
+
+## 2026-10-12 原文逐句查證：4 則自然科學與神經科學
+
+本批實際閱讀來源內容後，逐句對照抽屜答案（不以首頁、網址名稱代替原文）：
+
+| ID | 原文可驗證主張 | 直接來源與判定 | 修正 |
+|---|---|---|---|
+| sci-01 | 月球不自行發光、反射太陽光；月球公轉使觀察者看見不同亮面比例 | NASA〈Moon Phases〉 https://science.nasa.gov/moon/moon-phases/ ：兩句均有直接支持 | 將 NASA 月球主題首頁改成月相專題 |
+| body-02 | 嗅覺與杏仁核、海馬迴等情緒記憶相關系統有連結；氣味可喚起情緒記憶 | NCBI Bookshelf〈Memory and Plasticity in the Olfactory System: From Infancy to Adulthood〉 https://www.ncbi.nlm.nih.gov/books/NBK55967/ ：前兩項直接支持；「回憶可能不完整」是對記憶限制的保守提醒，非此章節獨立實驗結論 | 將籠統且無關的 NCBI 章節連結換成嗅覺記憶專章 |
+| nat-02 | 海流受風、潮汐、海水密度（溫度／鹽度）及地球自轉影響；有表層與深層海流 | NOAA〈Ocean Currents〉 https://www.noaa.gov/education/resource-collections/ocean-coasts/ocean-currents ：直接支持 | 將 NOAA 總入口換成海流專題 |
+| life-03 | 雨滴打到多孔表面產生氣泡與氣膠；氣膠可能將土壤氣味物質帶入空氣 | MIT 2015〈Rainfall Can Release Aerosols〉 https://news.mit.edu/2015/rainfall-can-release-aerosols-0114 ：直接支持雨滴產生氣膠的實驗；氣膠攜帶氣味是作者提出的可能機制，不能寫成已獨立證實所有氣味分子的因果鏈。geosmin 來源另見 Texas A&M https://stories.tamu.edu/news/2018/09/03/why-you-can-smell-rain/ | 將 Britannica 一般百科連結改為 MIT 研究介紹 |
+
+這 4 則的**答案核心科學敘述**已核對，延伸觀點、跨領域詮釋與原創性仍須分別檢視，不能以此宣告整篇全項通過。
