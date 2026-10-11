@@ -17,7 +17,7 @@ window.longArticlesData = [
   {
     title: '吃得穩，心情才有餘裕？從食物、能量到情緒', category: '飲食與情緒', language: '繁體中文', art: 'sun',
     description: '從餐盤、能量與研究限制出發，理解飲食與情緒的可能關聯，不把單一食物說成解決所有問題的答案。', note: '本站原創整理｜營養科普，非個人化飲食建議',
-    sources: [source('WHO｜Healthy diet', 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet', 'WHO 官方資料；依使用條款自行改寫'), source('OpenStax｜Nutrition and Diet', 'https://openstax.org/books/anatomy-and-physiology-2e/pages/24-7-nutrition-and-diet', 'CC BY-NC-SA 4.0；本站未複製原文'), source('BMJ／PMC｜Food and mood', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7322666/', '學術引用與自行摘要；不重製圖表')],
+    sources: [source('WHO｜Healthy diet', 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet', 'WHO 官方資料；依使用條款自行改寫'), source('OpenStax｜Nutrition and Diet', 'https://openstax.org/books/anatomy-and-physiology-2e/pages/24-7-nutrition-and-diet', '外部教材參考連結；本站未轉載教材'), source('BMJ／PMC｜Food and mood', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7322666/', '學術引用與自行摘要；不重製圖表')],
     sections: [section('能量不是意志力，情緒也不只由食物決定', '疲倦或低落可能和睡眠、壓力、疾病、關係與環境一起有關。不要把某種感受簡化成單一營養素不足。'), section('均衡、足夠與穩定比追逐神奇食物重要', '全穀、蔬果、豆類、蛋白質與適量脂肪各有不同角色。規律進餐可以是觀察身體的起點，但不需要追求完美餐盤。'), section('研究看見關聯，不等於食物能治療情緒', '較健康的飲食型態與較佳心理健康指標有時呈關聯，但研究仍受生活方式與社會因素影響。不要把群體研究當成個人治療。'), section('把證據轉成溫和行動', '可以先增加水分、蔬果或規律用餐，而不是大幅限制飲食。若食慾、體重或情緒明顯改變，請找醫師或註冊營養師。')]
   },
   {
@@ -53,7 +53,7 @@ window.longArticlesData = [
   {
     title: '把路走深一點：旅行的意義，從抵達遠方到慢下來', category: '旅行與文化', language: '繁體中文', art: 'mountain',
     description: '從在場感、地方文化與永續旅遊重新思考旅行，不把景點數量或速度當成唯一價值。', note: '本站原創整理｜文化閱讀，非心理療效保證',
-    sources: [source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '官方資料；未複製原文或圖片'), source('Thoreau｜Walden／Wikisource', 'https://en.wikisource.org/wiki/Walden,_or,_Life_in_the_Woods', '原作公版；轉錄頁依 CC BY-SA 4.0')],
+    sources: [source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '官方資料；未複製原文或圖片'), source('Thoreau｜Walden／Wikisource', 'https://en.wikisource.org/wiki/Walden,_or,_Life_in_the_Woods', '古典原作參考連結；本站未轉載網站文字')],
     sections: [section('慢旅行不是固定交通工具', '慢下來可以是少排幾個景點、留意沿途、預留休息，也可以是選擇適合身體與預算的交通。重點不是表演一種生活方式。'), section('陌生地方讓日常換一個角度', '逛市場、閱讀地方歷史、搭乘公共運輸或觀察街道，都可能讓熟悉的生活問題出現新的背景。旅行不保證解決內心困難。'), section('文化不是旅遊布景', '參與儀式、拍攝人物、進入宗教場所或接觸原住民族文化前，先理解地方規範並取得同意，支持在地創作者與公平交易。'), section('慢下來也要看見環境影響', '慢旅行不必然比較環保。交通方式、旅程距離、住宿能源、地方承載量與消費行為都會影響總體結果；在評估這些條件後，減少不必要移動或支持在地方式，可能降低部分影響。')]
   },
   {
@@ -89,19 +89,19 @@ window.longArticlesData = [
   {
     title: '從學而時習到待人以仁：孔子思想的日常練習', category: '傳統思想', language: '繁體中文', art: 'flower',
     description: '從學習、思考、仁與禮的概念，理解古典文本如何提供提問，而不是把古人的話變成現代人的唯一答案。', note: '本站原創整理｜經典導讀，非規訓或醫療建議',
-    sources: [source('Stanford Encyclopedia｜Confucius', 'https://plato.stanford.edu/entries/confucius/', '學術百科；本站自行改寫'), source('香港教育局｜論學資源', 'https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/resources/secondary-edu/lang/culture/B003.pdf', '官方教材；以摘要與連結為主'), source('Project Gutenberg｜The Analects', 'https://www.gutenberg.org/ebooks/3330', '英譯本頁面標示美國公版；保留譯者與版本')],
+    sources: [source('Stanford Encyclopedia｜Confucius', 'https://plato.stanford.edu/entries/confucius/', '學術百科；本站自行改寫'), source('香港教育局｜論學資源', 'https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/resources/secondary-edu/lang/culture/B003.pdf', '官方教材；以摘要與連結為主'), source('Project Gutenberg｜The Analects', 'https://www.gutenberg.org/ebooks/3330', '英語譯本參考連結；公版狀態依地區與版本而異')],
     sections: [section('學習不只是在記憶', '學、習與思考可以互相往返：閱讀、請益、反省，再在具體情境裡驗證。學習的節奏不必拿來和別人比較。'), section('仁與禮需要放回歷史語境', '關懷、尊重與分寸可以成為提問，但古代角色秩序和現代平等、個人界線之間需要被仔細區分。'), section('把修養放在可觀察的行動', '守信、傾聽、言語節制與反省，可以成為日常練習；它不是追求完美人格，也不等於壓抑情緒。'), section('如何讀古人而不被古人規訓', '比較原典、譯本與不同詮釋，把現代聯想寫成開放問題。遇到不安全的關係，界線與求助優先於任何古典格言。')]
   },
   {
     title: '在沒有預設答案之後：尼采談價值、選擇與生命敘事', category: '哲學與思想史', language: '繁體中文', art: 'star',
     description: '以價值重估、自我塑造、生命肯定與多重視角為閱讀入口，不把哲學口號簡化成意志力或支配他人。', note: '本站原創整理｜哲學導讀，非心理或醫療建議',
-    sources: [source('Stanford Encyclopedia｜Friedrich Nietzsche', 'https://plato.stanford.edu/entries/nietzsche/', '學術百科；本站自行摘要'), source('Internet Encyclopedia of Philosophy｜Nietzsche', 'https://iep.utm.edu/nietzsch/', '公開學術導讀；本站未複製原文'), source('Project Gutenberg｜Thus Spake Zarathustra', 'https://www.gutenberg.org/ebooks/1998', '英譯本頁面標示美國公版；保留譯者與版本')],
+    sources: [source('Stanford Encyclopedia｜Friedrich Nietzsche', 'https://plato.stanford.edu/entries/nietzsche/', '學術百科；本站自行摘要'), source('Internet Encyclopedia of Philosophy｜Nietzsche', 'https://iep.utm.edu/nietzsch/', '公開學術導讀；本站未複製原文'), source('Project Gutenberg｜Thus Spake Zarathustra', 'https://www.gutenberg.org/ebooks/1998', '英語譯本參考連結；公版狀態依地區與版本而異')],
     sections: [section('價值不是天降答案', '尼采追問價值從哪裡來、鼓勵了什麼又壓抑了什麼。批判既有價值不等於否定一切價值，也不等於任性。'), section('成為自己不是即興任性', '自我塑造包含反思、長期實踐與承擔後果，不是用意志力解釋所有處境，也不是要求人忽視疾病與結構限制。'), section('把永劫回歸當作思想實驗', '可以問「如果重來，我仍願意肯定哪些選擇？」這是閱讀問題，不是宇宙學定論或壓力測驗。'), section('生命故事可以修訂，但不能任意捏造', '我們的敘事會受語言、記憶與文化影響；保留多種觀點，也要對自己的行動與公共後果負責。')]
   },
   {
     title: '為什麼人會相信自己想相信的事？認知、群體與自我保護', category: '心理與社會', language: '繁體中文', art: 'orbit',
     description: '從確認偏誤、群體資訊與自我保護整理一個不急著下結論的思考入口，讓好奇心多走一步。', note: '本站原創整理｜心理與社會科普，非人格判斷',
-    sources: [source('PMC｜Cognitive bias and sustainable decision making', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10071311/', 'CC BY 4.0；本站自行整理'), source('APA｜Confirmation bias overview', 'https://dictionary.apa.org/confirmation-bias', 'APA 詞典公開入口；本站僅作定義參考'), source('OpenStax｜Psychology 2e', 'https://openstax.org/details/books/psychology-2e', 'CC BY 4.0；本站不複製教材')],
+    sources: [source('PMC｜Cognitive bias and sustainable decision making', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10071311/', 'CC BY 4.0；本站自行整理'), source('APA｜Confirmation bias overview', 'https://dictionary.apa.org/confirmation-bias', 'APA 詞典公開入口；本站僅作定義參考'), source('OpenStax｜Psychology 2e', 'https://openstax.org/details/books/psychology-2e', '外部教材參考連結；本站未轉載教材')],
     sections: [section('相信不是單純的資訊不足', '人會依照既有經驗、注意力、情緒與關係信任解讀資訊。確認偏誤可能讓支持既有看法的材料更顯眼。'), section('群體會改變我們看見的世界', '社群、朋友與媒體提供線索，也可能形成同溫層。理解群體影響不代表所有群體都是危險，重點是保留查證與離開的自由。'), section('自我保護有時會變成拒絕修正', '一個信念可能讓人維持歸屬、尊嚴或安全感；挑戰它時，先理解這個信念在保護什麼，比嘲笑更接近有效對話。'), section('替自己保留一個更新按鈕', '寫下「什麼證據會讓我改變？」查找不同來源，區分事實、推測與價值。重大議題不要只依賴單一文章或單一權威。')]
   },
   {
@@ -143,7 +143,7 @@ window.longArticlesData = [
   {
     title: '幽默為什麼能替困難打開一扇小窗', category: '幽默與生活', language: '繁體中文', art: 'cat',
     description: '笑聲不是逃避現實的萬用藥，但在安全與尊重的前提下，它能讓人暫時看見不同角度。', note: '本站原創整理｜生活觀察，非心理治療建議',
-    sources: [source('Stanford Encyclopedia of Philosophy｜Humor', 'https://plato.stanford.edu/entries/humor/', '公開學術百科；本站自行整理'), source('OpenStax｜Psychology 2e', 'https://openstax.org/details/books/psychology-2e', 'CC BY 4.0；本站未複製全文'), source('Wikimedia Commons｜Vintage Cat Illustration', 'https://commons.wikimedia.org/wiki/File:Vintage_Cat_Illustration.jpg', 'Public domain 圖片；本站保留來源與授權')],
+    sources: [source('Stanford Encyclopedia of Philosophy｜Humor', 'https://plato.stanford.edu/entries/humor/', '公開學術百科；本站自行整理'), source('OpenStax｜Psychology 2e', 'https://openstax.org/details/books/psychology-2e', '外部教材參考連結；本站未轉載教材'), source('Wikimedia Commons｜Vintage Cat Illustration', 'https://commons.wikimedia.org/wiki/File:Vintage_Cat_Illustration.jpg', 'Public domain 圖片；本站保留來源與授權')],
     sections: [section('笑不等於事情不嚴重', '人在困難裡仍然笑，並不表示他不在乎。幽默有時是讓神經系統短暫放鬆，也有時只是人想和另一個人連結。'), section('安全的笑話需要同意與脈絡', '以弱勢、創傷或真實痛苦當作笑點，可能會增加傷害。讓笑聲往自己、日常荒謬或溫和觀察靠近，通常更容易保留尊重。'), section('把荒謬感留給生活', '一隻貓對紙箱的堅持、雨傘在風裡翻面、煮飯時忘了放鹽，都是不必解決世界卻能讓人微笑的時刻。'), section('笑過之後仍可回到正事', '短暫的輕鬆不是否認問題，而是替自己補一點力氣。笑聲結束後，如果事情仍重要，就用比較有空間的狀態回去面對。')]
   },
   {
@@ -161,7 +161,7 @@ window.longArticlesData = [
   {
     title: '從一本書走進另一個人的時代', category: '閱讀與歷史', language: '繁體中文', art: 'book',
     description: '閱讀歷史人物與經典文本時，同時保留欣賞、脈絡與質疑，讓名言不只是一句漂亮的話。', note: '本站原創整理｜歷史閱讀方法，不代表特定人物全部立場',
-    sources: [source('Project Gutenberg｜The Meditations', 'https://www.gutenberg.org/ebooks/2680', '公版電子書；不同譯本有不同版權'), source('Wikisource｜The Analects', 'https://en.wikisource.org/wiki/The_Analects', 'Wikimedia 公開文本；依頁面授權使用'), source('Stanford Encyclopedia of Philosophy', 'https://plato.stanford.edu/', '公開學術百科；本站自行整理')],
+    sources: [source('Project Gutenberg｜The Meditations', 'https://www.gutenberg.org/ebooks/2680', '英語譯本參考連結；各版本及地區權利狀態不同'), source('Wikisource｜The Analects', 'https://en.wikisource.org/wiki/The_Analects', '外部古典文本連結；本站未轉載譯文'), source('Stanford Encyclopedia of Philosophy', 'https://plato.stanford.edu/', '公開學術百科；本站自行整理')],
     sections: [section('一句話不能代替一個人', '歷史人物常被濃縮成幾句名言，但完整作品裡可能有矛盾、時代限制與不再適用的部分。先回到作品與脈絡，才不容易把人變成口號。'), section('讀出他當時面對的問題', '問問看：這段文字是在回應戰爭、教育、死亡、政治、家庭還是日常倫理？知道問題，句子的方向會更清楚。'), section('欣賞與質疑可以一起做', '你可以被一句話幫助，也可以不同意作者的另一個觀點。閱讀不是交出判斷，而是暫時借用另一雙眼睛。'), section('把經典帶回一個小行動', '讀完不必立刻寫出心得。只記下一個想繼續查證的概念，或一個能在今天實驗的小行動，讓閱讀從紙面回到生活。')]
   }
 ];
