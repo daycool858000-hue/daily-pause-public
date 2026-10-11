@@ -23,7 +23,7 @@ window.longArticlesData = [
   {
     title: '把身體動起來：日常活動與心理健康的溫和指南', category: '運動與身心', language: '繁體中文', art: 'leaf',
     description: '不以外表或競賽衡量身體活動，從步行、家務、伸展與遊戲理解運動如何支持睡眠、情緒與生活節奏。', note: '本站原創整理｜一般健康資訊，非運動處方',
-    sources: [source('WHO｜Physical activity', 'https://www.who.int/news-room/fact-sheets/detail/physical-activity', 'WHO 官方資料；本站自行改寫'), source('WHO｜Physical activity guidelines', 'https://www.who.int/publications/i/item/9789240015128', 'CC BY-NC-SA 3.0 IGO；本站只作摘要'), source('CDC｜Physical Activity Boosts Brain Health', 'https://www.cdc.gov/physical-activity/features/boost-brain-health.html', '美國政府公開資訊；本站未使用標誌')],
+    sources: [source('WHO｜Physical activity', 'https://www.who.int/news-room/fact-sheets/detail/physical-activity', 'WHO 官方資料；本站自行改寫'), source('WHO｜Guidelines on physical activity and sedentary behaviour', 'https://www.who.int/publications/i/item/9789240015128', 'WHO 指南；本站以自己的文字摘要，不主張重製授權'), source('CDC｜Physical Activity Boosts Brain Health', 'https://www.cdc.gov/physical-activity/features/boost-brain-health.html', '美國政府公開資訊；本站未使用標誌')],
     sections: [section('什麼都算：運動不只在健身房', '步行、騎車、家務、工作中的移動、遊戲與休閒活動，都可以是身體活動。任何活動通常都比完全不動更接近可持續的開始。'), section('把指南拆成可以生活的大小', '每週活動量是公共衛生參考，不是每個人都必須達成的考試。可以拆成短散步、通勤多走一站，依能力與喜好慢慢累積。'), section('運動與情緒：可能有幫助，不是治療保證', '研究常觀察到活動與較佳情緒、睡眠或認知健康相關，但運動不取代心理治療、藥物或危機處置。'), section('先照顧安全與身體界線', '循序漸進、留意疼痛與不適；若有胸痛、昏厥、嚴重呼吸困難或急性受傷，應停止並求醫。')]
   },
   {
