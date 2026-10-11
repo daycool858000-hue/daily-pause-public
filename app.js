@@ -152,7 +152,7 @@ function renderMedia(item = pickMedia()) {
   $('#mediaImage').src = item.file;
   $('#mediaImage').alt = item.alt;
   $('#mediaTitle').textContent = item.title;
-  $('#mediaCredit').innerHTML = `${item.credit} · <a href="${item.sourceUrl}" target="_blank" rel="noreferrer">${item.source}</a> · ${item.license}`;
+  $('#mediaCredit').innerHTML = `${item.credit} · <a href="${item.sourceUrl}" target="_blank" rel="noopener noreferrer">${item.source}</a> · ${item.license}`;
 }
 
 function renderMediaGallery() {
@@ -162,7 +162,7 @@ function renderMediaGallery() {
 
 function mediaMarkup(item = pickMedia()) {
   if (!item) return '';
-  return `<figure class="reader-media"><img src="${item.file}" alt="${item.alt}" /><figcaption>${item.title} · ${item.credit} · <a href="${item.sourceUrl}" target="_blank" rel="noreferrer">來源與授權</a></figcaption></figure>`;
+  return `<figure class="reader-media"><img src="${item.file}" alt="${item.alt}" /><figcaption>${item.title} · ${item.credit} · <a href="${item.sourceUrl}" target="_blank" rel="noopener noreferrer">來源與授權</a></figcaption></figure>`;
 }
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -225,7 +225,7 @@ function cardMarkup(card, index, revealed) {
         <span class="card-type">${card.type}</span>
         <span class="card-art card-art-${card.art}" aria-hidden="true"></span>
         <blockquote>「${card.text}」</blockquote>
-        <div class="card-source"><strong>${card.sourceLink ? `<a href="${card.sourceLink}" target="_blank" rel="noreferrer">${card.source}</a>` : card.source}</strong></div>
+        <div class="card-source"><strong>${card.sourceLink ? `<a href="${card.sourceLink}" target="_blank" rel="noopener noreferrer">${card.source}</a>` : card.source}</strong></div>
         <span class="card-tag">${card.tag}</span>
         <div class="card-actions"><button type="button" class="card-action" data-card-action="save" aria-label="${saved ? '取消收藏' : '收藏這張卡'}">${saved ? '♥ 已收藏' : '♡ 收藏'}</button><button type="button" class="card-action" data-card-action="share" aria-label="分享這張卡">分享 ↗</button></div>
       </div>
@@ -335,7 +335,7 @@ function openLongArticle(title) {
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 長篇原創整理`;
   $('#articleReaderTitle').textContent = article.title;
   $('#articleReaderBody').innerHTML = mediaMarkup() + article.sections.map(section => `<section class="long-reader-section"><h3>${section.heading}</h3><p>${section.text}</p></section>`).join('');
-  $('#articleReaderSource').innerHTML = `<strong>${article.note}</strong><br />內容由「今日一息」自行撰寫與整理，未複製下列來源全文。資料來源：${article.sources.map(source => `<a href="${source.url}" target="_blank" rel="noreferrer">${source.label}</a>（${source.rights}）`).join('；')}`;
+  $('#articleReaderSource').innerHTML = `<strong>${article.note}</strong><br />內容由「今日一息」自行撰寫與整理，未複製下列來源全文。資料來源：${article.sources.map(source => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>（${source.rights}）`).join('；')}`;
   $('#articleReader').hidden = false;
   document.body.classList.add('modal-open');
   setTimeout(() => $('#articleReaderClose').focus(), 40);
@@ -443,7 +443,7 @@ function openDrawer(id) {
   const relatedItems = (window.curiosityData || []).filter(entry => entry.id !== item.id).sort((a, b) => (a.category === item.category ? -1 : 1) - (b.category === item.category ? -1 : 1)).slice(0, 3);
   safeStorage.setItem(`xinli-drawer-${id}`, 'yes');
   $('#drawerReader').hidden = false;
-  $('#drawerReader').innerHTML = `<div class="drawer-reader-head"><span>${item.category}</span><button type="button" id="closeDrawer">收回抽屜 ×</button></div><h2>${item.question}</h2><p class="drawer-answer">${item.answer}</p><div class="perspective-tabs">${Object.keys(item.perspectives).map((key, index) => `<button type="button" class="perspective-tab ${index === 0 ? 'active' : ''}" data-perspective="${key}">${key}</button>`).join('')}</div><div class="perspective-content" id="perspectiveContent">${Object.values(item.perspectives)[0]}</div><div class="drawer-related"><small>沿著好奇心繼續｜每一格都可以再打開</small>${relatedItems.map(next => `<button type="button" data-related-id="${next.id}">${next.question} →</button>`).join('')}</div><p class="drawer-source">參考來源：<a href="${item.sourceUrl}" target="_blank" rel="noreferrer">${item.sourceLabel}</a>。本文為本站自行整理，不把來源文章全文搬入。</p>`;
+  $('#drawerReader').innerHTML = `<div class="drawer-reader-head"><span>${item.category}</span><button type="button" id="closeDrawer">收回抽屜 ×</button></div><h2>${item.question}</h2><p class="drawer-answer">${item.answer}</p><div class="perspective-tabs">${Object.keys(item.perspectives).map((key, index) => `<button type="button" class="perspective-tab ${index === 0 ? 'active' : ''}" data-perspective="${key}">${key}</button>`).join('')}</div><div class="perspective-content" id="perspectiveContent">${Object.values(item.perspectives)[0]}</div><div class="drawer-related"><small>沿著好奇心繼續｜每一格都可以再打開</small>${relatedItems.map(next => `<button type="button" data-related-id="${next.id}">${next.question} →</button>`).join('')}</div><p class="drawer-source">參考來源：<a href="${item.sourceUrl}" target="_blank" rel="noopener noreferrer">${item.sourceLabel}</a>。本文為本站自行整理，不把來源文章全文搬入。</p>`;
   $('#drawerReader').scrollIntoView({ behavior: 'smooth', block: 'start' });
   renderDrawers();
 }
