@@ -187,3 +187,12 @@
 - **body-03 情緒、心跳與呼吸**：NHLBI〈How Your Body Controls Breathing〉明確說明交感神經會提高心率與呼吸速率、副交感神經則相反。https://www.nhlbi.nih.gov/health/lungs/body-controls-breathing 。NHLBI〈Why Mental Stress Can Take a Toll on the Heart〉說明精神壓力下的交感／副交感調節。https://www.nhlbi.nih.gov/news/2024/why-mental-stress-can-take-toll-heart 。NHLBI〈Arrhythmias: Causes and Triggers〉指出情緒壓力也可能觸發某些心律不整，不能把心悸一概解釋為情緒。https://www.nhlbi.nih.gov/health/arrhythmias/causes 。已將原先心臟健康總入口改成生理機制專題。**胸痛與昏厥的急診判準仍須另查專門急救來源**。
 
 此批只就列明主張核實；其他條目仍依原審核表標示待證。
+
+## 2026-10-12 官網原文核對：運動與睡眠（新增）
+
+- **長文 04 第 1–3 段**：CDC 2025-08-13〈Physical Activity Boosts Brain Health〉明確指出日常家務可算活動、少量活動亦有益，且與睡眠、焦慮、情緒及認知健康相關；原文採「可能」「相關」而非個人治療承諾，符合證據範圍。https://www.cdc.gov/physical-activity/features/boost-brain-health.html
+- **長文 26 第 1–2 段**：CDC 2025-12-04〈Benefits of Physical Activity〉指出日常活動與中高強度運動有不同益處，支持循序增加活動量、部分睡眠與情緒效益。原先 CDC 連結尾端的 index.html 改為官方目前的 `/benefits/` 頁面。https://www.cdc.gov/physical-activity-basics/benefits/
+- **抽屜 body-01 核心敘述**：NHLBI 2022-03-24〈Why Is Sleep Important?〉說明睡眠有助學習與長期記憶形成，睡眠不足可能影響專注、思考與反應。https://www.nhlbi.nih.gov/health/sleep/why-sleep-important
+- **長文 02 第 1 段**：NHLBI〈How Sleep Works〉指出內在時鐘約 24 小時，受光線、黑暗與睡眠時程影響；對原文「進食、活動、壓力與社交時間」的每項機制，該頁並未逐一支持，故此段尚不能標示全段通過。https://www.nhlbi.nih.gov/health/sleep
+
+以上為實際可對應之官方原文主張核對；**沒有逐句核證的段落仍保留待證，不以閱讀過或有來源網址冒充通過**。

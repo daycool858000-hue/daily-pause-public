@@ -45,3 +45,5 @@
 2026-10-12：sci-01、body-02、nat-02、life-03 的科學核心敘述已逐句核對 NASA、NCBI、NOAA、MIT 原文；已替換 4 個過度籠統的來源連結，詳細見 CONTENT_88_REVIEW.md。
 
 2026-10-12：his-01、body-03 的來源已改為對應的 Smithsonian 與 NHLBI 專題；未經核實的其他主張仍待證。詳見 CONTENT_88_REVIEW.md。
+
+2026-10-12：CDC 運動效益官方網址修正，並新增運動、睡眠原文核對紀錄，詳見 CONTENT_88_REVIEW.md。
