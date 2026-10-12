@@ -104,3 +104,8 @@
 | 99 | 抽屜 | Linguistic Society of America | https://www.linguisticsociety.org/resource/what-linguistics | 讀取受限／無法取得有效文字 | 尚未逐句核對標題、原文段落、作者與權利 |
 | 100 | 抽屜 | MIT News｜Rainfall Can Release Aerosols | https://news.mit.edu/2015/rainfall-can-release-aerosols-0114 | 已執行網頁查詢 | 尚未逐句核對標題、原文段落、作者與權利 |
 每筆尚須補充：官方實際標題、作者、發表／修訂日期、所支持的原文具體句子、研究方法與限制、各素材／翻譯／圖表的授權條款。**仍無法將 88 個項目或 100 個網址標示最終查核通過。**12 張生成圖另待 Manus 原始資料。
+
+
+## 2026-10-12 第二輪補充
+
+本檔前方100個URL是改版前歷史清單。源頭文獻與授權查核另詳 SOURCE_EVIDENCE_01_25.md 和 SOURCE_EVIDENCE_26_100.md。修訂後現用文獻為98個唯一URL及117處引用，見 SOURCE_CURRENT_CROSSWALK_20261012.md。部分原文不可取得或授權未確認者不得宣稱核實。
