@@ -17,7 +17,7 @@ window.longArticlesData = [
   {
     title: '吃得穩，心情才有餘裕？從食物、能量到情緒', category: '飲食與情緒', language: '繁體中文', art: 'sun',
     description: '從餐盤、能量與研究限制出發，理解飲食與情緒的可能關聯，不把單一食物說成解決所有問題的答案。', note: '本站原創整理｜營養科普，非個人化飲食建議',
-    sources: [source('WHO｜Healthy diet', 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet', 'WHO 官方資料；依使用條款自行改寫'), source('OpenStax｜Nutrition and Diet', 'https://openstax.org/books/anatomy-and-physiology-2e/pages/24-7-nutrition-and-diet', '外部教材參考連結；本站未轉載教材'), source('Nicolaou et al.｜Dietary patterns and depressive symptoms', 'https://pubmed.ncbi.nlm.nih.gov/31409435/', '學術引用與自行摘要；不重製圖表')],
+    sources: [source('WHO｜Healthy diet', 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet', 'WHO 官方資料；依使用條款自行改寫'), source('MedlinePlus｜Nutrition', 'https://medlineplus.gov/nutrition.html', '美國國家醫學圖書館營養衛教；本站原創摘要與外部連結'), source('Nicolaou et al.｜Dietary patterns and depressive symptoms', 'https://pubmed.ncbi.nlm.nih.gov/31409435/', '學術引用與自行摘要；不重製圖表')],
     sections: [section('能量不是意志力，情緒也不只由食物決定', '疲倦或低落可能和睡眠、壓力、疾病、關係與環境一起有關。不要把某種感受簡化成單一營養素不足。'), section('均衡、足夠與穩定比追逐神奇食物重要', '全穀、蔬果、豆類、蛋白質與適量脂肪各有不同角色。規律進餐可以是觀察身體的起點，但不需要追求完美餐盤。'), section('研究看見關聯，不等於食物能治療情緒', '較健康的飲食型態與較佳心理健康指標有時呈關聯，但研究仍受生活方式與社會因素影響。不要把群體研究當成個人治療。'), section('把證據轉成溫和行動', '可以先增加水分、蔬果或規律用餐，而不是大幅限制飲食。若食慾、體重或情緒明顯改變，請找醫師或註冊營養師。')]
   },
   {
@@ -29,7 +29,7 @@ window.longArticlesData = [
   {
     title: '在城市裡找回自然：綠地與日常放鬆', category: '自然與環境', language: '繁體中文', art: 'tree',
     description: '從公園、樹蔭、藍綠空間與社區可近性出發，理解自然接觸可能如何支持放鬆，也看見研究的不確定與公平議題。', note: '本站原創整理｜環境健康科普，非治療建議',
-    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方報告；本站自行摘要'), source('EEA｜Health and well-being benefits of urban green space', 'https://www.eea.europa.eu/en/analysis/publications/who-benefits-from-nature-in-cities-social-inequalities-in-access-to-urban-green-and-blue-spaces-across-europe/health-and-well-being-benefits-of-urban-green-space', 'EEA 研究資料；個別素材與權利待核實'), source('Houlden et al.｜Green Space and Mental Wellbeing Review', 'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0203000', '研究綜述作學術參考；僅連結與本站自撰摘要，非療效保證')],
+    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方報告；本站自行摘要'), source('EEA｜Health and well-being benefits of urban green space', 'https://www.eea.europa.eu/en/analysis/publications/who-benefits-from-nature-in-cities-social-inequalities-in-access-to-urban-green-and-blue-spaces-across-europe/health-and-well-being-benefits-of-urban-green-space', 'EEA 研究資料；個別素材與權利待核實'), source('WHO Europe｜Green & Blue Spaces and Mental Health (2021)', 'https://www.who.int/europe/publications/i/item/9789289055666', 'WHO系統性回顧摘要；綠地與心理健康呈可能關聯，研究限制明確')],
     sections: [section('自然接觸可以很小', '公園、綠蔭街道、住家植物或窗外天空，都可以成為觀察環境的入口。放鬆是主觀經驗，不是保證的治療效果。'), section('研究有支持，也有不確定', '部分研究把綠地與情緒、活動量、社交或環境舒適度連在一起，但研究地點、時間與族群不同，結果不會完全一致。'), section('把綠意放進自己的日常', '可以在安全可及的地方散步、看樹影或和同伴坐一會兒；不便外出時，也可以照顧室內植物或觀看自然景象。'), section('自然資源也關乎公平', '距離、交通、無障礙、費用與安全感會影響誰能享受自然。不要把環境差異簡化成個人不夠努力。')]
   },
   {
@@ -41,7 +41,7 @@ window.longArticlesData = [
   {
     title: '相信自己之前：看見認知偏誤，做出更穩健的選擇', category: '心理與思考', language: '繁體中文', art: 'star',
     description: '認識確認偏誤、過度確信與自我效能，練習保留勇氣，也保留修正看法的空間。', note: '本站原創整理｜心理學科普，非人格測驗',
-    sources: [source('OpenStax｜Problem Solving／Cognitive Bias', 'https://openstax.org/books/psychology-2e/pages/7-3-problem-solving', '研究資料參考；原頁授權待核實；本站自行改寫'), source('NCI｜Self-Efficacy and Health Behavior Theories', 'https://cancercontrol.cancer.gov/sites/default/files/2020-06/self-efficacy.pdf', '官方研究資料；引用與摘要'), source('OpenStax｜Motivation and Self-Efficacy', 'https://openstax.org/books/psychology-2e/pages/10-1-motivation', '開放教科書概念參考；未複製正文，依個別授權規定')],
+    sources: [source('NIHR｜Reviewing Evidence: Heuristics and Biases', 'https://www.ncbi.nlm.nih.gov/books/NBK571047/', '英國NIHR健康科技評估研究，概述偏誤與研究限制；未重製原文'), source('NCI｜Self-Efficacy and Health Behavior Theories', 'https://cancercontrol.cancer.gov/sites/default/files/2020-06/self-efficacy.pdf', '官方研究資料；引用與摘要'), source('APA Dictionary｜Self-efficacy', 'https://dictionary.apa.org/self-efficacy', 'APA專業心理詞典，用於自我效能概念定義；不重製原文')],
     sections: [section('偏誤是捷徑，不是道德缺陷', '確認偏誤、事後偏誤與過度確信，可能讓我們更快判斷，也可能讓反例被忽略。看見偏誤不是替自己貼上壞人的標籤。'), section('自我效能不是盲目自信', '自我效能是對「我能否完成某個行動」的信念。健康的信心可以和承認限制、尋求協助與修正計畫同時存在。'), section('問自己：事實、推測與反例在哪裡？', '可以寫下已知事實、目前推測、反方證據與錯誤代價。重大健康、法律、財務或安全決定要查證多個可靠來源。'), section('把勇氣拆成可觀察的小步驟', '先設定一個小行動與檢視日期，記錄結果，再決定是否調整。相信自己不等於永遠正確，而是願意學習。')]
   },
   {
@@ -53,19 +53,19 @@ window.longArticlesData = [
   {
     title: '把路走深一點：旅行的意義，從抵達遠方到慢下來', category: '旅行與文化', language: '繁體中文', art: 'mountain',
     description: '從在場感、地方文化與永續旅遊重新思考旅行，不把景點數量或速度當成唯一價值。', note: '本站原創整理｜文化閱讀，非心理療效保證',
-    sources: [source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '官方資料；未複製原文或圖片'), source('Thoreau｜Walden／Wikisource', 'https://en.wikisource.org/wiki/Walden,_or,_Life_in_the_Woods', '古典原作參考連結；本站未轉載網站文字')],
+    sources: [source('UNEP｜Tourism and Resource Efficiency', 'https://www.unep.org/explore-topics/resource-efficiency/what-we-do/responsible-industry/tourism', 'UN環境署報導旅遊產業環境影響，未保證慢旅行較低碳'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '官方資料；未複製原文或圖片'), source('Thoreau｜Walden／Wikisource', 'https://en.wikisource.org/wiki/Walden,_or,_Life_in_the_Woods', '古典原作參考連結；本站未轉載網站文字')],
     sections: [section('慢旅行不是固定交通工具', '慢下來可以是少排幾個景點、留意沿途、預留休息，也可以是選擇適合身體與預算的交通。重點不是表演一種生活方式。'), section('陌生地方讓日常換一個角度', '逛市場、閱讀地方歷史、搭乘公共運輸或觀察街道，都可能讓熟悉的生活問題出現新的背景。旅行不保證解決內心困難。'), section('文化不是旅遊布景', '參與儀式、拍攝人物、進入宗教場所或接觸原住民族文化前，先理解地方規範並取得同意，支持在地創作者與公平交易。'), section('慢下來也要看見環境影響', '慢旅行不必然比較環保。交通方式、旅程距離、住宿能源、地方承載量與消費行為都會影響總體結果；在評估這些條件後，減少不必要移動或支持在地方式，可能降低部分影響。')]
   },
   {
     title: '讓音樂陪你整理情緒：從聆聽經驗到日常照顧', category: '音樂與情緒', language: '繁體中文', art: 'music',
     description: '區分一般聆聽、音樂介入與專業音樂治療，理解同一首歌為何可能讓不同人感受不同。', note: '本站原創整理｜音樂健康科普，非治療建議',
-    sources: [source('PMC／MDPI｜Music for Emotion Regulation', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11428991/', '研究資料參考；授權細節待核實；本站自行整理'), source('NCCIH｜Music and Health', 'https://www.nccih.nih.gov/health/music-and-health-what-you-need-to-know', '美國政府健康資訊；本站未複製原文'), source('WHO Europe｜Fancourt & Finn 2019 Arts and Health Scoping Review', 'https://www.who.int/europe/publications/i/item/9789289054553', 'WHO 2019報告CC BY-NC-SA 3.0 IGO；僅外鏈及獨立摘要')],
+    sources: [source('Chong et al. (2024)｜Music Emotion Regulation Review', 'https://pubmed.ncbi.nlm.nih.gov/39336008/', '47篇文獻範疇回顧，音樂調節概念及機制研究侷限；不複製原文'), source('NCCIH｜Music and Health', 'https://www.nccih.nih.gov/health/music-and-health-what-you-need-to-know', '美國政府健康資訊；本站未複製原文'), source('WHO Europe｜Fancourt & Finn 2019 Arts and Health Scoping Review', 'https://www.who.int/europe/publications/i/item/9789289054553', 'WHO 2019原始出版資料；僅外鏈及獨立摘要，實際出版授權需查PDF版權頁')],
     sections: [section('情緒調節不是把負面情緒消除', '音樂可能幫助表達、轉移注意力、喚起記憶或連結他人；同一首歌也可能讓另一個人不舒服，差異值得被尊重。'), section('一般聆聽與專業治療不同', '自己聽歌、唱歌或演奏是生活活動；具資格專業人員提供的音樂治療則有不同的訓練與脈絡，不能混為一談。'), section('研究有希望，也有侷限', '部分研究支持音樂介入與情緒或壓力的可能關聯，但樣本與方法各異，不宜寫成「一首歌治好焦慮」。'), section('讓聆聽保持安全與彈性', '選擇合適音量與場合，留意歌曲是否喚起強烈記憶；可以隨時換歌或停止。持續困擾仍應尋求專業協助。')]
   },
   {
     title: '把注意力帶回呼吸：正念理解壓力的入口', category: '呼吸與壓力', language: '繁體中文', art: 'breath',
     description: '用自然、不勉強的呼吸覺察作為入口，說明正念的意義、研究限制與練習界線。', note: '本站原創整理｜可中止的日常練習，非治療',
-    sources: [source('NHS｜Breathing exercises for stress', 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/', '官方健康資訊；本站自行改寫'), source('NCCIH｜Meditation and Mindfulness', 'https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety', '美國政府資訊；本站未複製原文'), source('PMC｜Breathing Practices for Stress and Anxiety', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10741869/', '研究方法與個別重製授權尚待原文核實；本站只作外部連結')],
+    sources: [source('NHS｜Breathing exercises for stress', 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/', '官方健康資訊；本站自行改寫'), source('NCCIH｜Meditation and Mindfulness', 'https://www.nccih.nih.gov/health/meditation-and-mindfulness-effectiveness-and-safety', '美國政府資訊；本站未複製原文'), source('Fincham et al. (2023)｜Breathwork RCT Meta-analysis', 'https://pubmed.ncbi.nlm.nih.gov/36624160/', '12項隨機試驗785人；研究偏誤風險中等，呼吸練習不可當醫療保證')],
     sections: [section('壓力是警報，不是個人失敗', '短期壓力可能讓身體提高警覺；持續困擾則需要更多支持。練習的目的不是命令自己立刻平靜，而是增加覺察與選擇。'), section('呼吸可以是錨點，不是考試', '坐著、站著或躺著都可以，讓呼吸自然進出，不需要憋氣或追求特定感覺。分心後回來，就是練習的一部分。'), section('正念不等於清空大腦', '正念是以不評判的方式留意當下經驗。它可能對部分人有幫助，但研究形式與效果並不一致，不能替代治療。'), section('任何不舒服都可以停止', '若頭暈、胸痛、氣促、恐慌或情緒升高，立即停止並恢復自然呼吸；有呼吸或心血管疾病者可先詢問專業人員。')]
   },
   {
@@ -83,7 +83,7 @@ window.longArticlesData = [
   {
     title: '從自卑感到共同體感覺：阿德勒的成長與連結', category: '思想與關係', language: '繁體中文', art: 'bird',
     description: '介紹阿德勒如何談不足感、補償與社會興趣，區分思想史觀點與現代心理專業服務。', note: '本站原創整理｜心理思想導讀，非自我測驗',
-    sources: [source('Adler Graduate School｜Theory and Application', 'https://www.alfredadler.edu/about/alfred-adler-theory-application/', '教育機構公開導讀；本站自行摘要'), source('OpenStax｜Adler and Jung Historical Theories', 'https://openstax.org/books/psychology-2e/pages/11-3-neo-freudians-adler-erikson-jung-and-horney', '開放教材歷史學說概論；非臨床療效實證'), source('Internet Archive｜The Practice and Theory of Individual Psychology', 'https://archive.org/details/in.ernet.dli.2015.74812', '館藏標示 Copyright Protected；僅作書目入口')],
+    sources: [source('Adler Graduate School｜Theory and Application', 'https://www.alfredadler.edu/about/alfred-adler-theory-application/', '教育機構公開導讀；本站自行摘要'), source('APA｜Adlerian Psychotherapy', 'https://www.apa.org/pubs/books/4317437', '美國心理學會專書介紹，提供阿德勒學說脈絡；不是療效試驗'), source('Internet Archive｜The Practice and Theory of Individual Psychology', 'https://archive.org/details/in.ernet.dli.2015.74812', '館藏標示 Copyright Protected；僅作書目入口')],
     sections: [section('自卑感不是疾病或低人一等', '阿德勒談自卑感時，指向面對能力、資源或位置差距時的主觀不足感。它不能直接等同於低自尊或心理疾病。'), section('人如何回應不足感', '人可能學習、練習、尋求支持、競爭或退縮。重點不是替讀者分類，而是看某種回應是否增加選擇與合作。'), section('共同體感覺不是盲目服從', '對共同生活的關心可以表現在尊重、互惠與參與，也必須和界線、自我照顧及安全同時存在。'), section('把思想留在反思的位置', '可以問「哪些比較正在影響我？」與「我需要什麼支持？」但持續痛苦或功能受損時，請找心理或醫療專業。')]
   },
   {
@@ -101,7 +101,7 @@ window.longArticlesData = [
   {
     title: '為什麼人會相信自己想相信的事？認知、群體與自我保護', category: '心理與社會', language: '繁體中文', art: 'orbit',
     description: '從確認偏誤、群體資訊與自我保護整理一個不急著下結論的思考入口，讓好奇心多走一步。', note: '本站原創整理｜心理與社會科普，非人格判斷',
-    sources: [source('OpenStax｜Problem Solving／Cognitive Bias', 'https://openstax.org/books/psychology-2e/pages/7-3-problem-solving', '外部教材摘要參考；本站未重製原文'), source('OpenStax｜Conformity, Compliance, and Obedience', 'https://openstax.org/books/psychology-2e/pages/12-4-conformity-compliance-and-obedience', 'OpenStax教材供群體社會影響的背景，本站獨立整理'), source('OpenStax｜Prejudice and Discrimination', 'https://openstax.org/books/psychology-2e/pages/12-5-prejudice-and-discrimination', 'OpenStax教材供刻板印象／偏見背景，本站獨立整理')],
+    sources: [source('NIHR｜Heuristics and Confirmation Bias', 'https://www.ncbi.nlm.nih.gov/books/NBK571047/', 'NIHR系統文獻回顧，研究一般偏誤與確認偏誤；本站自行整理'), source('Sowden et al.｜Social Conformity', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6204883/', '實證社會心理研究；樣本及效應不能直接推廣所有情境'), source('National Academies｜Social Stereotyping', 'https://www.ncbi.nlm.nih.gov/books/NBK220340/', '美國國家科學院報告，刻板印象與人際互動；未重製原文')],
     sections: [section('相信不是單純的資訊不足', '人會依照既有經驗、注意力、情緒與關係信任解讀資訊。確認偏誤可能讓支持既有看法的材料更顯眼。'), section('群體會改變我們看見的世界', '社群、朋友與媒體提供線索，也可能形成同溫層。理解群體影響不代表所有群體都是危險，重點是保留查證與離開的自由。'), section('自我保護有時會變成拒絕修正', '一個信念可能讓人維持歸屬、尊嚴或安全感；挑戰它時，先理解這個信念在保護什麼，比嘲笑更接近有效對話。'), section('替自己保留一個更新按鈕', '寫下「什麼證據會讓我改變？」查找不同來源，區分事實、推測與價值。重大議題不要只依賴單一文章或單一權威。')]
   },
   {
@@ -113,7 +113,7 @@ window.longArticlesData = [
   {
     title: '從海邊到森林：自然景色為什麼讓人想慢一點', category: '自然與旅行', language: '繁體中文', art: 'wave',
     description: '把海洋、森林與山景當作感官與文化經驗來閱讀，而不是保證療效的景點清單。', note: '本站原創整理｜自然與文化閱讀，非療效宣稱',
-    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方研究；本站自行整理'), source('EEA｜Health and well-being benefits of urban green space', 'https://www.eea.europa.eu/en/analysis/publications/who-benefits-from-nature-in-cities-social-inequalities-in-access-to-urban-green-and-blue-spaces-across-europe/health-and-well-being-benefits-of-urban-green-space', '歐洲環境署公開資料；本站自行整理'), source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '官方框架；本站自行摘要')],
+    sources: [source('WHO Europe｜Urban green spaces and health', 'https://www.who.int/europe/publications/i/item/WHO-EURO-2016-3352-43111-60341', 'WHO 官方研究；本站自行整理'), source('EEA｜Health and well-being benefits of urban green space', 'https://www.eea.europa.eu/en/analysis/publications/who-benefits-from-nature-in-cities-social-inequalities-in-access-to-urban-green-and-blue-spaces-across-europe/health-and-well-being-benefits-of-urban-green-space', '歐洲環境署公開資料；本站自行整理'), source('UNEP｜Sustainable Tourism Impacts', 'https://www.unep.org/explore-topics/resource-efficiency/what-we-do/responsible-industry/tourism', 'UN環境署討論旅遊的能源、水、碳與廢棄物成本；僅外鏈')],
     sections: [section('景色不會替每個人做同一件事', '海浪、樹影與山的尺度可能讓注意力暫時移動，但自然經驗也會因天氣、記憶、身體狀態與文化背景而不同。'), section('用感官取代打卡清單', '可以注意一種聲音、一個光影變化或腳下的觸感；不必把旅行排滿，也不必把「放鬆」變成必須成功的任務。'), section('勝地也有地方與居民', '進入自然保護區、宗教空間或社群生活前，遵守管理規範、攝影同意與環境承載限制，支持在地且公平的方式。'), section('回家之後帶回一個小改變', '旅行的意義也可以是重新看見住家附近的路、河岸或公園。慢下來不一定需要遠行。')]
   },
   {
@@ -125,13 +125,13 @@ window.longArticlesData = [
   {
     title: '讓好奇心有地圖：如何核對一個問題的資料', category: '學習與探索', language: '繁體中文', art: 'orbit',
     description: '示範如何把一個問題拆成定義、證據、不同觀點與生活情境，避免只尋找支持自己答案的文章。', note: '本站原創整理｜閱讀方法，非專業結論',
-    sources: [source('MedlinePlus｜Evaluating Health Information', 'https://medlineplus.gov/evaluatinghealthinformation.html', '美國國家醫學圖書館公開衛教資料；本站自行整理'), source('NIH ODS｜How To Evaluate Health Information on the Internet', 'https://ods.od.nih.gov/HealthInformation/how_to_evaluate_health_information_on_the_internet_questions_and_answers.aspx', '美國 NIH 官方健康資訊評估指引；本站自行整理'), source('Stanford Encyclopedia of Philosophy｜Scientific Method', 'https://plato.stanford.edu/entries/scientific-method/', '學術百科科學方法導讀；本站自行整理')],
+    sources: [source('MedlinePlus｜Evaluating Health Information', 'https://medlineplus.gov/evaluatinghealthinformation.html', '美國國家醫學圖書館公開衛教資料；本站自行整理'), source('MedlinePlus｜Understanding Medical Research', 'https://medlineplus.gov/understandingmedicalresearch.html', '美國國家醫學圖書館：研究類型、樣本與來源判斷；本站不複製原文'), source('Stanford Encyclopedia of Philosophy｜Scientific Method', 'https://plato.stanford.edu/entries/scientific-method/', '學術百科科學方法導讀；本站自行整理')],
     sections: [section('先問自己真正想知道什麼', '「為什麼人會孤單」可以拆成感受、社會關係、公共衛生、文化與個人故事。問題越清楚，越不容易被一個漂亮標題帶走。'), section('定義比答案更重要', '先把問題中的詞拆開：孤獨通常描述主觀感受，社會隔離偏向客觀的互動或支持不足，獨處則可能是主動選擇的狀態；不同來源的定義不一定完全相同，應看原文脈絡。'), section('把證據和觀點分開', '把原始研究、機構說明、新聞報導與個人觀點分開記錄：作者是誰、何時發布、引用了什麼、哪些只是推測。先用兩個彼此獨立的可靠來源核對，再決定是否延伸閱讀。'), section('讓閱讀回到生活而不是自我診斷', '讀完只記下一個值得繼續查證的問題與一個低風險行動。重大健康或安全判斷，仍需合資格專業人士。')]
   },
   {
     title: '為什麼旅行會改變我們看見日常的方式', category: '旅行與觀察', language: '繁體中文', art: 'plane',
     description: '旅行不只關於景點，也關於尺度、陌生感、地方脈絡與重新觀看熟悉生活的能力。', note: '本站原創整理｜文化與旅行閱讀，非旅遊醫療建議',
-    sources: [source('UN Tourism｜Sustainable development', 'https://www.untourism.int/sustainable-development', '公開組織資料；本站自行整理'), source('UNESCO World Heritage', 'https://whc.unesco.org/en/list/', '公開文化遺產索引；本站未複製條目全文'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '組織文化資源；本站僅作外部連結')],
+    sources: [source('UNEP｜Tourism and Resource Efficiency', 'https://www.unep.org/explore-topics/resource-efficiency/what-we-do/responsible-industry/tourism', 'UNEP談永續旅遊環境負擔，旅行心理感受屬個人觀點'), source('UNESCO World Heritage', 'https://whc.unesco.org/en/list/', '公開文化遺產索引；本站未複製條目全文'), source('UNESCO｜Intangible Cultural Heritage', 'https://www.unesco.org/en/intangible-cultural-heritage', '組織文化資源；本站僅作外部連結')],
     sections: [section('陌生感讓注意力醒來', '在熟悉環境裡，我們常依靠習慣行走。到了陌生地方，招牌、聲音、交通與餐桌都需要重新辨認，感官因此多了一點明亮。'), section('景點之外是地方的生活', '理解一個地方不只拍下風景，也可以學著看見居民的生活節奏、歷史記憶與環境限制。旅行的好奇心最好同時帶著尊重。'), section('不要把休息排成考試', '若每天都要完成很多景點，旅行也可能變成另一種追趕。留下一段沒有安排的時間，讓身體成為行程的一部分。'), section('回家以後帶回一個問題', '旅程的意義不一定是得到結論。也許只是回家後開始注意一件以前忽略的事，或想替日常保留一點在旅途中感受到的空間。')]
   },
   {
@@ -161,7 +161,7 @@ window.longArticlesData = [
   {
     title: '從一本書走進另一個人的時代', category: '閱讀與歷史', language: '繁體中文', art: 'book',
     description: '閱讀歷史人物與經典文本時，同時保留欣賞、脈絡與質疑，讓名言不只是一句漂亮的話。', note: '本站原創整理｜歷史閱讀方法，不代表特定人物全部立場',
-    sources: [source('Project Gutenberg｜The Meditations', 'https://www.gutenberg.org/ebooks/2680', '英語譯本參考連結；各版本及地區權利狀態不同'), source('Wikisource｜The Analects', 'https://en.wikisource.org/wiki/The_Analects', '外部古典文本連結；本站未轉載譯文'), source('Stanford Encyclopedia of Philosophy｜Philosophy of History', 'https://plato.stanford.edu/entries/history/', '歷史詮釋學術資料；本站自行整理')],
+    sources: [source('Project Gutenberg｜The Meditations', 'https://www.gutenberg.org/ebooks/2680', '英語譯本參考連結；各版本及地區權利狀態不同'), source('Project Gutenberg｜The Analects (James Legge Translation)', 'https://www.gutenberg.org/ebooks/3330', 'James Legge英譯《論語》，在美國標示公有領域；僅外部連結'), source('Stanford Encyclopedia of Philosophy｜Philosophy of History', 'https://plato.stanford.edu/entries/history/', '歷史詮釋學術資料；本站自行整理')],
     sections: [section('一句話不能代替一個人', '歷史人物常被濃縮成幾句名言，但完整作品裡可能有矛盾、時代限制與不再適用的部分。先回到作品與脈絡，才不容易把人變成口號。'), section('讀出他當時面對的問題', '問問看：這段文字是在回應戰爭、教育、死亡、政治、家庭還是日常倫理？知道問題，句子的方向會更清楚。'), section('欣賞與質疑可以一起做', '你可以被一句話幫助，也可以不同意作者的另一個觀點。閱讀不是交出判斷，而是暫時借用另一雙眼睛。'), section('把經典帶回一個小行動', '讀完不必立刻寫出心得。只記下一個想繼續查證的概念，或一個能在今天實驗的小行動，讓閱讀從紙面回到生活。')]
   }
 ];
