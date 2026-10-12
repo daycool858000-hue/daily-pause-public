@@ -21,7 +21,7 @@ const dailyExperiences = (window.dailyContent && window.dailyContent.experiences
 const cards = [
   { type: '經典引文', text: '有些事在我們的掌握之中，有些事不在。', source: '愛比克泰德《手冊》1｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual', tag: '分辨能掌握的事', art: 'sun' },
   { type: '覺察', text: '我現在最需要的，不一定是更多力氣，也可能是一點理解。', source: '今日一息｜原創陪伴文字', tag: '給情緒一個位置', art: 'leaf' },
-  { type: '呼吸', text: '把注意力放回呼吸：吸氣數四拍，吐氣數六拍，重複三次。', source: '今日一息｜日常練習，非醫療建議', tag: '一分鐘練習', art: 'cloud' },
+  { type: '呼吸', text: '留意自然的呼吸，想試著慢一點也可以；若覺得不舒服就停止，不必勉強控制節奏。', source: '今日一息｜日常練習，非醫療建議', tag: '一分鐘練習', art: 'cloud' },
   { type: '身體', text: '讓下巴鬆開，肩膀往下。身體知道的事，有時比腦袋更早。', source: '今日一息｜原創身體覺察文字', tag: '回到身體', art: 'flower' },
   { type: '經典引文', text: '向內探看；善的泉源就在內心，只要你願意挖掘，它總會湧出。', source: '馬可·奧理略《沉思錄》7.59｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7', tag: '往內留一點空間', art: 'star' }
 ];
@@ -73,7 +73,7 @@ const articles = [
   { title: '心理健康資源與支持', category: '心理', language: '中文', source: '衛生福利部心理健康司', description: '台灣官方心理健康資源入口，提供心理健康、支持與求助資訊的公開索引。', url: 'https://dep.mohw.gov.tw/DOMHAOH/', status: '官方資源索引', rights: '官方來源索引；請依原站資訊使用', art: 'heart' },
   { title: '正念', category: '正念', language: '中文', source: '中文維基百科', description: '介紹將注意力集中於當下的心理過程，以及它與禪、冥想和現代心理健康實踐的關聯。', url: 'https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%BF%B5', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'leaf' },
   { title: '森林浴', category: '自然', language: '中文', source: '中文維基百科', description: '從感官體驗與自然接觸的角度，認識森林浴與森林療癒的概念、活動方式與研究脈絡。', url: 'https://zh.wikipedia.org/wiki/%E6%A3%AE%E6%9E%97%E6%B5%B4', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'tree' },
-  { title: '園藝療法', category: '身體', language: '繁體中文', source: '中文維基百科', description: '了解透過園藝活動支持身心效益的輔助治療專業，以及它的發展與常見操作方式。', url: 'https://zh.wikipedia.org/wiki/%E5%9C%92%E8%97%9D%E6%B2%BB%E7%99%82', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'flower' },
+  { title: '園藝療法', category: '身體', language: '繁體中文', source: '農業部農業知識入口網', description: '臺灣農業部介紹園藝活動、園藝療育與由專業人員規劃的園藝治療有何不同；並非所有種花活動都具治療效果。', url: 'https://kmweb.moa.gov.tw/subject/subject.php?id=49982&print=Y', status: '官方知識資料', rights: '農業部政府網站外部參考連結；本站自行撰述，未轉載原文', art: 'flower' },
   { title: '旅行', category: '旅行', language: '中文', source: '中文維基百科', description: '從位移、交通方式與旅遊概念切入，讀一篇不急著抵達目的地的知識小文。', url: 'https://zh.wikipedia.org/wiki/%E6%97%85%E8%A1%8C', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'plane' },
   { title: '哲學', category: '哲學', language: '中文', source: '中文維基百科', description: '哲學的主題概覽，包含主要分支、歷史時期與思想家，適合想慢慢思考一個問題的時候。', url: 'https://zh.wikipedia.org/wiki/%E5%93%B2%E5%AD%B8', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'book' },
   { title: '佛教', category: '佛學', language: '中文', source: '中文維基百科', description: '認識源於古印度的宗教與思想傳統，從基本教義、歷史發展到不同地區的傳播。', url: 'https://zh.wikipedia.org/wiki/%E4%BD%9B%E6%95%99', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'lotus' },
@@ -81,8 +81,8 @@ const articles = [
   { title: '海洋', category: '自然', language: '中文', source: '中文維基百科', description: '從海水、氣候與生態到人類利用，讀一篇把視線帶向更大尺度的自然知識。', url: 'https://zh.wikipedia.org/wiki/%E6%B5%B7%E6%B4%8B', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'wave' },
   { title: '曼陀羅', category: '心靈', language: '中文', source: '中文維基百科', description: '從植物、佛教術語到文學作品，認識「曼陀羅」這個詞在不同脈絡裡的含義。', url: 'https://zh.wikipedia.org/wiki/%E6%9B%BC%E9%99%80%E7%BE%85', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'mandala' },
   { title: '音樂治療', category: '身體', language: '中文', source: '中文維基百科', description: '介紹以樂音與節奏回應生理或心理需求的有計畫療程，並認識它的不同治療取向。', url: 'https://zh.wikipedia.org/wiki/%E9%9F%B3%E6%A8%82%E6%B2%BB%E7%99%82', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'music' },
-  { title: 'Stress, Lifestyle, and Health', category: '壓力', language: 'English', source: 'OpenStax Psychology 2e', description: '從心理與生理面向介紹壓力、生活型態、健康影響與因應方式，適合想多了解背景知識時閱讀。', url: 'https://openstax.org/books/psychology-2e/pages/14-introduction', status: '外部教材連結', rights: '外部教材參考連結；本站未轉載教材', art: 'sun' },
-  { title: 'Consciousness, Sleep and Dreams', category: '睡眠', language: 'English', source: 'OpenStax Psychology 2e', description: '介紹意識狀態、睡眠階段、夢境與睡眠障礙，作為睡眠主題的基礎知識閱讀。', url: 'https://openstax.org/books/psychology-2e/pages/4-introduction', status: '外部教材連結', rights: '外部教材參考連結；本站未轉載教材', art: 'moon' }
+  { title: 'Stress | NCCIH', category: '壓力', language: 'English', source: 'NIH／NCCIH', description: '美國國家補充與整合健康中心介紹壓力反應、放鬆方法、研究限制與需要專業支持的時機。', url: 'https://www.nccih.nih.gov/health/stress', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'sun' },
+  { title: 'Why Is Sleep Important? | NHLBI', category: '睡眠', language: 'English', source: 'NIH／NHLBI', description: '美國國家心肺暨血液研究所說明睡眠對學習記憶、健康及日常功能的重要性與研究限制。', url: 'https://www.nhlbi.nih.gov/health/sleep/why-sleep-important', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'moon' }
 ];
 articles.push(...(window.shortArticlesData || []));
 
@@ -97,7 +97,7 @@ const articleBodies = {
   '心理健康資源與支持': ['照顧心理健康不只是在很辛苦時才需要。找一個可信任的人聊聊、讓日常保有睡眠與吃飯的節奏，或記下每天一個感受，都可以是支持自己的方式。', '如果困擾已經影響生活，尋求專業協助是合理而勇敢的選擇。本站提供的是日常陪伴，不能取代醫療、心理或危機服務；需要時請向當地專業單位求助。'],
   '正念': ['正念是一種把注意力帶回當下的練習。你可以先注意一個聲音、一個觸感，或呼吸進出鼻腔的感覺。當你發現自己分心，不需要生氣，只要再回來。', '長一點的練習可以讓人更熟悉自己的內在變化，但短短十秒也有意義。重點不是清空腦袋，而是多一點看見與選擇。'],
   '森林浴': ['走進樹木較多的地方，不一定要完成一條路線。慢慢走，感覺腳下的地面，觀察樹皮的紋理與光影的移動，讓感官先於思考。', '自然接觸不能取代治療，但可以成為日常恢復的一個環節。若無法去森林，也可以在住家附近找一棵樹，花幾分鐘和它一起安靜。'],
-  '園藝療法': ['照顧植物是一種有節奏的活動：看土壤、澆水、剪掉枯葉，再等待新的變化。它不要求你一次完成很多事，而是讓注意力停在一個具體的小任務。', '沒有花園也沒關係，一杯水裡的綠枝、一盆香草，或替窗台擦去灰塵，都可以成為與生命感接觸的方式。'],
+  '園藝療法': ['照顧植物可以是一種有節奏的日常活動：看土壤、澆水、剪掉枯葉，再等待新的變化。一般園藝活動與有專業人員、個別目標的園藝治療不同，不能保證治療效果。', '沒有花園也沒關係，一盆香草或照顧窗台植物，都可以是日常觀察練習。若涉及健康問題，仍須合格專業人員評估。'],
   '旅行': ['旅行有時不是去很遠的地方，而是讓熟悉的路線多一個角度。換一條街回家、在附近公園坐十分鐘，或觀察一間店的門面，都能讓日常重新有細節。', '真正的休息不一定要塞滿行程。留一段沒有目的的時間，讓腳步慢下來，目的地就不只是一個地名，也是一種重新感受世界的方式。'],
   '哲學': ['哲學可以從一個小問題開始：「什麼是我今天能負責的事？」把問題寫下來，不急著找到唯一答案，先看看它如何改變你看待眼前情境的方式。', '思考不是把生活變得更複雜，而是幫我們分辨哪些價值值得守護。今天選一個你重視的詞，例如誠實、安定或善意，讓一個小行動靠近它。'],
   '佛教': ['佛教思想中常談到對當下與變化的觀察。用日常語言說，就是承認感受會來也會走，不必把某一刻的痛苦當成永遠的自己。', '閱讀任何宗教或思想，都可以保有自己的提問與界線。這篇短文只提供溫和的知識入口，不代表任何宗教立場，也不要求你接受特定答案。'],
@@ -105,36 +105,13 @@ const articleBodies = {
   '海洋': ['海洋的尺度很大，卻也和每天的生活相連。潮汐、氣候、食物與許多生命，都在一個不容易被看見的循環裡互相牽動。', '當你覺得自己的煩惱佔滿視野，可以想像站在海邊看一會兒。問題仍然存在，但世界也還有更寬的背景，容得下你慢慢呼吸。'],
   '曼陀羅': ['曼陀羅在不同文化與脈絡裡有不同意思。對許多人來說，圓形與重複的圖案也提供一種專注的節奏：從中心開始，慢慢向外延伸。', '你可以畫一個圓、填入今天喜歡的線條與顏色，不需要追求對稱或漂亮。它不是測驗，也不替你解讀人生，只是一個讓手和心一起停留的空間。'],
   '音樂治療': ['音樂會和呼吸、記憶與身體感受連在一起。今天選一首不需要解釋的歌，讓它在背景播放，注意自己在某個段落是放鬆、想動，還是想安靜。', '日常聽音樂可以支持情緒，但若涉及治療需要由合資格專業人員評估。你也可以只把音樂當作陪伴，不必要求它立刻改變心情。'],
-  'Stress, Lifestyle, and Health': ['Stress is a message from the body and mind, not a personal failure. Start by noticing a pattern: when does tension rise, and what helps even a little? A glass of water, a pause, or a conversation can be useful data.', 'Healthy routines are built through repeatable choices, not heroic effort. Pick one small routine that supports your energy and allow it to be imperfect while it becomes familiar.'],
-  'Consciousness, Sleep and Dreams': ['睡眠讓身體與心智有機會整理一天的經驗。夢境有時鮮明、有時模糊，不必急著為每個夢尋找固定的象徵或答案。', '若睡眠困擾持續影響日常，請尋求醫療或專業協助。這篇短文只提供一般知識與溫和提醒，不是對個人狀況的診斷。']
+  'Stress | NCCIH': ['Stress is a message from the body and mind, not a personal failure. Start by noticing a pattern: when does tension rise, and what helps even a little? A glass of water, a pause, or a conversation can be useful data.', 'Healthy routines are built through repeatable choices, not heroic effort. Pick one small routine that supports your energy and allow it to be imperfect while it becomes familiar.'],
+  'Why Is Sleep Important? | NHLBI': ['睡眠讓身體與心智有機會整理一天的經驗。夢境有時鮮明、有時模糊，不必急著為每個夢尋找固定的象徵或答案。', '若睡眠困擾持續影響日常，請尋求醫療或專業協助。這篇短文只提供一般知識與溫和提醒，不是對個人狀況的診斷。']
 };
 Object.assign(articleBodies, window.shortArticleBodies || {});
 
-const defaultLongArticles = [
-  {
-    title: '當身體一直處在警覺裡：理解創傷反應與復原的入口',
-    category: '身心健康',
-    language: '繁體中文',
-    art: 'heart',
-    description: '從睡眠、情緒、身體感受與人際互動，認識壓力事件之後可能出現的反應；不替你診斷，只提供一張更安全的觀察地圖。',
-    note: '本站原創整理｜非醫療診斷、非治療建議',
-    sources: [
-      { label: 'WHO｜Doing What Matters in Times of Stress', url: 'https://www.who.int/publications/i/item/9789240003927', rights: 'CC BY-NC-SA 3.0 IGO；本站未複製原文' },
-      { label: 'NHS｜PTSD（post-traumatic stress disorder）', url: 'https://www.nhs.uk/mental-health/conditions/ptsd-post-traumatic-stress-disorder/', rights: 'NHS Crown Copyright；本站未複製原文' },
-      { label: 'SAMHSA｜Trauma-Informed Approaches and Programs', url: 'https://www.samhsa.gov/mental-health/trauma-violence/trauma-informed-approaches-programs', rights: '美國政府公開資訊；本站自行整理' },
-      { label: 'CDC｜Managing Stress', url: 'https://www.cdc.gov/mental-health/living-with/index.html', rights: '美國政府公開資訊；本站自行整理' }
-    ],
-    sections: [
-      { heading: '先說在前面：察覺不是替自己下診斷', text: '「創傷」在日常語言裡常被用得很廣，但每個人的反應、時間與需要都不一樣。看到某個症狀，不代表你就患有 PTSD，也不代表你必須用某個標籤解釋自己。這篇文章的用途，是幫你把模糊的不舒服分成幾個可以觀察的方向；如果它持續影響生活，請把這些觀察帶給醫師或心理健康專業人員。' },
-      { heading: '身體可能先替你發出訊號', text: '在很大的壓力或驚嚇之後，有些人會睡不好、容易被聲音嚇到、心跳加快、肌肉緊繃、胃口改變，或反覆出現頭痛與腸胃不適。這些感受也可能有其他身體原因，因此不要只靠網路文章判斷。比較有幫助的問題是：「它何時出現？持續多久？什麼情境會讓它變強或稍微緩和？」' },
-      { heading: '情緒與注意力的變化，也值得被看見', text: '你可能變得很警覺、很容易生氣或害怕，也可能感覺麻木、與自己或周遭的人有距離。有人會反覆想起某個事件、做惡夢，或刻意避開會勾起記憶的地方與話題。這些都不是意志力不夠，而可能是身體在嘗試保護自己；但如果它讓你無法工作、上學、睡覺或維持關係，就值得尋求專業評估。' },
-      { heading: '用「安全感」而不是逼迫自己恢復', text: '復原不等於把自己逼回事件以前的樣子。今天能做的第一步，可能是讓環境更可預期：固定吃飯與睡覺時間、減少讓自己過度刺激的資訊、找一位可信任的人知道你的狀態，或用簡短筆記記下觸發你的聲音、氣味與場景。若呼吸練習、散步或接觸自然對你有幫助，可以把它當成支持，不必當作必須完成的功課。' },
-      { heading: '陪伴別人時，先把選擇權還給對方', text: '如果身邊的人正在經歷創傷反應，最有用的話不一定是「你要想開一點」。可以先問：「你希望我陪你坐著，還是幫你找資源？」尊重對方暫時不說細節的權利，不追問、不強迫回想，也不把自己的經驗套上去。安全、信任、合作與選擇感，是創傷知情照護常反覆提醒的核心。' },
-      { heading: '什麼時候應該找專業或緊急支持？', text: '如果反應持續、越來越嚴重，或已影響睡眠、工作、學習、關係與日常安全，可以預約家庭醫師、身心科／精神科、臨床心理師或當地心理支持服務。若你有傷害自己或他人的念頭、無法維持基本安全，請立即聯絡當地緊急服務、危機專線，或請身邊可信任的人陪你就近求助。這不是把事情想得太嚴重，而是先把安全放在前面。' },
-      { heading: '最後，留一個不急著解釋完的空間', text: '理解身體與心理的反應，可以讓我們少一點責怪自己，但理解不必變成新的壓力。你可以一次只記住一件事：反應是訊號，不是身分；求助是選擇，不是失敗；復原可以有不同速度，也可以在支持中慢慢發生。' }
-    ]
-  }
-];
+// Avoid showing an outdated, unreviewed fallback article if the data script fails to load.
+const defaultLongArticles = [];
 const longArticles = window.longArticlesData || defaultLongArticles;
 const mediaItems = window.mediaData || [];
 let currentMediaIndex = -1;

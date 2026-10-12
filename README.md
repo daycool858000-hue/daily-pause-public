@@ -28,3 +28,7 @@
 ## Claude與跨模型交接（2026-10-12）
 
 請先讀 [Claude完整交接](CLAUDE_HANDOFF_20261012.md) 與 [可存檔／剩餘權利風險](ARCHIVE_STATUS_20261012.md)。此公開庫完整收錄目前已發布的網站程式與素材，但**不**包含原Manus編輯器工程、訪客瀏覽器localStorage或12張AI圖的原生成紀錄。詳見正式[查核報告](VERIFICATION_REPORT_20261012.md)。
+
+## 2026-10-12 每日小卡審閱與ZIP備份還原
+
+已額外核對80張抽卡、31則每日提醒、15組互動及20個讀物入口，詳見 [其他文字查核](EXTRA_CONTENT_AUDIT_20261012.md) 和 [追加驗收報告](FINAL_CONTENT_RESTORE_STATUS_20261012.md)。新設 [獨立ZIP還原測試](RESTORE_GUIDE_20261012.md)；自動GitHub Actions執行結果請於工作流程核對，不應僅依頁面部署成功就聲稱ZIP已完成還原。

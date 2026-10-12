@@ -36,3 +36,9 @@
 詳細證據見 `VERIFICATION_REPORT_20261012.md`、`CONTENT_SENTENCE_RECHECK_20261012.md`、`SOURCE_CURRENT_CROSSWALK_20261012.md` 及 `SOURCE_RIGHTS_POLICY_20261012.md`。
 
 下一位AI的主要入口：`CLAUDE_HANDOFF_20261012.md`。
+
+## 2026-10-12 備份檢驗與追加內容
+
+已新增獨立ZIP下載還原的可執行GitHub Actions測試：[RESTORE_GUIDE_20261012.md](RESTORE_GUIDE_20261012.md)。這補充前面「只列操作指引」的缺口；**測試是否通過應核對實際Actions執行結果**，不是僅以腳本存在當作成功。
+
+補查的80張卡、31則每日提醒、15組互動與20個額外閱讀入口已列於[EXTRA_CONTENT_AUDIT_20261012.md](EXTRA_CONTENT_AUDIT_20261012.md)。使用者已用手機及電腦操作除寄物所文字存入以外的主要功能；寄物所透過測試腳本以虛構內容檢查邏輯，仍非真實裝置驗收。原12張AI圖片生成證據及3張外部照片比對缺口不因ZIP還原而自動消除。

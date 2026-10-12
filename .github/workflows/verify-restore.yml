@@ -1,0 +1,33 @@
+name: Independent archive restore and content QA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout for checksum comparison
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check content, links, JS syntax, cards and daily text
+        run: node scripts/site-audit.mjs .
+      - name: Simulate private locker save, lock, reload and read
+        run: node scripts/locker-audit.mjs .
+      - name: Download published commit ZIP, restore, compare SHA-256 and serve
+        run: python3 scripts/verify_restore.py
+      - name: Upload recovery proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-evidence
+          path: restore-summary.json
+          if-no-files-found: warn
+          retention-days: 30
