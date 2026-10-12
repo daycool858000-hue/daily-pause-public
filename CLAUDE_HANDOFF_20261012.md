@@ -59,7 +59,7 @@
 
 **C. 功能、隱私及復原**
 - GitHub Pages Action顯示成功，不等於iOS、Android、平板與所有互動均完成實機驗收。
-- 尚未做從ZIP或Git於獨立環境還原並實際操作全站的演練。
+- **更新（2026-10-12）**：ZIP獨立還原已在3893d8f6的GitHub Actions #38198386896成功，包含49個檔案SHA-256、Node、寄物所模擬及26次HTTP測試；不等於使用者在另一台裝置手動執行全站驗收。更新後提交須看各自的CI紀錄。
 - 寄物所等資料在目前訪客的瀏覽器本機儲存，並非伺服器帳戶、未經端到端加密，也不是跨裝置備份；不可蒐集訪客原始私密文字作測試。
 - 專案未見伺服器端會員資料庫；切勿把「沒有登入」說成沒有任何隱私及資訊安全議題。
 
@@ -90,3 +90,12 @@
 獨立備份還原的標準、GitHub Action和手動流程見 [RESTORE_GUIDE_20261012.md](RESTORE_GUIDE_20261012.md)。程式及素材以指定commit SHA從GitHub ZIP另外下載並恢復，逐檔SHA-256比較、執行Node內容與寄物所模擬、HTTP冒煙測試。是否通過請看最新 [Actions](https://github.com/daycool858000-hue/daily-pause-public/actions/workflows/verify-restore.yml) 結果，勿依交接文件先行推定。
 
 上述屬每日一息公開庫；Codex依使用者決定僅處理問號星球，沒有必要為了這些補查改動問號星球。若後續交接Claude，請接手現有庫與紀錄，勿重做本站。
+
+
+## 8. 2026-10-12 曼荼羅與閱讀入口修正（接手以此節為準）
+
+- `cbec01743f62e127a5b0e224f22ad94837759930`已修正「曼荼羅（Mandala）」、大都會藝術博物館（The Met）來源及文化／宗教脈絡；該SHA獨立ZIP還原`#38198636664`與Pages`#38198636279`均success。
+- 隨後另發現：20個舊閱讀入口中16個具有外站來源URL，在短文閱讀器僅有來源名稱、沒有可點擊原網址。本輪新增來源連結，新分頁含`noopener noreferrer`；4個舊原創及25篇額外原創不製造假網址。網站視覺布局、88則既有內容、圖片保持不變。
+- 曼荼羅The Met連結從`/ja/`切至`/zh/`（原出版介紹以英文為主）；Mental Health Foundation正念頁名改成「Mindfulness｜Mental Health Foundation」並同步正文索引鍵。園藝療法／NIH NCCIH壓力／NIH NHLBI睡眠的標籤、URL重新核對。參見`EXTRA_CONTENT_AUDIT_20261012.md`。
+- `scripts/site-audit.mjs`增加16筆外部入口驗證、名稱／URL配對、簡化DOM模擬可點擊連結與原創純文字來源。**本輪提交必須另以新版SHA獨立ZIP還原及Pages Actions成功，才能宣告新版本通過**。
+- 待補證據仍為原研究全文部分無法取得、12張AI圖Manus生成紀錄／條款、3張第三方照片原始檔比對、寄物所使用者本人手機文字存取；不得自行認定侵權或零風險，也不得擅自撤圖下架。

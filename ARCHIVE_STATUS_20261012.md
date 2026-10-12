@@ -8,7 +8,7 @@
 - 網站： https://daycool858000-hue.github.io/daily-pause-public/
 - GitHub Pages部署成功：https://github.com/daycool858000-hue/daily-pause-public/actions/runs/38195684270
 - 公開程式／素材： https://github.com/daycool858000-hue/daily-pause-public
-- 建議另外點擊 **Code → Download ZIP** 存一份離線備份，檢查ZIP含 index.html、JS、CSS及完整 media/。**實際獨立環境還原仍待驗證**。
+- 建議另外點擊 **Code → Download ZIP** 存一份離線備份，檢查ZIP含 index.html、JS、CSS及完整 media/。**此處為歷史階段描述**：之後3893d8f6的GitHub Actions #38198386896已完成ZIP還原與SHA-256、Node、HTTP驗證且success；新提交須另檢查對應的CI。
 - 請以不可變的commit SHA引用此份基準；後來僅增修交接文件並不會改變這個已發布的內容修正版。
 
 ## 這次查過什麼
@@ -42,3 +42,10 @@
 已新增獨立ZIP下載還原的可執行GitHub Actions測試：[RESTORE_GUIDE_20261012.md](RESTORE_GUIDE_20261012.md)。這補充前面「只列操作指引」的缺口；**測試是否通過應核對實際Actions執行結果**，不是僅以腳本存在當作成功。
 
 補查的80張卡、31則每日提醒、15組互動與20個額外閱讀入口已列於[EXTRA_CONTENT_AUDIT_20261012.md](EXTRA_CONTENT_AUDIT_20261012.md)。使用者已用手機及電腦操作除寄物所文字存入以外的主要功能；寄物所透過測試腳本以虛構內容檢查邏輯，仍非真實裝置驗收。原12張AI圖片生成證據及3張外部照片比對缺口不因ZIP還原而自動消除。
+
+
+## 2026-10-12 最新封存補充
+
+- `cbec0174`曼荼羅文化內容與The Met來源已正式提交並通過獨立ZIP還原及Pages（#38198636664、#38198636279）。
+- 追加修正16筆外部閱讀入口在短文閱讀彈窗未提供可點擊來源的問題，對齊The Met語系入口及Mental Health Foundation正念頁名；未重做網站、修改視覺或移除圖片。
+- 原88則有部分研究原始全文無法直接取得、12張AI圖Manus生成證據及3張外部照片原圖完整比對缺口、寄物所個人手機存取待測，皆照原紀錄保留。缺證據不等於確定侵權；亦不能宣稱權利零風險。

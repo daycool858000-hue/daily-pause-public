@@ -351,7 +351,7 @@
 | 4 | 為自己留一條不必立刻回覆的界線 | 站內原創，無外部轉載 | 已登記機構／外部入口，未複製全文；需持續留意外站有效性 |
 | 5 | Doing What Matters in Times of Stress | [外部入口](https://www.who.int/publications/i/item/9789240003927) | 已登記機構／外部入口，未複製全文；需持續留意外站有效性 |
 | 6 | Every Mind Matters: Sleep | [外部入口](https://www.nhs.uk/every-mind-matters/mental-health-issues/sleep/) | NHS睡眠衛教已對照 |
-| 7 | Mindfulness and mental wellbeing | [外部入口](https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics/mindfulness) | Mental Health Foundation正念衛教已對照 |
+| 7 | Mindfulness｜Mental Health Foundation | [外部入口](https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics/mindfulness) | Mental Health Foundation正念衛教已對照 |
 | 8 | 心理健康資源與支持 | [外部入口](https://dep.mohw.gov.tw/DOMHAOH/) | 衛生福利部心理健康司入口可開啟（曾轉址） |
 | 9 | 正念 | [外部入口](https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%BF%B5) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
 | 10 | 森林浴 | [外部入口](https://zh.wikipedia.org/wiki/%E6%A3%AE%E6%9E%97%E6%B5%B4) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
@@ -361,7 +361,7 @@
 | 14 | 佛教 | [外部入口](https://zh.wikipedia.org/wiki/%E4%BD%9B%E6%95%99) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
 | 15 | 宗教 | [外部入口](https://zh.wikipedia.org/wiki/%E5%AE%97%E6%95%99) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
 | 16 | 海洋 | [外部入口](https://zh.wikipedia.org/wiki/%E6%B5%B7%E6%B4%8B) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
-| 17 | 曼荼羅（Mandala） | [外部入口](https://www.metmuseum.org/ja/met-publications/mandalas-mapping-the-buddhist-art-of-tibet) | 大都會藝術博物館對曼荼羅藝術／宗教脈絡之資料；站內未複製原圖及原文 |
+| 17 | 曼荼羅（Mandala） | [外部入口](https://www.metmuseum.org/zh/met-publications/mandalas-mapping-the-buddhist-art-of-tibet) | 大都會藝術博物館對曼荼羅藝術／宗教脈絡之資料；站內未複製原圖及原文 |
 | 18 | 音樂治療 | [外部入口](https://zh.wikipedia.org/wiki/%E9%9F%B3%E6%A8%82%E6%B2%BB%E7%99%82) | 日常聆聽和專業音樂治療需區分；文字已維持此界線 |
 | 19 | Stress ／ NCCIH | [外部入口](https://www.nccih.nih.gov/health/stress) | 美國國家補充與整合健康中心（NCCIH）壓力衛教原文已對照 |
 | 20 | Why Is Sleep Important? ／ NHLBI | [外部入口](https://www.nhlbi.nih.gov/health/sleep/why-sleep-important) | 美國國家心肺暨血液研究所（NHLBI）睡眠健康內容已對照 |
@@ -399,7 +399,7 @@
 - 第1段：睡眠不是一場需要完美達成的考試。比起突然改變所有習慣，可以先固定一個「準備睡覺」的訊號，例如同一盞燈、幾頁書，或一段安靜音樂。
 - 第2段：如果今晚沒有睡得理想，明天也不需要用責備補償。回到規律的起床時間、白天接觸自然光，並把注意力放在可調整的一小步。
 
-### R07 Mindfulness and mental wellbeing
+### R07 Mindfulness｜Mental Health Foundation
 
 - 第1段：正念可以很生活化：刷牙時感覺水流，走路時感覺腳步，喝茶時留意溫度。當思緒跑遠了，發現它，再把注意力帶回來，就已經完成一次練習。
 - 第2段：正念不是要求自己永遠平靜，也不是把情緒趕走。它更像一盞小燈，讓你看見此刻的感受，並用少一點自動反應來照顧自己。
@@ -490,4 +490,14 @@
 ## 追加的語意與來源修正（2026-10-12）
 
 - 發現閱讀入口「曼陀羅」原本連到同名詞消歧義頁，混有植物與佛教不同意義；已改為更精確的**「曼荼羅（Mandala）」**，引用大都會藝術博物館藏傳佛教藝術介紹並重新撰寫兩段正文，避免把宗教傳統誤當一般畫圖或臨床心理療法。
-- 來源：https://www.metmuseum.org/ja/met-publications/mandalas-mapping-the-buddhist-art-of-tibet
+- 來源：https://www.metmuseum.org/zh/met-publications/mandalas-mapping-the-buddhist-art-of-tibet
+
+
+## 2026-10-12 閱讀來源連結與標籤追加核對
+
+- 現有閱讀入口共45個：20個原本入口（4篇本站原創、16篇外部參考）及25篇另增原創短文。來源網址本來存在於`app.js`，但16筆外部參考在短文閱讀器中僅顯示機構名稱，未提供可點擊網址。本輪補上HTTPS外部連結，使用新分頁與`noopener noreferrer`；4+25個原創入口沒有製造假連結。
+- 前輪修正的來源再核對：The Met（曼荼羅）、農業部（園藝療法／療育／活動）、NIH/NCCIH（Stress）、NIH/NHLBI（Why Is Sleep Important?）均有對應原機構頁面，標籤、網址與主題一致。這是來源主題核對，**不是原站逐句證實本站全部生活建議**。
+- 曼荼羅外部來源從The Met的`/ja/`入口改為`/zh/`；該館出版品說明仍以英文為主，站內兩段繁體中文文字為本站撰述。
+- Mental Health Foundation 現行來源頁標題是`Mindfulness`；閱讀索引改成「Mindfulness｜Mental Health Foundation」，同步修改正文鍵；來源網址不變。
+- 自動驗收新增16筆外部來源數量、關鍵來源標籤／網址、正念頁名，以及閱讀器來源連結與原創無假連結的模擬。是否成功須以新版提交的GitHub Actions為準。
+- **統計範圍**：97個不同來源與117處引用只統計原27長文及36則好奇心抽屜，不含這額外16筆閱讀入口，故`SOURCE_CURRENT_CROSSWALK_20261012.md`及`CONTENT_SENTENCE_RECHECK_20261012.md`維持原88則稽核數據。

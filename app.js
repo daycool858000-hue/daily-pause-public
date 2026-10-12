@@ -69,7 +69,7 @@ const articles = [
   { title: '為自己留一條不必立刻回覆的界線', category: '界線', language: '中文', source: '今日一息｜原創短文', description: '界線不等於冷漠。它可以是一句清楚、尊重自己也尊重對方的「我晚一點回覆你」。', url: '#', status: '原創內容', rights: '本站原創', art: 'flower' },
   { title: 'Doing What Matters in Times of Stress', category: '壓力', language: 'English', source: 'World Health Organization', description: '世界衛生組織提供的壓力調適指南，包含 grounding、與價值連結等可日常練習的方法。', url: 'https://www.who.int/publications/i/item/9789240003927', status: '公開指南索引', rights: '外部指南參考連結；本站未轉載指南', art: 'sun' },
   { title: 'Every Mind Matters: Sleep', category: '睡眠', language: 'English', source: 'NHS', description: '英國 NHS 的睡眠與身心健康建議頁面，從規律作息與睡前環境提供溫和的自我照顧方向。', url: 'https://www.nhs.uk/every-mind-matters/mental-health-issues/sleep/', status: '公開文章索引', rights: 'Crown Copyright；本站未複製全文', art: 'moon' },
-  { title: 'Mindfulness and mental wellbeing', category: '正念', language: 'English', source: 'Mental Health Foundation', description: '介紹正念如何成為日常覺察練習，並提醒使用者依自己的狀態選擇適合的方式。', url: 'https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics/mindfulness', status: '公開文章索引', rights: '本站僅作來源索引，請依原站條款使用', art: 'star' },
+  { title: 'Mindfulness｜Mental Health Foundation', category: '正念', language: 'English', source: 'Mental Health Foundation', description: '介紹正念如何成為日常覺察練習，並提醒使用者依自己的狀態選擇適合的方式。', url: 'https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics/mindfulness', status: '公開文章索引', rights: '本站僅作來源索引，請依原站條款使用', art: 'star' },
   { title: '心理健康資源與支持', category: '心理', language: '中文', source: '衛生福利部心理健康司', description: '台灣官方心理健康資源入口，提供心理健康、支持與求助資訊的公開索引。', url: 'https://dep.mohw.gov.tw/DOMHAOH/', status: '官方資源索引', rights: '官方來源索引；請依原站資訊使用', art: 'heart' },
   { title: '正念', category: '正念', language: '中文', source: '中文維基百科', description: '介紹將注意力集中於當下的心理過程，以及它與禪、冥想和現代心理健康實踐的關聯。', url: 'https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%BF%B5', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'leaf' },
   { title: '森林浴', category: '自然', language: '中文', source: '中文維基百科', description: '從感官體驗與自然接觸的角度，認識森林浴與森林療癒的概念、活動方式與研究脈絡。', url: 'https://zh.wikipedia.org/wiki/%E6%A3%AE%E6%9E%97%E6%B5%B4', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'tree' },
@@ -79,7 +79,7 @@ const articles = [
   { title: '佛教', category: '佛學', language: '中文', source: '中文維基百科', description: '認識源於古印度的宗教與思想傳統，從基本教義、歷史發展到不同地區的傳播。', url: 'https://zh.wikipedia.org/wiki/%E4%BD%9B%E6%95%99', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'lotus' },
   { title: '宗教', category: '宗教', language: '中文', source: '中文維基百科', description: '以百科概覽的方式，認識宗教的定義、教儀、教團、起源理論與社會影響。', url: 'https://zh.wikipedia.org/wiki/%E5%AE%97%E6%95%99', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'sun' },
   { title: '海洋', category: '自然', language: '中文', source: '中文維基百科', description: '從海水、氣候與生態到人類利用，讀一篇把視線帶向更大尺度的自然知識。', url: 'https://zh.wikipedia.org/wiki/%E6%B5%B7%E6%B4%8B', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'wave' },
-  { title: '曼荼羅（Mandala）', category: '藝術與文化', language: '中文', source: '大都會藝術博物館（The Met）', description: '認識印度與藏傳佛教藝術中的曼荼羅圖像、宇宙象徵及儀式脈絡；日常圓形塗鴉不必視為宗教修行或治療。', url: 'https://www.metmuseum.org/ja/met-publications/mandalas-mapping-the-buddhist-art-of-tibet', status: '博物館藝術史資料', rights: '博物館出版品僅外部參考連結；本站未重製原文或藝術圖像', art: 'mandala' },
+  { title: '曼荼羅（Mandala）', category: '藝術與文化', language: '中文', source: '大都會藝術博物館（The Met）', description: '認識印度與藏傳佛教藝術中的曼荼羅圖像、宇宙象徵及儀式脈絡；日常圓形塗鴉不必視為宗教修行或治療。', url: 'https://www.metmuseum.org/zh/met-publications/mandalas-mapping-the-buddhist-art-of-tibet', status: '博物館藝術史資料', rights: '博物館出版品僅外部參考連結；本站未重製原文或藝術圖像', art: 'mandala' },
   { title: '音樂治療', category: '身體', language: '中文', source: '中文維基百科', description: '介紹以樂音與節奏回應生理或心理需求的有計畫療程，並認識它的不同治療取向。', url: 'https://zh.wikipedia.org/wiki/%E9%9F%B3%E6%A8%82%E6%B2%BB%E7%99%82', status: '外部參考連結', rights: '外部百科參考連結；本站另撰簡介，未轉載條目', art: 'music' },
   { title: 'Stress | NCCIH', category: '壓力', language: 'English', source: 'NIH／NCCIH', description: '美國國家補充與整合健康中心介紹壓力反應、放鬆方法、研究限制與需要專業支持的時機。', url: 'https://www.nccih.nih.gov/health/stress', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'sun' },
   { title: 'Why Is Sleep Important? | NHLBI', category: '睡眠', language: 'English', source: 'NIH／NHLBI', description: '美國國家心肺暨血液研究所說明睡眠對學習記憶、健康及日常功能的重要性與研究限制。', url: 'https://www.nhlbi.nih.gov/health/sleep/why-sleep-important', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'moon' }
@@ -93,7 +93,7 @@ const articleBodies = {
   '為自己留一條不必立刻回覆的界線': ['訊息出現時，你不一定要立刻回覆。可以先說：「我看到了，晚一點整理好再回你。」清楚的時間界線，往往比勉強自己答應更多事情更溫柔。', '界線不是把人推開，而是讓關係有足夠空間呼吸。當你知道自己的容量，也比較能用真實而穩定的方式陪伴別人。'],
   'Doing What Matters in Times of Stress': ['When stress fills the whole room, choose one small anchor. Notice five things you can see, four things you can feel, or one sound that is already here. The aim is not to force calm, but to reconnect with the present moment.', 'Then choose one action that reflects what matters to you today: kindness, steadiness, rest, or connection. A small action can be enough when the day feels too large.'],
   'Every Mind Matters: Sleep': ['睡眠不是一場需要完美達成的考試。比起突然改變所有習慣，可以先固定一個「準備睡覺」的訊號，例如同一盞燈、幾頁書，或一段安靜音樂。', '如果今晚沒有睡得理想，明天也不需要用責備補償。回到規律的起床時間、白天接觸自然光，並把注意力放在可調整的一小步。'],
-  'Mindfulness and mental wellbeing': ['正念可以很生活化：刷牙時感覺水流，走路時感覺腳步，喝茶時留意溫度。當思緒跑遠了，發現它，再把注意力帶回來，就已經完成一次練習。', '正念不是要求自己永遠平靜，也不是把情緒趕走。它更像一盞小燈，讓你看見此刻的感受，並用少一點自動反應來照顧自己。'],
+  'Mindfulness｜Mental Health Foundation': ['正念可以很生活化：刷牙時感覺水流，走路時感覺腳步，喝茶時留意溫度。當思緒跑遠了，發現它，再把注意力帶回來，就已經完成一次練習。', '正念不是要求自己永遠平靜，也不是把情緒趕走。它更像一盞小燈，讓你看見此刻的感受，並用少一點自動反應來照顧自己。'],
   '心理健康資源與支持': ['照顧心理健康不只是在很辛苦時才需要。找一個可信任的人聊聊、讓日常保有睡眠與吃飯的節奏，或記下每天一個感受，都可以是支持自己的方式。', '如果困擾已經影響生活，尋求專業協助是合理而勇敢的選擇。本站提供的是日常陪伴，不能取代醫療、心理或危機服務；需要時請向當地專業單位求助。'],
   '正念': ['正念是一種把注意力帶回當下的練習。你可以先注意一個聲音、一個觸感，或呼吸進出鼻腔的感覺。當你發現自己分心，不需要生氣，只要再回來。', '長一點的練習可以讓人更熟悉自己的內在變化，但短短十秒也有意義。重點不是清空腦袋，而是多一點看見與選擇。'],
   '森林浴': ['走進樹木較多的地方，不一定要完成一條路線。慢慢走，感覺腳下的地面，觀察樹皮的紋理與光影的移動，讓感官先於思考。', '自然接觸不能取代治療，但可以成為日常恢復的一個環節。若無法去森林，也可以在住家附近找一棵樹，花幾分鐘和它一起安靜。'],
@@ -299,7 +299,19 @@ function openArticle(title) {
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 站內短文`;
   $('#articleReaderTitle').textContent = article.title;
   $('#articleReaderBody').innerHTML = mediaMarkup() + (articleBodies[title] || [article.description]).map(paragraph => `<p>${paragraph}</p>`).join('');
-  $('#articleReaderSource').textContent = `本文由「今日一息」重新撰寫；主題參考：${article.source}。${article.rights}。本站內容為日常閱讀，非醫療診斷或治療建議。`;
+  const sourceElement = $('#articleReaderSource');
+  sourceElement.textContent = '本文由「今日一息」重新撰寫；主題參考：';
+  if (article.url && /^https:\/\//.test(article.url)) {
+    const link = document.createElement('a');
+    link.href = article.url;
+    link.textContent = article.source;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    sourceElement.appendChild(link);
+  } else {
+    sourceElement.appendChild(document.createTextNode(article.source));
+  }
+  sourceElement.appendChild(document.createTextNode(`。${article.rights}。本站內容為日常閱讀，非醫療診斷或治療建議。`));
   $('#articleReader').hidden = false;
   document.body.classList.add('modal-open');
   setTimeout(() => $('#articleReaderClose').focus(), 40);
