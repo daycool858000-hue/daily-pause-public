@@ -30,3 +30,13 @@ GitHub版本記錄和ZIP是**公開程式／素材備份**，不是訪客的 `lo
 - 寄物所尚未由使用者用真實手機進行「存入文字→到期取回」操作；新增的Node模擬只驗證指定互動程式路徑，不證明每一個瀏覽器介面與時間跳轉均完全相同。
 - 12張AI圖生成紀錄未由原平台提供；3張Commons圖片的來源圖與本地二進位對照非此還原測試的範圍。**SHA-256比對只能證明備份與當前庫相同，不能證明它們符合第三方授權。**
 - 若儲存庫、主分支或GitHub帳號被誤刪，獨立離線ZIP可補救程式，但無法補救未納入備份的私密資料。建議依重要程度持續保存不同日期的ZIP備份。
+
+## 最後一輪CI獨立還原實際結果（基準3893d8f6）
+
+- GitHub Actions 2026-10-12 [Independent archive restore and content QA #38198386896](https://github.com/daycool858000-hue/daily-pause-public/actions/runs/38198386896) **success**。
+- 同SHA GitHub Pages [部署 #38198386302](https://github.com/daycool858000-hue/daily-pause-public/actions/runs/38198386302) **success**。
+- GitHub runner下載GitHub提交ZIP後於乾淨環境解壓，以**49個檔案逐檔SHA-256比對成功**，含**15個圖片**；以本機HTTP伺服器驗證**26次資源請求**成功。
+- Node檢測 80張卡、31則每日提醒、15組互動、45個閱讀入口、27長文／25短文／36抽屜、117處引用／97個現用網址，**通過**。
+- 寄物所虛構文字模擬：存入、鎖定、不提前揭露、重新載入、到期取回、轉義HTML及儲存失敗警告，**通過**。
+- 此項是對**指定基準提交**的完整ZIP復原測試，後續追加的曼荼羅詞條與報告修正須以當次最新版Actions再次核實。
+- GitHub ZIP比對不是第三方圖片來源版權確認；不含原始Manus編輯器內部資料，也不會備份個別訪客的localStorage。

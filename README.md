@@ -32,3 +32,5 @@
 ## 2026-10-12 每日小卡審閱與ZIP備份還原
 
 已額外核對80張抽卡、31則每日提醒、15組互動及20個讀物入口，詳見 [其他文字查核](EXTRA_CONTENT_AUDIT_20261012.md) 和 [追加驗收報告](FINAL_CONTENT_RESTORE_STATUS_20261012.md)。新設 [獨立ZIP還原測試](RESTORE_GUIDE_20261012.md)；自動GitHub Actions執行結果請於工作流程核對，不應僅依頁面部署成功就聲稱ZIP已完成還原。
+
+備份與測試：[完整ZIP獨立還原驗證](RESTORE_GUIDE_20261012.md)、[每日小卡及閱讀區額外查核](EXTRA_CONTENT_AUDIT_20261012.md)。2026-10-12 GitHub Actions基準3893d8f6完成49檔逐檔SHA-256及26次HTTP資源驗證；後續提交須查最新CI結果。

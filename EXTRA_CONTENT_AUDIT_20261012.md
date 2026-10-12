@@ -361,7 +361,7 @@
 | 14 | 佛教 | [外部入口](https://zh.wikipedia.org/wiki/%E4%BD%9B%E6%95%99) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
 | 15 | 宗教 | [外部入口](https://zh.wikipedia.org/wiki/%E5%AE%97%E6%95%99) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
 | 16 | 海洋 | [外部入口](https://zh.wikipedia.org/wiki/%E6%B5%B7%E6%B4%8B) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
-| 17 | 曼陀羅 | [外部入口](https://zh.wikipedia.org/wiki/%E6%9B%BC%E9%99%80%E7%BE%85) | 百科背景性條目；本站自行寫的兩段內文不能當作百科原句或治療證據 |
+| 17 | 曼荼羅（Mandala） | [外部入口](https://www.metmuseum.org/ja/met-publications/mandalas-mapping-the-buddhist-art-of-tibet) | 大都會藝術博物館對曼荼羅藝術／宗教脈絡之資料；站內未複製原圖及原文 |
 | 18 | 音樂治療 | [外部入口](https://zh.wikipedia.org/wiki/%E9%9F%B3%E6%A8%82%E6%B2%BB%E7%99%82) | 日常聆聽和專業音樂治療需區分；文字已維持此界線 |
 | 19 | Stress ／ NCCIH | [外部入口](https://www.nccih.nih.gov/health/stress) | 美國國家補充與整合健康中心（NCCIH）壓力衛教原文已對照 |
 | 20 | Why Is Sleep Important? ／ NHLBI | [外部入口](https://www.nhlbi.nih.gov/health/sleep/why-sleep-important) | 美國國家心肺暨血液研究所（NHLBI）睡眠健康內容已對照 |
@@ -449,10 +449,10 @@
 - 第1段：海洋的尺度很大，卻也和每天的生活相連。潮汐、氣候、食物與許多生命，都在一個不容易被看見的循環裡互相牽動。
 - 第2段：當你覺得自己的煩惱佔滿視野，可以想像站在海邊看一會兒。問題仍然存在，但世界也還有更寬的背景，容得下你慢慢呼吸。
 
-### R17 曼陀羅
+### R17 曼荼羅（Mandala）
 
-- 第1段：曼陀羅在不同文化與脈絡裡有不同意思。對許多人來說，圓形與重複的圖案也提供一種專注的節奏：從中心開始，慢慢向外延伸。
-- 第2段：你可以畫一個圓、填入今天喜歡的線條與顏色，不需要追求對稱或漂亮。它不是測驗，也不替你解讀人生，只是一個讓手和心一起停留的空間。
+- 第1段：曼荼羅在佛教尤其藏傳佛教藝術和儀式中，常以圖像呈現宇宙觀、諸尊及象徵性的空間結構。不同傳統有不同的教義與製作脈絡，不宜簡化為一般的心理治療圖卡。
+- 第2段：日常畫圓形、對稱或反覆圖案也可以是個人創作活動，但無須自稱宗教修行，亦不能保證具有臨床療效。理解原有文化的脈絡，再選擇自己喜歡的畫畫方式。
 
 ### R18 音樂治療
 
@@ -486,3 +486,8 @@
 - https://www.nhs.uk/every-mind-matters/mental-health-issues/sleep/
 - https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual
 - https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7
+
+## 追加的語意與來源修正（2026-10-12）
+
+- 發現閱讀入口「曼陀羅」原本連到同名詞消歧義頁，混有植物與佛教不同意義；已改為更精確的**「曼荼羅（Mandala）」**，引用大都會藝術博物館藏傳佛教藝術介紹並重新撰寫兩段正文，避免把宗教傳統誤當一般畫圖或臨床心理療法。
+- 來源：https://www.metmuseum.org/ja/met-publications/mandalas-mapping-the-buddhist-art-of-tibet

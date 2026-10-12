@@ -71,6 +71,8 @@ assert.equal(state.dailyCards.length, 5);
 assert.equal(new Set(state.dailyCards.map(c => c.text)).size, 5);
 assert.equal(new Set(state.cards.map(c => c.text)).size, 80);
 assert.equal(state.articles.length, 45, '20 directory entries plus 25 short essays');
+assert.ok(state.articles.some(a => a.title === '曼荼羅（Mandala）' && a.url.includes('metmuseum.org')), 'mandala reference must point to the religion/art topic, not a disambiguation page');
+assert.ok(!state.articles.some(a => a.url.includes('%E6%9B%BC%E9%99%80%E7%BE%85')), 'misleading mandala disambiguation link must be absent');
 assert.equal(Object.keys(state.articleBodies).length, 45);
 for (const card of state.cards) {
   for (const key of ['type', 'text', 'source', 'tag', 'art']) {
