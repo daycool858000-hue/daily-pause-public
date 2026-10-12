@@ -155,7 +155,7 @@ window.longArticlesData = [
   {
     title: '走路、伸展與身體的回信', category: '運動與身體', language: '繁體中文', art: 'wave',
     description: '從低門檻活動、日常走路與伸展出發，理解運動不必以懲罰或外貌為唯一理由。', note: '本站原創整理｜一般健康教育，非個人化運動處方',
-    sources: [source('WHO｜Physical activity', 'https://www.who.int/news-room/fact-sheets/detail/physical-activity', 'WHO 官方資料；本站自行整理'), source('CDC｜Benefits of Physical Activity', 'https://www.cdc.gov/physical-activity-basics/benefits/', '美國政府公開資訊；本站未複製全文'), source('NHS｜Exercise', 'https://www.nhs.uk/live-well/exercise/', 'NHS 公開健康資訊；本站自行改寫')],
+    sources: [source('WHO｜Physical activity', 'https://www.who.int/news-room/fact-sheets/detail/physical-activity', 'WHO 官方資料；本站自行整理'), source('CDC｜Benefits of Physical Activity', 'https://www.cdc.gov/physical-activity-basics/benefits/index.html', '美國政府公開資訊；本站未複製全文'), source('NHS｜Exercise', 'https://www.nhs.uk/live-well/exercise/', 'NHS 公開健康資訊；本站自行改寫')],
     sections: [section('身體活動不是只有正式運動', '走到下一個路口、爬樓梯、整理房間、在椅子上活動肩膀，都可能讓身體離開長時間固定的姿勢。從容易重複的動作開始，比一次做得很大更可靠。'), section('把活動和懲罰分開', '運動可以是感覺力量、睡得更穩或讓腦袋換一個節奏，不必只為了改變外表或抵銷吃過的東西。'), section('留意身體的界線', '疼痛、暈眩、呼吸異常或舊傷需要被重視。降低強度、休息，並在需要時詢問醫療或運動專業人員。'), section('找一種願意回來的活動', '最好的活動不一定最流行，而是你願意在下週再次做。音樂、自然、朋友或一條喜歡的路，都能讓它多一點生活感。')]
   },
   {
