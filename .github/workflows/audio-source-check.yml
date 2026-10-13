@@ -1,0 +1,75 @@
+name: External audio source reachability and CORS QA
+
+on:
+  push:
+    paths:
+      - '.github/workflows/audio-source-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-external-mp3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Check seven real streams and report browser CORS headers
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from urllib.request import Request, urlopen
+          from urllib.error import URLError, HTTPError
+          from pathlib import Path
+          from time import sleep
+
+          base = "https://upload.wikimedia.org/wikipedia/commons/transcoded/"
+          files = {
+            "Ephemera": "7/7d/Scott_Buckley_-_Ephemera.oga/Scott_Buckley_-_Ephemera.oga.mp3",
+            "Solace": "8/89/Scott_Buckley_-_Solace.oga/Scott_Buckley_-_Solace.oga.mp3",
+            "Snowfall": "5/54/Scott_Buckley_-_Snowfall.oga/Scott_Buckley_-_Snowfall.oga.mp3",
+            "Beautiful Oblivion": "f/f7/Scott_Buckley_-_Beautiful_Oblivion.oga/Scott_Buckley_-_Beautiful_Oblivion.oga.mp3",
+            "Chasing Daylight": "e/e5/Scott_Buckley_-_Chasing_Daylight.oga/Scott_Buckley_-_Chasing_Daylight.oga.mp3",
+            "Forest Creek (nature layer)": "9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3",
+            "Forest Pond (nature layer)": "f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3",
+          }
+          results = []
+          for name, suffix in files.items():
+            url = base + suffix
+            row = {"name": name, "url": url, "ok": False}
+            for attempt in range(3):
+              try:
+                request = Request(url, headers={
+                  "User-Agent": "DailyPausePublic-AudioQA/1.0 (static website link audit)",
+                  "Range": "bytes=0-4095",
+                  "Origin": "https://daycool858000-hue.github.io",
+                })
+                with urlopen(request, timeout=22) as response:
+                  head = response.read(64)
+                  row.update(
+                    status=response.status,
+                    content_type=response.headers.get("Content-Type", ""),
+                    cors=response.headers.get("Access-Control-Allow-Origin", ""),
+                    has_mp3_header=head.startswith(b"ID3") or (len(head)>1 and head[0]==255 and (head[1]&224)==224)
+                  )
+                  row["ok"] = (response.status in (200,206)
+                    and bool(row["has_mp3_header"]))
+                break
+              except (URLError, HTTPError, TimeoutError, OSError) as error:
+                row["error"] = str(error)
+                if attempt < 2: sleep(2)
+            print(f"{name}: status={row.get('status')} mp3={row.get('has_mp3_header')} CORS={row.get('cors','<none>')} ok={row['ok']}")
+            results.append(row)
+          report = {"scope":"five new tracks + two nature layers", "results":results}
+          Path("audio-source-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2))
+          if not all(r["ok"] for r in results): raise SystemExit("At least one external MP3 did not pass HTTP/audio-header verification")
+          PY
+      - name: Retain external source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audio-source-report
+          path: audio-source-report.json
+          if-no-files-found: warn
+          retention-days: 30
