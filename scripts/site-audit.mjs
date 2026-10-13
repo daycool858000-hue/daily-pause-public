@@ -113,7 +113,7 @@ assert.equal(win.pauseOriginalCards.length,40);
 assert.equal(win.pauseSourcedCards.length,40);
 assert.ok(new Set(win.pauseSourcedCards.map(c=>c.sourceLink)).size>=20,'source diversity too low');
 assert.ok(win.pauseOriginalCards.every(c=>!c.sourceLink&&c.provenance.includes('AI')));
-assert.ok(win.pauseSourcedCards.every(c=>c.sourceLink&&c.provenance.includes('延伸')));
+assert.ok(win.pauseSourcedCards.every(c=>c.sourceLink&&/延伸|聯想/.test(c.provenance)),'sourced messages describe either an extension or a daily-life analogy');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>c.provenance && /^https:\/\//.test(c.sourceLink)), 'sourced life reflections require traceable links and context');
 assert.ok(win.freshCards.every(c=>c.text.length>=40),'all reflections must have an actual setting or usable perspective');
 assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('柔軟不等於委屈')), 'Taoist context must explain a gentle everyday implication');
