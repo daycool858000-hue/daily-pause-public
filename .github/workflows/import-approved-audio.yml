@@ -1,0 +1,134 @@
+name: Import four approved CC0 tracks and gentle rain
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-approved-audio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout full current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Download verified OpenGameArt originals and convert to browser-friendly MP3
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -version | head -n 1
+          python3 - <<'PY'
+          import hashlib, html, json, pathlib, re, subprocess, tempfile
+          from html.parser import HTMLParser
+          from urllib.parse import unquote, urljoin, urlsplit
+          from urllib.request import Request, urlopen
+          tracks=[
+            {
+              "id":"first-light","title":"晨光的微粒","artist":"Yoiyami",
+              "page":"https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track",
+              "filename":"first_light_particles_0.wav","out":"first-light.mp3","kind":"music",
+            },
+            {
+              "id":"vaporware","title":"柔光鋼琴","artist":"The Cynic Project",
+              "page":"https://opengameart.org/content/calm-piano-1-vaporware",
+              "filename":"003_Vaporware_2.mp3","out":"vaporware.mp3","kind":"music",
+            },
+            {
+              "id":"forget-me-not","title":"別忘了這一刻","artist":"Kistol",
+              "page":"https://opengameart.org/content/forget-me-not",
+              "filename":"forget_me_not_in_f_major_0.ogg","out":"forget-me-not.mp3","kind":"music",
+            },
+            {
+              "id":"lifewave","title":"安靜的光","artist":"The Cynic Project",
+              "page":"https://opengameart.org/content/calm-ambient-3-lifewave-2k",
+              "filename":"006_lifeWave2k_0.mp3","out":"lifewave.mp3","kind":"music",
+            },
+            {
+              "id":"window-rain","title":"窗邊細雨","artist":"alxl",
+              "page":"https://opengameart.org/content/rain-on-window-loop",
+              "filename":"rain_on_window_loop.wav","out":"window-rain.mp3","kind":"nature",
+            },
+          ]
+          class Links(HTMLParser):
+            def __init__(self): super().__init__(); self.urls=[]
+            def handle_starttag(self,tag,attrs):
+              if tag=='a':
+                u=dict(attrs).get('href')
+                if u: self.urls.append(html.unescape(u))
+          def check(cmd): subprocess.run(cmd,check=True)
+          def ffprobe(filepath):
+            out=subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-show_entries','stream=codec_name','-of','json',str(filepath)],text=True)
+            return json.loads(out)
+          base=pathlib.Path('media/audio')
+          base.mkdir(parents=True,exist_ok=True)
+          headers={"User-Agent":"DailyPause-Public/1.0 (CC0 music attribution and file import)"}
+          with tempfile.TemporaryDirectory() as temp:
+            temp=pathlib.Path(temp)
+            for t in tracks:
+              req=Request(t["page"],headers=headers)
+              with urlopen(req,timeout=30) as response:
+                page=response.read(4000000).decode('utf-8','replace')
+              if 'CC0' not in page: raise ValueError('CC0 license missing from '+t["page"])
+              links=Links(); links.feed(page)
+              matches=[urljoin(t["page"],l) for l in links.urls if unquote(urlsplit(l).path).lower().endswith(t["filename"].lower())]
+              if not matches: raise ValueError('File not linked from original page: '+t["filename"])
+              url=matches[0]
+              original=temp/t["filename"]
+              sha=hashlib.sha256()
+              count=0
+              with urlopen(Request(url,headers=headers),timeout=100) as response, original.open('wb') as f:
+                while True:
+                  chunk=response.read(131072)
+                  if not chunk: break
+                  count+=len(chunk)
+                  if count>90000000: raise ValueError('Source audio size limit reached')
+                  sha.update(chunk); f.write(chunk)
+              signature=original.open('rb').read(4)
+              if not(signature.startswith(b'RIFF') or signature.startswith(b'OggS') or signature.startswith(b'ID3') or signature[:1]==b'\\xff'):
+                raise ValueError('Unexpected source-audio file header')
+              target=base/t['out']
+              arguments=['ffmpeg','-hide_banner','-loglevel','error','-nostdin','-y']
+              if t["kind"]=="nature":
+                arguments+=['-stream_loop','-1']
+              arguments+=['-i',str(original)]
+              if t["kind"]=="nature":
+                arguments+=['-t','132','-af','highpass=f=100,lowpass=f=6000,loudnorm=I=-29:TP=-8:LRA=7,afade=t=in:st=0:d=1.5,afade=t=out:st=129:d=3']
+              else:
+                arguments+=['-af','loudnorm=I=-26:TP=-6:LRA=10,afade=t=in:st=0:d=1.2']
+              arguments+=['-vn','-ac','2','-ar','44100','-codec:a','libmp3lame','-b:a','112k',str(target)]
+              check(arguments)
+              fmt=ffprobe(target)
+              if not any(s.get('codec_name')=='mp3' for s in fmt.get('streams',[])): raise ValueError('Not MP3: '+t['out'])
+              duration=float(fmt['format']['duration'])
+              if duration<25 or duration>1200: raise ValueError('Unexpected duration: '+str(duration))
+              t["source_audio_url"]=url
+              t["source_sha256"]=sha.hexdigest()
+              t["source_bytes"]=count
+              t["local_file"]=str(target)
+              t["local_sha256"]=hashlib.sha256(target.read_bytes()).hexdigest()
+              t["duration_seconds"]=round(duration,2)
+              t["license"]="CC0 1.0"
+              print(t["out"],duration,'sec',target.stat().st_size,'bytes',flush=True)
+          (base/'SOURCES.json').write_text(json.dumps(tracks,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          PY
+      - name: Commit originals evidence and five MP3 files only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/audio/
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No changes needed'
+          else
+            git commit -m "Add validated CC0 audio files for user-approved soundscape"
+            git push origin HEAD:main
+          fi
