@@ -18,7 +18,7 @@ const leaf='<g class="r-sway"><path d="M224 348Q206 240 230 136" fill="none" str
 +'<path d="M220 176L113 166M226 233L354 221" fill="none" stroke="#f8f1d5" stroke-width="3" opacity=".7"/>'
 +'<g fill="none" stroke="#eee9ca" stroke-width="1.6" opacity=".6"><path d="M153 169L130 134M160 173L136 210M285 229L312 192M311 224L335 249"/></g></g>';
 const grass='<g class="r-sway" stroke="#8ba895" stroke-width="3" stroke-linecap="round" fill="none"><path d="M48 380Q77 325 60 260M86 380Q91 322 113 278M348 380Q330 319 350 255M391 380Q410 320 395 275"/></g>';
-const window='<rect x="78" y="48" width="287" height="270" rx="7" fill="#f7eddb"/>'
+const windowScene='<rect x="78" y="48" width="287" height="270" rx="7" fill="#f7eddb"/>'
 +'<rect x="93" y="62" width="257" height="213" fill="#c5d8c9"/>'
 +'<path d="M93 239Q149 191 212 223T350 204V277H93Z" fill="#a9c6b3"/><path d="M93 266Q173 219 251 245T350 218V277H93Z" fill="#8eb09c"/>'
 +'<path d="M223 63V277M92 172H350" stroke="#f8f0e1" stroke-width="12"/>'
@@ -35,7 +35,7 @@ const flower='<g class="r-sway"><path d="M221 345Q227 248 233 179" fill="none" s
 +'<circle cx="230" cy="176" r="21" fill="#e6c790"/><path d="M230 172L208 155M230 172L251 157M230 172L259 182" stroke="#a38969" stroke-width="2"/></g>';
 const floor='<path d="M0 294Q185 282 440 295V380H0Z" fill="#dbc8b3" opacity=".65"/>';
 const body={
-window,
+window:windowScene,
 hands:'<ellipse cx="223" cy="317" rx="149" ry="28" fill="#b2b4a5" opacity=".2" filter="url(#r-blur)"/>'
 +'<g class="r-hands" fill="url(#r-skin)" stroke="#bc9488" stroke-width="2" stroke-linejoin="round">'
 +'<path d="M84 312Q109 281 123 249L146 203Q151 189 162 193Q173 199 163 220L154 244L181 145Q186 128 198 135Q205 140 201 156L187 224L217 116Q224 102 236 110Q244 115 238 135L213 224L251 146Q263 131 273 142Q277 150 268 168L227 252L280 205Q294 191 303 205Q310 216 290 236L243 290Q224 316 208 333Z"/>'
@@ -47,18 +47,18 @@ cup:floor+'<ellipse cx="224" cy="307" rx="134" ry="17" fill="#aca998" opacity=".
 +'<path d="M295 170Q348 150 348 220Q341 254 286 245" stroke="#d9bba8" stroke-width="18" fill="none" stroke-linecap="round"/>'
 +'<ellipse cx="220" cy="156" rx="77" ry="14" fill="#c9a588" stroke="#f3e9dc" stroke-width="5"/>'
 +'<g class="r-steam" stroke="#fffaf1" stroke-width="6" stroke-linecap="round" fill="none" opacity=".78"><path d="M179 143Q163 118 181 97T176 45"/><path d="M224 134Q204 105 225 80T221 33"/><path d="M264 139Q246 110 264 88T262 47"/></g>',
-chair:window+floor+'<path d="M182 291L165 164Q159 133 191 118H318Q348 121 346 161L336 291Z" fill="url(#r-sage)" stroke="#97aa9c" stroke-width="3"/>'
+chair:windowScene+floor+'<path d="M182 291L165 164Q159 133 191 118H318Q348 121 346 161L336 291Z" fill="url(#r-sage)" stroke="#97aa9c" stroke-width="3"/>'
 +'<path d="M167 242Q176 216 202 214H327Q350 221 345 256L337 290H183Z" fill="#dbc3b0"/>'
 +'<rect x="188" y="178" width="101" height="70" rx="24" fill="url(#r-linen)"/>'
 +'<path d="M180 286L172 342M338 288L345 345" stroke="#aa917c" stroke-width="12" stroke-linecap="round"/>',
 hills,
-sunlight:window+floor+'<path class="r-glow" d="M164 72L392 328L352 366L112 135Z" fill="#fff1c7" opacity=".34"/>'
+sunlight:windowScene+floor+'<path class="r-glow" d="M164 72L392 328L352 366L112 135Z" fill="#fff1c7" opacity=".34"/>'
 +'<path class="r-glow" d="M111 79L307 314L265 364L72 142Z" fill="#ffead0" opacity=".23"/>'
 +'<g class="r-shadows" fill="#92aa98" opacity=".31"><path d="M28 338Q133 237 211 323Q116 302 28 338Z"/><path d="M211 358Q249 256 344 305Q277 353 211 358Z"/></g>',
 eyes:hills+'<ellipse class="r-mist" cx="232" cy="217" rx="235" ry="91" fill="url(#r-mist)" opacity=".86"/>',
 stretch:hills+'<g class="r-sway" fill="none" stroke="#809b86" stroke-width="5" stroke-linecap="round"><path d="M212 368Q204 266 225 133T295 75"/><path d="M213 253Q154 199 124 209M229 182Q277 143 315 157"/></g>'
 +'<g class="r-sway" fill="#a5bc9f"><path d="M225 176Q176 126 167 177Q199 210 225 176ZM213 249Q147 191 134 221Q145 266 213 249ZM230 148Q280 95 315 117Q304 157 230 148Z"/></g>',
-phone:window+floor+'<path d="M66 283H376V302H66Z" fill="#bca18a"/>'
+phone:windowScene+floor+'<path d="M66 283H376V302H66Z" fill="#bca18a"/>'
 +'<g transform="rotate(-11 230 244)"><rect x="172" y="217" width="116" height="53" rx="12" fill="#718780"/><rect x="180" y="224" width="100" height="39" rx="7" fill="#b3c1b6"/></g>',
 flower,
 desk:floor+'<path d="M60 274H382V296H60Z" fill="#bba18b"/>'
