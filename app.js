@@ -196,6 +196,14 @@ function closeWelcome() {
   document.body.classList.remove('modal-open');
 }
 
+function compactCredit(card){
+  if(!card.sourceLink) return '今日一息 · 原創小語';
+  const text=card.source.split('｜')[0].trim();
+  return text.length>16 ? text.slice(0,15)+'…' : text;
+}
+function safeCardText(value) {
+  return String(value||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function cardMarkup(card, index, revealed) {
   const saved = isCardSaved(card, index);
   return `<article class="card-slot ${revealed ? 'revealed' : ''}" data-card-index="${index}">
@@ -206,17 +214,32 @@ function cardMarkup(card, index, revealed) {
         <div class="card-back-bottom"><span>留一點空間</span><span>✦</span></div>
       </div>
       <div class="card-face card-front">
-        <span class="card-type">${card.type}</span>
-        <span class="card-art card-art-${card.art}" aria-hidden="true"></span>
-        <blockquote>${card.quote ? `「${card.text}」` : card.text}</blockquote>
-        <div class="card-source"><strong>${card.sourceLink ? `<a href="${card.sourceLink}" target="_blank" rel="noopener noreferrer">${card.source}</a>` : card.source}</strong>${card.provenance ? `<small class="card-provenance">${card.provenance}</small>` : ""}</div>
-        <span class="card-tag">${card.tag}</span>
+        <span class="card-type">${safeCardText(card.type)}</span>
+        <span class="card-art card-art-${safeCardText(card.art)}" aria-hidden="true"></span>
+        <blockquote>${card.quote ? `「${safeCardText(card.text)}」` : safeCardText(card.text)}</blockquote>
+        <div class="card-source"><strong>${safeCardText(compactCredit(card))}</strong><button class="card-source-more" type="button" data-card-action="info" aria-label="查看這張卡片的完整來源與寫作說明">出處與說明 ⓘ</button></div>
+        <span class="card-tag">${safeCardText(card.tag)}</span>
         <div class="card-actions"><button type="button" class="card-action" data-card-action="save" aria-label="${saved ? '取消收藏' : '收藏這張卡'}">${saved ? '♥ 已收藏' : '♡ 收藏'}</button><button type="button" class="card-action" data-card-action="share" aria-label="分享這張卡">分享 ↗</button></div>
       </div>
     </div>
   </article>`;
 }
-
+function showCardSource(index) {
+  const card=dailyCards[index];
+  if(!card)return;
+  const dialog=$('#cardSourceDialog');
+  $('#cardSourceHeading').textContent=card.tag;
+  $('#cardSourceName').textContent=card.source;
+  $('#cardSourceDescription').textContent=card.provenance||'內容由本站整理。';
+  const link=$('#cardSourceLink');
+  if(card.sourceLink && /^https:\/\//.test(card.sourceLink)){
+    link.href=card.sourceLink;link.hidden=false;
+  } else {
+    link.removeAttribute('href');link.hidden=true;
+  }
+  if(typeof dialog.showModal==='function')dialog.showModal();
+  else dialog.hidden=false;
+}
 function renderCards() {
   $('#cardsGrid').innerHTML = dailyCards.map((card, index) => cardMarkup(card, index, index < state.revealed)).join('');
   $('#progressText').textContent = `${state.revealed} / ${dailyCards.length}`;
@@ -473,6 +496,7 @@ function switchView(view) {
     panel.classList.toggle('active', active);
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.dispatchEvent(new CustomEvent('pause:view-change',{detail:{view}}));
   window.dispatchEvent(new Event('palette-view-change'));
   window.dispatchEvent(new CustomEvent('pause:companion',{detail:{text:view==='read'?'隨手翻開一篇也好。':view==='curiosity'?'一個疑問可以先留著。':view==='palette'?'讓筆觸慢慢留在畫裡。':view==='holding'?'這裡不需要向任何人交代。':'這裡可以停一下。',kind:view==='read'?'paper':view==='palette'?'leaf':view==='holding'?'moon':'light'}}));
   if (view === 'palette') setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
@@ -558,6 +582,7 @@ $('#cardsGrid').addEventListener('click', (event) => {
   if (!action) return;
   const slot = action.closest('[data-card-index]');
   const index = Number(slot.dataset.cardIndex);
+  if (action.dataset.cardAction === 'info') { showCardSource(index); return; }
   if (action.dataset.cardAction === 'save') {
     const card = dailyCards[index];
     const key = cardStorageKey(card);
@@ -570,6 +595,8 @@ $('#cardsGrid').addEventListener('click', (event) => {
   }
   shareCard(index).catch(() => { $('#drawHint').textContent = '分享沒有完成，但這句話仍然可以留在今天。'; });
 });
+$('#cardSourceDialogClose').addEventListener('click',()=>$('#cardSourceDialog').close?.());
+$('#cardSourceDialog').addEventListener('click',event=>{if(event.target.id==='cardSourceDialog')event.target.close?.()});
 $('#moodChoices').addEventListener('click', (event) => {
   const button = event.target.closest('[data-mood]');
   if (!button) return;

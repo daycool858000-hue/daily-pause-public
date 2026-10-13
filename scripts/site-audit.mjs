@@ -9,7 +9,7 @@ const root = path.resolve(process.argv[2] || '.');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(root, relative));
 const required = [
-  'index.html', 'styles.css', 'world-style.css', 'app.js', 'cards-data.js',
+  'index.html', 'styles.css', 'world-style.css', 'sound-style.css', 'soundscape.js', 'app.js', 'cards-data.js',
   'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
   'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
   'world-art.js', 'palette-world.js', 'card-originals.js', 'card-sourced.js', 'fresh-cards.js',
@@ -28,6 +28,10 @@ for (const js of required.filter(name => name.endsWith('.js'))) {
   assert.ok(html.includes('./' + js + '?v='), 'HTML script missing: ' + js);
 }
 assert.ok(html.includes('styles.css'), 'CSS link absent');
+assert.ok(html.includes('./sound-style.css?v='), 'sound UI CSS absent');
+assert.ok(html.includes('id="cardSourceDialog"') && html.includes('id="cardSourceDialogClose"'), 'accessible credit dialog absent');
+assert.ok(html.indexOf('soundscape.js') < html.indexOf('companion-site.js'), 'soundscape must load before companion');
+assert.ok(html.indexOf('soundscape.js') < html.indexOf('./app.js'), 'soundscape must load before navigation controls');
 assert.match(html, /id="worldUndo"[^>]+disabled/, 'new studio undo must begin disabled');
 assert.match(html, /id="worldRedo"[^>]+disabled/, 'new studio redo must begin disabled');
 assert.ok(html.includes('id="worldQuickClear"') && html.includes('id="worldQuickSave"'), 'canvas action toolbar missing');
@@ -115,7 +119,7 @@ assert.ok(new Set(win.pauseSourcedCards.map(c=>c.sourceLink)).size>=20,'source d
 assert.ok(win.pauseOriginalCards.every(c=>!c.sourceLink&&c.provenance.includes('AI')));
 assert.ok(win.pauseSourcedCards.every(c=>c.sourceLink&&/延伸|聯想/.test(c.provenance)),'sourced messages describe either an extension or a daily-life analogy');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>c.provenance && /^https:\/\//.test(c.sourceLink)), 'sourced life reflections require traceable links and context');
-assert.ok(win.freshCards.every(c=>c.text.length>=40),'all reflections must have an actual setting or usable perspective');
+assert.ok(win.freshCards.every(c=>c.text.length>=28 && c.text.length<=52),'cards should be compact and readable on narrow screens');
 assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('柔軟不等於委屈')), 'Taoist context must explain a gentle everyday implication');
 assert.ok(win.freshCards.every(c=>!/你應該|你必須|比別人|成功人士|別再偷懶/.test(c.text)), 'pressure-based messaging accidentally introduced');
 assert.ok(win.freshCards.every(c=>(c.provenance||'').includes('AI')||c.sourceLink), 'missing original or classical provenance');
@@ -149,6 +153,20 @@ assert.equal(refs.filter(u => u.includes('openstax.org')).length, 0);
 const app = read('app.js');
 assert.ok(app.includes('window.setupPaletteNew?.();'), 'new studio is not started');
 assert.ok(app.includes('renderDailyRecommendation();'), 'random recommended reading not initialized');
+assert.ok(app.includes("new CustomEvent('pause:view-change'"), 'ambient tracks must be interrupted on navigation');
+assert.ok(app.includes('function showCardSource(index)'), 'credit details should be readable on demand');
+assert.ok(app.includes('safeCardText(card.text)'), 'card bodies must be safely escaped');
+assert.ok(app.includes('card-source-more'), 'compact visible source link absent');
+assert.ok(app.includes("$('#cardSourceDialogClose').addEventListener"), 'dialog close interaction absent');
+const audioScript=read('soundscape.js');
+assert.ok(!/https?:\/\//.test(audioScript), 'ambient sound must not rely on remote recordings');
+assert.ok(audioScript.includes('ctx.createBuffer(') && audioScript.includes('createOscillator()'), 'procedural ambience synthesis missing');
+assert.ok(audioScript.includes("['today','stream']") && audioScript.includes("['read','forest']"), 'homepage and reading sound defaults missing');
+assert.ok(audioScript.includes("['curiosity','rain']") && audioScript.includes("['palette','handpan']") && audioScript.includes("['holding','ocean']"), 'remaining navigation sound defaults missing');
+assert.ok(audioScript.includes("document.addEventListener('visibilitychange'") && audioScript.includes("window.addEventListener('pagehide'"), 'sounds must stop in background');
+assert.ok(audioScript.includes("wrap.querySelector('button').addEventListener('click'"), 'sound must start only on explicit click');
+assert.ok(!audioScript.includes('autoplay'), 'no autoplay permitted');
+assert.ok(read('companion-site.js').includes('window.PauseSound?.bell?.()'), 'creature bell not wired');
 const worldCode = read('palette-world.js');
 assert.ok(worldCode.includes("model.marks.push(mark)"), 'additive element artwork missing');
 assert.ok(worldCode.includes("model.tool=b.dataset.element"), 'changing tool must not mutate prior marks');

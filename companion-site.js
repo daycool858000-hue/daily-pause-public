@@ -59,6 +59,7 @@
     const hide=()=>{bubble.hidden=true;clearTimeout(hideTimer)};
     button.addEventListener('click',()=>{
       if(off)return;
+      window.PauseSound?.bell?.();
       icon.dataset.scene=style==='butterfly'?'leaf':'light';
       message.textContent=next();
       bubble.hidden=false;root.classList.remove('companion-enter');void root.offsetWidth;root.classList.add('companion-enter');

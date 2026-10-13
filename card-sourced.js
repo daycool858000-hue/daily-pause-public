@@ -2,7 +2,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "先接住難過",
-    "text": "Kristin Neff 談自我慈悲時，先從看見自己的難受開始。如果今天心裡很亂，你可以像對待難過的朋友那樣，不追問自己為什麼還沒好起來。",
+    "text": "自我慈悲提醒我們，難受時也能像對朋友那樣善待自己。今天若心情沉重，不必急著責問原因。",
     "art": "heart",
     "source": "Kristin Neff｜自我慈悲",
     "sourceLink": "https://self-compassion.org/what-is-self-compassion/",
@@ -12,7 +12,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "原來人都會有脆弱的時候",
-    "text": "自我慈悲裡有一個提醒：受挫與不完美，是人類共同經驗的一部分。你不用把某次失誤藏起來，才值得被理解。",
+    "text": "受挫與不完美是人們共有的經驗。遇到困難的你，依然值得理解與溫柔。",
     "art": "cloud",
     "source": "Kristin Neff｜自我慈悲",
     "sourceLink": "https://self-compassion.org/what-is-self-compassion/",
@@ -22,7 +22,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "寫給今天的自己",
-    "text": "柏克萊的「給自己的慈悲信」邀請人用理解朋友的語氣寫給自己。如果心裡有一句責備，不妨想想：對一位你珍惜的人，你會怎麼說？",
+    "text": "柏克萊的慈悲信練習有個提問：若難過的是你珍惜的朋友，你想怎麼安慰他？也留一句給自己吧。",
     "art": "book",
     "source": "UC Berkeley｜給自己的慈悲信",
     "sourceLink": "https://ggia.berkeley.edu/practice/self_compassionate_letter",
@@ -32,7 +32,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "替心情留一點空間",
-    "text": "WHO 的壓力調適指南談到「容納感受」。難過與緊張不一定能立即消失；你可以先承認它們正在發生，不必把抽卡變成消除情緒的測驗。",
+    "text": "WHO 提醒，情緒不一定要立即消除。有些難過，先承認它存在，心裡或許就能多一點空間。",
     "art": "moon",
     "source": "WHO｜Doing What Matters in Times of Stress",
     "sourceLink": "https://www.who.int/publications/i/item/9789240003927",
@@ -42,7 +42,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "念頭只是念頭",
-    "text": "WHO 也談到與困擾的念頭保持一些距離。腦中浮現「事情一定會變糟」，不表示預測已成真；眼前還有可以慢慢核對的現實。",
+    "text": "腦中閃過「事情一定會變糟」，並不表示未來已經決定。眼前還有許多未知，可以慢慢看清。",
     "art": "cloud",
     "source": "WHO｜Doing What Matters in Times of Stress",
     "sourceLink": "https://www.who.int/publications/i/item/9789240003927",
@@ -52,7 +52,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "今晚不做自我評分",
-    "text": "Calm 關於自我寬容的文章建議，晚上回顧時少一點苛責。今天若有不如意的事，你可以記得自己怎麼走過來，而不必替整個人打分數。",
+    "text": "Calm 談自我寬容：一天不如意，不代表整個人不好。願你看見自己的辛苦，也保留一點體諒。",
     "art": "moon",
     "source": "Calm｜給自己一些寬容",
     "sourceLink": "https://www-cdn-prod.aws-prod.useast1.calm.com/blog/give-yourself-grace",
@@ -62,7 +62,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "心裡可以有個角落",
-    "text": "《沉思錄》第四卷談過向內心尋得一處暫時退隱的地方。外面的難題仍在；在能休息的時候，給自己一點不被訊息打擾的安靜也很好。",
+    "text": "《沉思錄》談過心中的退處。外面再忙，也許仍能留給自己一段不必立刻回應的安靜。",
     "art": "book",
     "source": "馬可・奧理略《沉思錄》4.3",
     "sourceLink": "https://www.gutenberg.org/files/55317/55317-h/55317-h.htm",
@@ -72,7 +72,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "平凡不需要道歉",
-    "text": "天下文化介紹岸見一郎的阿德勒相關著作時，談到不必靠特別出色才有價值。如果今天沒有驚人成績，這一天也依然屬於你。",
+    "text": "阿德勒相關思想提醒，人的價值不必靠特別出色證明。今天平凡的你，也值得好好過日子。",
     "art": "leaf",
     "source": "天下文化｜《自在感的練習》與阿德勒",
     "sourceLink": "https://bookzone.cwgv.com.tw/article/34785",
@@ -82,7 +82,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "吃飯也是生活的一部分",
-    "text": "NHS 的身心健康建議重視與人連結，也提到一起吃飯。今天若能和喜歡的人共享一餐很好；一個人安靜吃頓舒服的飯，也值得好好對待。",
+    "text": "身心健康也包含人與人的連結。一起吃飯很好；一個人安靜享用喜歡的食物，也很好。",
     "art": "cup",
     "source": "NHS｜心理健康的五個方向",
     "sourceLink": "https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/five-steps-to-mental-wellbeing/",
@@ -92,7 +92,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "一段自在的活動",
-    "text": "NHS 將身體活動列為照顧心理健康的方向之一。它不一定是困難的運動計畫；如果狀況合適，沿著住家附近慢慢走一段也可以。",
+    "text": "NHS 把身體活動列為照顧身心的方式。若身體狀況允許，散步一小段，也能享受街道的風。",
     "art": "leaf",
     "source": "NHS｜心理健康的五個方向",
     "sourceLink": "https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/five-steps-to-mental-wellbeing/",
@@ -102,7 +102,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "讓工作有個休息符號",
-    "text": "NHS 提醒居家工作者保留午餐與螢幕休息時間。無論在哪裡工作，你的吃飯與喝水不必永遠排在最後。",
+    "text": "NHS 提醒居家工作者保留吃飯與休息時間。無論多忙，喝水與用餐都值得有自己的位置。",
     "art": "cup",
     "source": "NHS｜工作中的休息與界線",
     "sourceLink": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/simple-tips-to-tackle-working-from-home/",
@@ -112,7 +112,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "睡前不用表現完美",
-    "text": "NHS 的睡前冥想介紹強調舒適與找到適合自己的方式。今晚若不想聽任何引導，關掉聲音、讓房間安靜，也是一種個人選擇。",
+    "text": "睡前可以找適合自己的安靜方式。若引導音樂不合心意，關掉聲音也可以；不用勉強入睡。",
     "art": "moon",
     "source": "NHS｜睡前冥想與睡眠",
     "sourceLink": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-fall-asleep-faster-and-sleep-better/how-can-meditation-help-with-sleep/",
@@ -122,7 +122,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "回到腳下的地面",
-    "text": "WHO 的壓力指南提供「回到當下」的方法。若你覺得適合，可以留意鞋底與地面的接觸；如果不舒服，換成看窗外也沒有關係。",
+    "text": "WHO 的當下覺察練習，可以從腳接觸地面的感覺開始。若不舒服，換成看看窗外也很好。",
     "art": "leaf",
     "source": "WHO｜Doing What Matters in Times of Stress",
     "sourceLink": "https://www.who.int/publications/i/item/9789240003927",
@@ -132,7 +132,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "呼吸有自己的節奏",
-    "text": "柏克萊的正念呼吸練習從留意自然呼吸開始。你不用和動畫同步，也不用憋氣或追求固定秒數；呼吸練習不適合時，停下就好。",
+    "text": "留意自然的呼吸就好，不必跟任何動畫比速度。若覺得不適，隨時停下，換個舒服的方法。",
     "art": "cloud",
     "source": "UC Berkeley｜覺察呼吸",
     "sourceLink": "https://ggia.berkeley.edu/practice/mindful_breathing",
@@ -142,7 +142,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "眼睛也想看看樹",
-    "text": "柏克萊的細細品味散步建議留意沿路的色彩和聲音。如果今天只能走到窗前，看看樹影或遠處天空，也可以是一段短暫的感官休息。",
+    "text": "柏克萊邀請人留意路上的聲音與色彩。即使只到窗前，也可能看見今天不一樣的光。",
     "art": "sun",
     "source": "UC Berkeley｜細細品味散步",
     "sourceLink": "https://ggia.berkeley.edu/practice/savoring_walk",
@@ -152,7 +152,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "找到適合身體的方式",
-    "text": "NHS 的心理健康指南提供不同照顧方向，沒有一個方法能適合所有人。今天若特別疲倦，先問問自己需要的是睡眠、吃飯，還是尋求協助。",
+    "text": "照顧身心沒有一種標準答案。今天特別疲倦嗎？也許先確認自己需要睡眠、食物或協助。",
     "art": "heart",
     "source": "NHS｜心理健康的五個方向",
     "sourceLink": "https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/five-steps-to-mental-wellbeing/",
@@ -162,7 +162,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "先聽完整句話",
-    "text": "柏克萊的主動傾聽練習提醒我們確認自己是否理解對方。有時一句「你的意思是這樣嗎？」就能讓說話的人感到被認真對待。",
+    "text": "主動傾聽的一個方法，是問：「我有理解你的意思嗎？」有時這句話就很貼近人心。",
     "art": "heart",
     "source": "UC Berkeley｜用心傾聽",
     "sourceLink": "https://ggia.berkeley.edu/practice/active_listening",
@@ -172,7 +172,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "把話留給對方說",
-    "text": "主動傾聽也需要不急著打斷。若朋友正在訴說難過，你不一定要馬上拿出方法；一段願意聽完的時間，本身就很珍貴。",
+    "text": "朋友難過時，不一定需要答案。有人願意把話聽完，就已經是一份珍貴的陪伴。",
     "art": "moon",
     "source": "UC Berkeley｜用心傾聽",
     "sourceLink": "https://ggia.berkeley.edu/practice/active_listening",
@@ -182,7 +182,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "一封不用寄出的感謝信",
-    "text": "柏克萊的感謝信練習從回想曾經照顧自己的人開始。某位老師、朋友或家人留過的好意，即使現在沒有機會道謝，也可以被你珍藏。",
+    "text": "柏克萊的感謝信練習，讓人想起曾經善待自己的人。即使沒有寄出，那份感謝仍然真實。",
     "art": "book",
     "source": "UC Berkeley｜感謝信",
     "sourceLink": "https://ggia.berkeley.edu/practice/gratitude_letter",
@@ -192,7 +192,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "慈悲也有生活的模樣",
-    "text": "達賴喇嘛在談慈悲時，關心人們共同想得到幸福、避開痛苦的心願。放到今天，也許是一句「要不要吃點東西」，很小卻很實在。",
+    "text": "達賴喇嘛談慈悲，從人們都盼望幸福、避開痛苦出發。日常的關懷，也許只是一聲「吃飯了嗎」。",
     "art": "cup",
     "source": "第十四世達賴喇嘛｜慈悲與個人",
     "sourceLink": "https://dalailama.com/messages/compassion-and-human-values/compassion",
@@ -202,7 +202,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "照顧彼此也照顧自己",
-    "text": "達賴喇嘛談到關懷他人的重要；這並不需要你把所有心力都交出去。溫柔可以包含關心，也包含誠實告知自己今天想休息。",
+    "text": "慈悲可以是關心別人，也能包括承認自己今天累了。溫柔不必靠耗盡自己來證明。",
     "art": "flower",
     "source": "第十四世達賴喇嘛｜慈悲與個人",
     "sourceLink": "https://dalailama.com/messages/compassion-and-human-values/compassion",
@@ -212,7 +212,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "真正能接住差異的關係",
-    "text": "天下文化介紹阿德勒心理學時，提到合作與社會連結。好的關係裡能有不同想法，也能讓人自在做自己；不用每次交談都變成誰對誰錯。",
+    "text": "阿德勒思想重視合作與連結。好的關係能容納不同意見，讓彼此不必一直表現得完美。",
     "art": "heart",
     "source": "天下文化｜《自在感的練習》與阿德勒",
     "sourceLink": "https://bookzone.cwgv.com.tw/article/34785",
@@ -222,7 +222,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "一位願意提醒你的夥伴",
-    "text": "巴菲特在紀念蒙格的股東信裡，珍惜多年合作與坦誠提醒。對日常關係來說，有人敢溫和指出盲點，也願意留下來陪你，十分難得。",
+    "text": "巴菲特珍惜蒙格多年坦誠的提醒。有個願意說實話、也願意陪你的人，是很難得的禮物。",
     "art": "star",
     "source": "巴菲特｜波克夏2023年股東信",
     "sourceLink": "https://www.berkshirehathaway.com/letters/2023ltr.pdf",
@@ -232,7 +232,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "你可以說只想被聽見",
-    "text": "NHS 的心理健康溝通指南提到，可以先告訴對方自己需要傾聽還是建議。今天想說說話，也可以直接告訴信任的人：「先聽我講一下就好。」",
+    "text": "想找人說話時，可以先告訴對方：「今天我只想有人聽。」這樣的需要，值得被尊重。",
     "art": "heart",
     "source": "NHS｜談談自己的心理感受",
     "sourceLink": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-talk-about-your-mental-health/",
@@ -242,7 +242,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "一間熟悉的店",
-    "text": "柏克萊的「細細品味散步」提醒人留意日常熟悉街道的好風景。今天若路過喜歡的麵包店，那陣香氣不必變成打卡目標，也能讓你開心一下。",
+    "text": "細細品味散步提醒人留意熟悉街道。麵包香、樹影或一張笑臉，都可能替今天添點光。",
     "art": "cup",
     "source": "UC Berkeley｜細細品味散步",
     "sourceLink": "https://ggia.berkeley.edu/practice/savoring_walk",
@@ -252,7 +252,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "原來路上有這麼多顏色",
-    "text": "細細品味散步不必去著名景點。車窗上的斜陽、紅磚牆邊的小花，可能就在每天經過的地方等著被看見。",
+    "text": "幸福不一定要去遠方才找得到。紅磚牆邊的小花、車窗上的斜陽，也有值得停留的美。",
     "art": "flower",
     "source": "UC Berkeley｜細細品味散步",
     "sourceLink": "https://ggia.berkeley.edu/practice/savoring_walk",
@@ -262,7 +262,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "記得一個好片刻",
-    "text": "柏克萊的「三件好事」練習把注意力帶向日常小小的順利。你不用硬湊滿三件；若今晚只想記住午餐那道剛好合口味的菜，也可以。",
+    "text": "「三件好事」練習邀請人留意小小的順利。今天若只記得一頓合口味的午餐，也足夠珍貴。",
     "art": "cup",
     "source": "UC Berkeley｜三件好事",
     "sourceLink": "https://ggia.berkeley.edu/practice/three-good-things",
@@ -272,7 +272,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "不必把美好寫得偉大",
-    "text": "「三件好事」可以記錄微小的日常，不只限於重大成就。今天窗外天氣舒服、搭到剛好的車，都能成為屬於你的一點亮光。",
+    "text": "不必把美好寫得偉大。剛好搭上車、收到一句問候，可能就是今天值得收藏的片刻。",
     "art": "sun",
     "source": "UC Berkeley｜三件好事",
     "sourceLink": "https://ggia.berkeley.edu/practice/three-good-things",
@@ -282,7 +282,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "一件真的很好笑的小事",
-    "text": "柏克萊也分享記錄生活中好笑片刻的練習。忘記拿筷子、朋友講了個冷笑話，若你因此笑了一下，這個瞬間就值得收藏。",
+    "text": "記住一件好笑的小事，也是一種生活練習。若今天有人讓你笑了一下，讓那份開心多待一會兒。",
     "art": "star",
     "source": "UC Berkeley｜三件好笑的事",
     "sourceLink": "https://ggia.berkeley.edu/practice/three_funny_things",
@@ -292,7 +292,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "謝謝生活裡的普通事",
-    "text": "柏克萊的感謝冥想鼓勵留意平常容易被忽略的好意。有人幫你開門，或剛好有人把最後一塊水果留給你，都有自己的溫度。",
+    "text": "感謝有時藏在不起眼的地方：有人替你開門、留一塊水果。你被善待的時刻，值得記得。",
     "art": "flower",
     "source": "UC Berkeley｜感謝冥想",
     "sourceLink": "https://ggia.berkeley.edu/practice/gratitude_meditation",
@@ -302,7 +302,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "一張卡可以只是陪著",
-    "text": "Calm 的正念內容邀請人把注意力帶回此刻。抽到一張小卡時，你不用照著它做什麼；讀到喜歡的一句、想起一個人，就已經能和今天產生一點連結。",
+    "text": "正念提醒我們回到當下。抽到這張卡，不必完成什麼；若想起一件喜歡的小事，就帶著它走吧。",
     "art": "book",
     "source": "Calm｜正念與此刻",
     "sourceLink": "https://www.calm.com/blog/intentions/mindfulness",
@@ -312,7 +312,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "那些不起眼的小善意",
-    "text": "尼采在《人性的，太人性的》第49節寫過生活中大量細小的友善。店員的一個微笑、路人讓開一步，可能不起眼，卻替日常添了一點暖。",
+    "text": "尼采寫過人與人之間細小的友善。一次讓路、一個微笑，也可能讓普通的一天溫暖一些。",
     "art": "heart",
     "source": "尼采《人性的，太人性的》§49",
     "sourceLink": "https://www.gutenberg.org/files/38145/38145-h/38145-h.htm",
@@ -322,7 +322,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "溫柔也能轉彎",
-    "text": "《道德經》第八章的「上善若水」，以水比喻不爭與滋養。想到人與人相處，也許可以帶著善意前行，同時知道什麼時候需要換方向；柔軟不等於委屈。",
+    "text": "「上善若水」以水比喻不爭與滋養。帶著善意前行，也可以選擇轉彎；柔軟不等於委屈。",
     "art": "leaf",
     "source": "《道德經》王弼本",
     "sourceLink": "https://zh.wikisource.org/wiki/%E9%81%93%E5%BE%B7%E7%B6%93_(%E7%8E%8B%E5%BC%BC%E6%9C%AC)",
@@ -332,7 +332,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "足夠的今天",
-    "text": "《道德經》第四十四章談知足與知止。若今天已經有一頓好吃的飯、一次安心的相聚，何不把這一小段留在心裡？生活不必每晚都追加成績單。",
+    "text": "《道德經》談知足與知止。若今天吃到喜歡的飯、見到想念的人，那份滿足也值得留在心裡。",
     "art": "cup",
     "source": "《道德經》王弼本",
     "sourceLink": "https://zh.wikisource.org/wiki/%E9%81%93%E5%BE%B7%E7%B6%93_(%E7%8E%8B%E5%BC%BC%E6%9C%AC)",
@@ -342,7 +342,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "心裡留一道門",
-    "text": "《沉思錄》第四卷談到人可以在心中找到短暫的安靜。這段古代哲學的生活聯想是：外界再忙，你仍可以有一個不需要隨時回訊息的片刻。",
+    "text": "《沉思錄》談心中的寧靜。你可以有一個暫時不看訊息的角落，讓自己的想法慢慢安定。",
     "art": "moon",
     "source": "馬可・奧理略《沉思錄》4.3",
     "sourceLink": "https://www.gutenberg.org/files/55317/55317-h/55317-h.htm",
@@ -352,7 +352,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "把自己的部分拿回來",
-    "text": "愛比克泰德《手冊》開篇區分哪些事可由自己決定，哪些事未必如此。你能真誠表達，對方怎麼回應仍是另一個人的選擇；不必獨自承擔整段關係。",
+    "text": "愛比克泰德區分能由自己決定的事與外在結果。你可以真誠表達，也不必替他人的回應負全責。",
     "art": "heart",
     "source": "愛比克泰德《手冊》第一節",
     "sourceLink": "https://en.wikisource.org/wiki/The_Discourses_of_Epictetus/The_Encheiridion%2C_or_Manual",
@@ -362,7 +362,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "時間也可以拿來吃甜點",
-    "text": "塞內卡《論生命之短暫》思考人如何使用時間。今天若能留一點空間吃喜歡的甜點、看一場夕陽，那不一定是浪費；生命也有不需量化的部分。",
+    "text": "塞內卡談如何使用時間。吃喜歡的甜點、看一場夕陽，不一定是浪費；生活也需要自在的片刻。",
     "art": "sun",
     "source": "塞內卡《論生命之短暫》",
     "sourceLink": "https://en.wikisource.org/wiki/On_the_shortness_of_life/Chapter_I",
@@ -372,7 +372,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "不必用一刻替自己定名",
-    "text": "《心經》的空性思想有完整的佛教修行脈絡。作為生活上的聯想：某一天的失落，未必能代表你全部的樣子。這只是延伸感想，並非經文原義的全部。",
+    "text": "《心經》的空性有深厚佛教義理。借作生活聯想：某一天的失落，並不能代表你的全部。",
     "art": "cloud",
     "source": "《般若波羅蜜多心經》｜CBETA",
     "sourceLink": "https://cbetaonline.dila.edu.tw/T0251",
@@ -382,7 +382,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "善意不用討價還價",
-    "text": "《金剛經》談「無所住」有深厚的佛教義理。若把它當作生活裡的一個提問：對某人付出關心後，能否也容許彼此用不同方式回應？不必把每份溫柔都折算成回報。",
+    "text": "《金剛經》談「無所住」有修行脈絡。借作生活提問：付出關心之後，能否也容許不同的回應？",
     "art": "flower",
     "source": "《金剛般若波羅蜜經》｜CBETA",
     "sourceLink": "https://cbetaonline.dila.edu.tw/T0235",
@@ -392,7 +392,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "意義也藏在平常裡",
-    "text": "弗蘭克的意義治療討論人與生命經驗、價值之間的關係。今晚若有一頓喜歡的飯、一段值得懷念的談話，它們也可以是讓你覺得今天值得記得的理由。",
+    "text": "弗蘭克談生命經驗與意義。一頓喜歡的飯、一次真誠的談話，也可以成為你珍惜的記憶。",
     "art": "book",
     "source": "Viktor Frankl Institute｜意義治療",
     "sourceLink": "https://www.viktorfranklinstitute.org/about-logotherapy/",
