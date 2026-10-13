@@ -129,13 +129,16 @@
       ).join('');
       $('worldElements').innerHTML=elements.map(([id,name,symbol])=>'<button type="button" data-element="'+id+'" aria-pressed="false"><span>'+symbol+'</span>'+name+'</button>').join('');
       $('worldProps').innerHTML=props.map(([id,name,symbol])=>'<button type="button" data-prop="'+id+'" aria-label="加入'+name+'"><span>'+symbol+'</span>'+name+'</button>').join('');
-      $('worldColors').innerHTML=swatches.map(c=>'<button type="button" data-color="'+c+'" style="--c:'+c+'" aria-label="選擇顏色 '+c+'"></button>').join('');
+      $('worldColors').innerHTML=swatches.map(c=>'<button type="button" data-color="'+c+'" style="--c:'+c+'" aria-label="選擇顏色 '+c+'" title="套用至下一筆 '+c+'"></button>').join('');
     }
     function updateSelections(){
       root.querySelectorAll('[data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mood===model.mood)));
       root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===model.scene)));
       root.querySelectorAll('[data-element]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.element===model.tool)));
       root.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===model.color)));
+      $('worldCustomColor').value=model.color;
+      $('worldActiveColorPreview').style.backgroundColor=model.color;
+      $('worldColorStatus').textContent='目前選色 '+model.color.toUpperCase()+' · 用於下一筆或下一個元素';
       root.querySelectorAll('[data-world-tab]').forEach(b=>{
         const v=b.dataset.worldTab===activeTab;b.setAttribute('aria-selected',String(v));b.classList.toggle('active',v);
       });
@@ -226,7 +229,10 @@
       if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
       if(b.dataset.element){model.tool=b.dataset.element;activeTab='element';updateSelections();return;}
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
-      if(b.dataset.color){model.color=b.dataset.color;updateSelections();return;}
+      if(b.dataset.color){
+        model.color=b.dataset.color;
+        updateSelections();return;
+      }
       if(b.dataset.worldTab){activeTab=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;updateSelections();return;}
       if(b.dataset.propAction){editProp(b.dataset.propAction);return;}
     });

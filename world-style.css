@@ -377,3 +377,18 @@ body.rest-theatre-open{overflow:hidden}
   to{opacity:1;transform:scale(1) translateY(0)}
 }
 @media(prefers-reduced-motion:reduce){.rest-stage-art svg{animation:none!important}}
+
+/* Clearly visible selected swatch: no interruption or recoloring of existing artwork. */
+.world-v2 .world-active-color{
+  display:flex;align-items:center;gap:9px;min-height:35px;margin:6px 0 10px;
+  color:#6d796c;font-size:.72rem;line-height:1.45;
+}
+.world-v2 .world-active-color-preview{
+  display:inline-block;width:23px;height:23px;flex:0 0 23px;
+  border:2px solid #fff;border-radius:50%;background:#b78072;
+  box-shadow:0 0 0 1px rgba(86,111,94,.36);
+}
+.world-v2 .world-colors button{width:29px;height:29px;touch-action:manipulation}
+.world-v2 .world-colors button[aria-pressed="true"]{
+  box-shadow:0 0 0 2.5px #52796b,0 0 0 4px rgba(82,121,107,.2);
+}

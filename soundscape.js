@@ -7,39 +7,42 @@
   // The 13 music tracks were suspended at the site owner's request; see MUSIC_RIGHTS_REVIEW_20261013.md.
   // Four personally approved CC0 pieces + gentle-rain replacement, all hosted within this repo.
   // License proof and conversion checksums: media/audio/SOURCES.json.
+  // Six site-approved CC0 music tracks, one CC0 river sound and accepted forest ambience.
+  // Original files, licenses and conversion SHA-256: media/audio/SOURCES.json.
   const tracks = [
     {
       id:'first-light',title:'晨光的微粒',kind:'music',
       src:'./media/audio/first-light.mp3',
       page:'https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track',
       license:'CC0 1.0',artist:'Yoiyami',work:'晨光的微粒',level:0.082
-    },    {
+    },
+    {
       id:'vaporware',title:'柔光鋼琴',kind:'music',
       src:'./media/audio/vaporware.mp3',
       page:'https://opengameart.org/content/calm-piano-1-vaporware',
       license:'CC0 1.0',artist:'The Cynic Project',work:'柔光鋼琴',level:0.082
-    },    {
+    },
+    {
       id:'forget-me-not',title:'別忘了這一刻',kind:'music',
       src:'./media/audio/forget-me-not.mp3',
       page:'https://opengameart.org/content/forget-me-not',
       license:'CC0 1.0',artist:'Kistol',work:'別忘了這一刻',level:0.079
-    },    {
+    },
+    {
       id:'lifewave',title:'安靜的光',kind:'music',
       src:'./media/audio/lifewave.mp3',
       page:'https://opengameart.org/content/calm-ambient-3-lifewave-2k',
       license:'CC0 1.0',artist:'The Cynic Project',work:'安靜的光',level:0.080
-    },    {
-      id:'window-rain',title:'窗邊細雨',kind:'nature',
-      src:'./media/audio/window-rain.mp3',
-      page:'https://opengameart.org/content/rain-on-window-loop',
-      license:'CC0 1.0',artist:'alxl',work:'窗邊細雨',level:0.070
     },
     {
       id:'forest',title:'森林黃昏',kind:'nature',
       src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
       page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',
       license:'CC BY 3.0',artist:'Glaneur de sons',work:'Nature sounds ambience in a Dordogne pond',level:.052
-    }
+    },
+    {id:'budding',title:'意識初醒',kind:'music',src:'./media/audio/budding.mp3',page:'https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4',license:'CC0 1.0',artist:'Yoiyami',work:'意識初醒',level:0.08},
+    {id:'somnium',title:'夢境輕語',kind:'music',src:'./media/audio/somnium.mp3',page:'https://opengameart.org/content/somnium',license:'CC0 1.0',artist:'Adiutorium',work:'夢境輕語',level:0.078},
+    {id:'river-lapping',title:'細流輕拍',kind:'nature',src:'./media/audio/river-lapping.mp3',page:'https://opengameart.org/content/sea-and-river-wave-sounds',license:'CC0 1.0',artist:'RandomMind',work:'細流輕拍',level:0.055}
   ];
   const areas=['today','read','curiosity','palette','holding'];
   // Keep existing desktop output behavior. Audio files are now pre-normalized for softer iOS playback.
@@ -49,6 +52,10 @@
   const phoneAudio=/iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent||'') ||
     (window.matchMedia?.('(pointer: coarse) and (max-width: 700px)')?.matches ?? false);
   function audibleLevel(track) {
+    // Local CC0 files are normalized softly; laptops need more output than the previous external mix.
+    // Keep the user's accepted forest-ambience desktop level untouched.
+    if(desktopAudio && track.src.startsWith('./media/audio/'))
+      return Math.min(track.kind==='nature' ? .31 : .55, track.level*(track.kind==='nature' ? 5.6 : 6.6));
     if(desktopAudio)return Math.min(track.kind==='nature' ? .32 : .34, track.level*(track.kind==='nature' ? 4 : 3.4));
     return track.level;
   }
@@ -134,7 +141,8 @@
         label.href=shown.page;
         label.title=shown.work+' — '+shown.artist+' · '+shown.license+' (查看來源)';
       }else{
-        label.textContent='輕柔聲景';label.removeAttribute('href');label.removeAttribute('title');
+        label.textContent=waiting?'點播放，開啟聲音':'點 ▶ 播放聲音';
+        label.removeAttribute('href');label.removeAttribute('title');
       }
       play.textContent=playback?'Ⅱ':'▷';
       play.setAttribute('aria-label',playback?'暫停背景聲':'播放背景聲');
@@ -204,6 +212,7 @@
     const entry={audio,track:chosen,id:++sequence,gesture:userGesture};
     active=entry;
     waiting=false;
+    audio.addEventListener('playing',()=>{if(active===entry){waiting=false;updateBar()}});
     audio.addEventListener('loadedmetadata',()=>{if(canAdvance(entry))scheduleEnd(entry)});
     audio.addEventListener('timeupdate',()=>{
       if(canAdvance(entry)&&Number.isFinite(audio.duration)&&audio.duration-audio.currentTime<2.5){
@@ -256,9 +265,19 @@
     startNext(true);
   }
   function firstGesture(event){
-    if(!waiting||stoppedByVisitor||active||document.hidden)return;
+    if(stoppedByVisitor||document.hidden)return;
     if(event?.target?.closest?.('.pause-soundbar'))return;
-    // Autoplay is retried synchronously during the user's first interaction.
+    // Desktop autoplay may be blocked even before its Promise rejection is delivered.
+    // Retry on a real gesture; an intentional pause still remains respected.
+    if(active){
+      if(!active.audio.paused)return;
+      const entry=active;
+      const result=entry.audio.play();
+      if(result?.then)result.then(()=>{
+        if(active===entry){waiting=false;fadeIn(entry);updateBar()}
+      }).catch(()=>{if(active===entry)startNext(true)});
+      return;
+    }
     startNext(true);
   }
   function init(){
@@ -313,6 +332,6 @@
     }catch(_){}
   }
   window.PauseSound={bell,stop:pause,shuffle:randomNext,switchTo:onView,
-    get active(){return active?.track.id||null},tracks};
+    get active(){return active?.track.id||null},get waitingForGesture(){return waiting},tracks};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

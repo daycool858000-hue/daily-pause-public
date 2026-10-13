@@ -8,7 +8,7 @@
     <title>今日一息｜每日療癒小卡</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./styles.css?v=20261013-3" />
-    <link rel="stylesheet" href="./world-style.css?v=20261013-5" />
+    <link rel="stylesheet" href="./world-style.css?v=20261013-6" />
     <link rel="stylesheet" href="./surprise-style.css?v=20261013-2" />
     <link rel="stylesheet" href="./sound-style.css?v=20261013-3" />
   </head>
@@ -224,6 +224,10 @@
               <section class="world-panel world-paint-row" data-world-panel="color" role="tabpanel" hidden>
                 <p class="world-tool-help">選好顏色後，再點選形狀或畫筆。已經畫好的元素不會被替換。</p>
                 <div id="worldColors" class="world-colors" aria-label="畫筆顏色"></div>
+                <div class="world-active-color" aria-live="polite">
+                  <span id="worldActiveColorPreview" class="world-active-color-preview" aria-hidden="true"></span>
+                  <span id="worldColorStatus">目前選色 #B78072 · 用於下一筆或下一個元素</span>
+                </div>
                 <label class="world-color-custom">自選顏色 <input id="worldCustomColor" type="color" value="#b78072" aria-label="自選筆觸顏色"></label>
               </section>
               <section class="world-panel world-paint-row" data-world-panel="brush" role="tabpanel" hidden>
@@ -303,17 +307,16 @@
       <span>© 2026 ／ 內容持續整理中</span>
       <details class="pause-music-credits">
         <summary>背景音樂與自然聲來源／授權</summary>
-        <p>四首音樂已於本站重新編碼為 MP3，做了柔和的音量調整及淡入處理；另一段窗邊細雨亦由原始音檔延長循環。全部四首配樂與窗邊細雨均依作者作品頁面所標示的 CC0 1.0 使用，網站仍保留作者與作品來源供讀者查閱。</p>
-        <p>
-          <a href="https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track" target="_blank" rel="noopener noreferrer">First Light Particles — Yoiyami</a>；
+        <p>目前的六首音樂與一段河水錄音，均依作品作者於 OpenGameArt 個別頁面標示之 CC0 1.0 使用。本站將原始 WAV／OGG／MP3 轉換為本地 MP3，調整音量及淡入效果；河水錄音另做柔化與長度剪輯。CC0 不強制署名，仍保留來源以便追溯。</p>
+        <p><a href="https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track" target="_blank" rel="noopener noreferrer">First Light Particles — Yoiyami</a>；
           <a href="https://opengameart.org/content/calm-piano-1-vaporware" target="_blank" rel="noopener noreferrer">Calm Piano 1 (Vaporware) — The Cynic Project</a>；
           <a href="https://opengameart.org/content/forget-me-not" target="_blank" rel="noopener noreferrer">Forget Me Not — Kistol</a>；
-          <a href="https://opengameart.org/content/calm-ambient-3-lifewave-2k" target="_blank" rel="noopener noreferrer">Calm Ambient 3 (Lifewave 2k) — The Cynic Project</a>。
-          授權：<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a>。
-        </p>
-        <p><a href="https://opengameart.org/content/rain-on-window-loop" target="_blank" rel="noopener noreferrer">Rain on Window Loop — alxl</a>（本地重新編碼、音量調整及延長循環，CC0 1.0）；
-        <a href="https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg" target="_blank" rel="noopener noreferrer">Dordogne pond nature ambience — Glaneur de sons</a>（原始來源，<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>）。</p>
-        <p>此前 13 首配樂暫停公開播放，完整曲目及來源紀錄仍保留於 GitHub 歷史，不代表作品確認侵權。</p>
+          <a href="https://opengameart.org/content/calm-ambient-3-lifewave-2k" target="_blank" rel="noopener noreferrer">Calm Ambient 3 (Lifewave 2k) — The Cynic Project</a>；
+          <a href="https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4" target="_blank" rel="noopener noreferrer">The Budding of Consciousness — Yoiyami</a>；
+          <a href="https://opengameart.org/content/somnium" target="_blank" rel="noopener noreferrer">Somnium — Adiutorium</a>。授權 <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a>。</p>
+        <p><a href="https://opengameart.org/content/sea-and-river-wave-sounds" target="_blank" rel="noopener noreferrer">Sea and river wave sounds — RandomMind</a>（維斯瓦河水波錄音，低音量處理及片段轉檔，CC0 1.0）；
+          <a href="https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg" target="_blank" rel="noopener noreferrer">Dordogne pond nature ambience — Glaneur de sons</a>（「森林黃昏」，<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>）。</p>
+        <p>較早前因來源疑慮暫停的 13 首配樂沒有恢復。窗邊細雨已停止播放，其檔案與歷史授權紀錄暫存於倉庫，供未來復核。</p>
       </details>
     </footer>
 
@@ -350,10 +353,10 @@
     <script src="./daily-content.js?v=20261012-2" defer></script>
     <script src="./reading-20261013.js?v=20261013-2" defer></script>
     <script src="./palette-history.js?v=20261013-1" defer></script>
-    <script src="./world-art.js?v=20261013-1" defer></script>
-    <script src="./palette-world.js?v=20261013-3" defer></script>
+    <script src="./world-art.js?v=20261013-2" defer></script>
+    <script src="./palette-world.js?v=20261013-4" defer></script>
     <script src="./photo-rotation.js?v=20261013-1" defer></script>
-    <script src="./soundscape.js?v=20261013-8" defer></script>
+    <script src="./soundscape.js?v=20261013-9" defer></script>
     <script src="./companion-site.js?v=20261013-5" defer></script>
     <script src="./rest-stage.js?v=20261013-4" defer></script>
     <script src="./surprise-visit.js?v=20261013-2" defer></script>

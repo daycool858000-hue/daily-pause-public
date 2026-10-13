@@ -58,8 +58,18 @@
     ellipse(ctx,398,159,48,48,pal[3]);
     path(ctx,[[123,330],[240,249],[347,330],[478,280],[478,389],[123,389]],'#a4b7aa');
     line(ctx,[295,87,295,389],'#eee1d0',12);line(ctx,[120,258,479,258],'#eee1d0',8);
-    ctx.fillStyle='rgba(247,235,213,.85)';ctx.fillRect(90,67,22,350);ctx.fillRect(495,67,25,350);
-    ctx.save();ctx.globalAlpha=.23;ctx.fillStyle='#fff1cb';path(ctx,[[500,120],[700,280],[770,434],[500,420]],'#fff1cb');ctx.restore();
+    // Thin curtains move slowly. Window light breathes; neither animation shifts existing marks.
+    const curtainBreeze=Math.sin(t*.00039)*4;
+    ctx.fillStyle='rgba(247,235,213,.85)';
+    ctx.fillRect(90+curtainBreeze,67,22,350);
+    ctx.fillRect(495-curtainBreeze*.65,67,25,350);
+    ctx.save();ctx.globalAlpha=.19+Math.sin(t*.00043)*.09;
+    path(ctx,[[500,120],[700+Math.sin(t*.00032)*10,280],[770+Math.sin(t*.00032)*8,434],[500,420]],'#fff1cb');
+    ctx.restore();
+    ctx.save();ctx.globalAlpha=.11+Math.sin(t*.00036+1)*.05;
+    const light=ctx.createRadialGradient(618,290,20,618,290,265);
+    light.addColorStop(0,'#fff1cb');light.addColorStop(1,'rgba(255,241,203,0)');
+    ctx.fillStyle=light;ctx.fillRect(430,100,390,340);ctx.restore();
     rounded(ctx,580,412,260,33,8,'#ae7c62');rounded(ctx,610,437,17,115,6,'#8e6a57');rounded(ctx,797,437,17,115,6,'#8e6a57');
     drawProp(ctx,{type:'cup',x:694,y:393,scale:.8,angle:0},t);
     drawProp(ctx,{type:'plant',x:860,y:478,scale:1.1,angle:0},t);
@@ -69,7 +79,7 @@
     const sky=ctx.createLinearGradient(0,0,0,420);
     sky.addColorStop(0,pal[0]);sky.addColorStop(1,pal[1]);ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
     ellipse(ctx,725,122,61,61,pal[3]);
-    for(let i=0;i<5;i++)ellipse(ctx,160+i*170,150+(i%3)*35,115,19,'rgba(255,250,240,.35)');
+    for(let i=0;i<5;i++)ellipse(ctx,160+i*170+Math.sin(t*.00013+i)*9,150+(i%3)*35,115,19,'rgba(255,250,240,.35)');
     const horizon=mode==='island'?350:390;
     ctx.fillStyle=pal[2];ctx.fillRect(0,horizon,W,H-horizon);
     if(mode==='island'){path(ctx,[[130,400],[265,308],[450,310],[565,390],[700,415]],'#a6ae8d');path(ctx,[[300,368],[438,308],[560,395]],'#c9cba8');}
@@ -103,7 +113,10 @@
     path(ctx,[[0,577],[190,524],[350,562],[571,491],[739,543],[960,473],[960,H],[0,H]],'#789a83');
     if(mode==='lake'){
       path(ctx,[[0,518],[236,509],[543,520],[960,495],[960,H],[0,H]],'#83a9b0');
-      for(let i=0;i<8;i++)line(ctx,[130+i*97,543+i%4*18,185+i*97,543+i%4*18],'rgba(250,243,218,.5)',2);
+      for(let i=0;i<8;i++){
+        const drift=Math.sin(t*.00047+i)*7;
+        line(ctx,[130+i*97+drift,543+i%4*18,185+i*97+drift,543+i%4*18],'rgba(250,243,218,.5)',2);
+      }
     }
     else if(mode==='garden'){
       for(let i=0;i<24;i++){const x=15+i*41,y=568+Math.sin(i*3.5)*35;
@@ -192,7 +205,15 @@
       if(type!=='bottle'){ctx.beginPath();ctx.ellipse(26,0,14,17,0,-Math.PI/2,Math.PI/2);ctx.strokeStyle='#9f796b';ctx.lineWidth=7;ctx.stroke();}
       if(type==='teapot'){ellipse(ctx,0,-28,17,7,'#af8a78');line(ctx,[-26,-10,-43,-19,-49,-9],'#ad8578',7);}
       if(type==='bottle'){rounded(ctx,-12,-53,24,35,4,'#b5c2bb');}
-      if(type==='cup'||type==='teapot'||type==='mug'){ctx.shadowBlur=0;for(let i=0;i<2;i++){ctx.beginPath();ctx.moveTo(-10+i*18,-30);ctx.bezierCurveTo(-24+i*18,-45,0+i*18,-57,-8+i*18,-76);ctx.strokeStyle='rgba(255,244,224,.82)';ctx.lineWidth=3;ctx.stroke();}}
+      if(type==='cup'||type==='teapot'||type==='mug'){
+        ctx.shadowBlur=0;
+        for(let i=0;i<2;i++){
+          const steamDrift=Math.sin(t*.00066+i*1.7)*5;
+          ctx.beginPath();ctx.moveTo(-10+i*18,-30);
+          ctx.bezierCurveTo(-24+i*18+steamDrift,-45,0+i*18+steamDrift,-57,-8+i*18+steamDrift,-76);
+          ctx.strokeStyle='rgba(255,244,224,.82)';ctx.lineWidth=3;ctx.stroke();
+        }
+      }
     } else if(['book','notebook','letter','frame','painting'].includes(type)){
       rounded(ctx,-43,-42,86,85,5,type==='book'?'#b08b83':'#e8dfd0','#897367');
       rounded(ctx,-31,-36,64,72,4,cream);
@@ -204,7 +225,7 @@
       path(ctx,[[-29,8],[29,8],[20,52],[-19,52]],type==='vase'?'#cad2c8':'#ad7964','#896b5f');
       line(ctx,[0,12,0,-55],'#69826c',5);
       for(let i=0;i<7;i++){const a=i*2.399,x=Math.sin(a)*35,yy=-30-Math.cos(a)*18;
-        ellipse(ctx,x,yy,17,27,i%2?'#799b7d':'#a1b69a',a);}
+        ellipse(ctx,x+Math.sin(t*.00055+i)*2.5,yy,17,27,i%2?'#799b7d':'#a1b69a',a+Math.sin(t*.00045+i)*.055);}
       if(type==='vase')flower(ctx,4,-58,16,'#dca99d');
     } else if(['lamp','candle','lantern'].includes(type)){
       rounded(ctx,-22,41,44,9,5,dark);

@@ -167,34 +167,38 @@ assert.ok(app.includes('safeCardText(card.text)'), 'card bodies must be safely e
 assert.ok(app.includes('card-source-more'), 'compact visible source link absent');
 assert.ok(app.includes("$('#cardSourceDialogClose').addEventListener"), 'dialog close interaction absent');
 const audioScript=read('soundscape.js');
-assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,6,'four approved music files and two nature tracks required');
-assert.ok(audioScript.includes("id:'forest'") && audioScript.includes("id:'window-rain'"),'approved forest and replacement rain missing');
-assert.ok(!audioScript.includes("id:'creek'"),'replaced forest creek must remain suspended');
-assert.ok(!audioScript.includes('Scott_Buckley_-_'),'suspended music must not be reachable in active player');
-for(const id of ['first-light','vaporware','forget-me-not','lifewave','window-rain'])
-  assert.ok(audioScript.includes("./media/audio/"+id+".mp3"),'approved local MP3 URL missing: '+id);
+assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,8,'six accepted CC0 pieces plus river and forest soundscape');
+assert.ok(audioScript.includes("id:'forest'") && audioScript.includes("id:'river-lapping'"),'forest and replacement river absent');
+assert.ok(!audioScript.includes("id:'window-rain'") && !audioScript.includes("id:'creek'"),'rejected rain or creek must not play');
+assert.ok(!audioScript.includes('Scott_Buckley_-_'),'13 suspended tracks must not be in the player');
+for(const id of ['first-light','vaporware','forget-me-not','lifewave','budding','somnium','river-lapping'])
+  assert.ok(audioScript.includes("./media/audio/"+id+".mp3"),'missing local source: '+id);
 const audioProof=JSON.parse(read('media/audio/SOURCES.json'));
-assert.equal(audioProof.length,5,'five individually vetted local sound sources required');
-for(const source of audioProof) {
-  assert.equal(source.license,'CC0 1.0','wrong source license: '+source.id);
-  assert.ok(source.page.startsWith('https://opengameart.org/content/'),'unverified artist page: '+source.id);
-  assert.match(source.source_sha256,/^[0-9a-f]{64}$/,'source checksum missing');
-  assert.match(source.local_sha256,/^[0-9a-f]{64}$/,'local checksum missing');
-  assert.ok(source.duration_seconds>=60,'audio too short for uninterrupted soundscape');
-  assert.ok(exists(source.local_file),'missing bundled MP3 '+source.local_file);
-  assert.ok(fs.statSync(path.join(root,source.local_file)).size>100000,'bundled audio is unexpectedly small');
+assert.equal(audioProof.length,8,'all eight source records, including suspended rain, must remain');
+for(const source of audioProof){
+  assert.equal(source.license,'CC0 1.0','individual CC0 evidence missing');
+  assert.ok(source.page.startsWith('https://opengameart.org/content/'));
+  assert.match(source.source_sha256,/^[0-9a-f]{64}$/);
+  assert.match(source.local_sha256,/^[0-9a-f]{64}$/);
+  assert.ok(exists(source.local_file),'missing media/audio MP3: '+source.id);
+  assert.ok(fs.statSync(path.join(root,source.local_file)).size>100000,'audio file too small');
 }
-assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('audibleLevel(entry.track)'),'desktop audio levels modified unexpectedly');
-assert.ok(audioScript.includes('new Audio()') && audioScript.includes('audio.play()'),'native playback missing');
-assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeIn(entry)'),'gentle fade-in absent');
-assert.ok(audioScript.includes("sessionStorage.getItem('daily-pause-audio-paused-v1')"),'pause setting lost');
-assert.ok(audioScript.includes("window.addEventListener('pause:view-change'"),'continuous navigation playback missing');
-assert.equal((audioScript.match(/<button /g)||[]).length,2,'random and pause controls must remain');
-assert.ok(html.includes('pause-music-credits') && html.includes('Rain on Window Loop'),'music credits missing');
-assert.ok(html.includes('soundscape.js?v=20261013-8'),'audio cache version not updated');
+assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('6.6'),'desktop normalized CC0 gain absent');
+assert.ok(audioScript.includes('if(stoppedByVisitor||document.hidden)return'),'explicit pause must be respected on first gesture');
+assert.ok(audioScript.includes('entry.audio.play()'),'first gesture must retry desktop playback');
+assert.ok(audioScript.includes('new Audio()') && audioScript.includes('audio.play()'),'native audio playback absent');
+assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeIn(entry)'),'gentle fade in absent');
+assert.ok(audioScript.includes("sessionStorage.getItem('daily-pause-audio-paused-v1')"),'pause preference lost');
+assert.ok(audioScript.includes("window.addEventListener('pause:view-change'"),'navigation playback lost');
+assert.equal((audioScript.match(/<button /g)||[]).length,2,'only shuffle and pause buttons allowed');
+assert.ok(html.includes('pause-music-credits') && html.includes('Sea and river wave sounds'),'attribution missing');
+assert.ok(html.includes('soundscape.js?v=20261013-9'),'audio cache bust absent');
 const worldCode = read('palette-world.js');
 assert.ok(worldCode.includes("model.marks.push(mark)"), 'additive element artwork missing');
 assert.ok(worldCode.includes("model.tool=b.dataset.element"), 'changing tool must not mutate prior marks');
+assert.ok(worldCode.includes("'worldActiveColorPreview'") && worldCode.includes("'worldColorStatus'"),'swatch preview not kept in sync');
+assert.ok(html.includes('id="worldActiveColorPreview"') && html.includes('id="worldColorStatus"'),'visible current color missing');
+assert.ok(read('world-art.js').includes('const curtainBreeze=') && read('world-art.js').includes('const steamDrift='),'default room motion must be perceptible');
 assert.ok(worldCode.includes("model.props.push("), 'physical scene props missing');
 assert.ok(worldCode.includes("window.createPaletteHistory({"), 'studio history integration absent');
 assert.ok(worldCode.includes("document.addEventListener('visibilitychange'"), 'background animation pause missing');
