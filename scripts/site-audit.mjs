@@ -258,7 +258,7 @@ const checkedRestScenes = new Set();
 for (const experience of win.dailyContent.experiences) {
   restWindow.PauseRestStage.open(experience.rest);
   assert.equal(restModal.hidden,false,'rest scene did not open for '+experience.rest.title);
-  assert.match(restArt.innerHTML,/<svg\\b/,'rest SVG was not rendered for '+experience.rest.title);
+  assert.match(restArt.innerHTML,/<svg\b/,'rest SVG was not rendered for '+experience.rest.title);
   assert.ok(restArt.dataset.type,'rest scene type missing for '+experience.rest.title);
   checkedRestScenes.add(restArt.dataset.type);
   restWindow.PauseRestStage.close();
