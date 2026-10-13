@@ -23,6 +23,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg >/dev/null
+          fi
           ffmpeg -version | head -n 1
           python3 - <<'PY'
           import hashlib, html, json, pathlib, re, subprocess, tempfile
@@ -91,7 +95,7 @@ jobs:
                   if count>90000000: raise ValueError('Source audio size limit reached')
                   sha.update(chunk); f.write(chunk)
               signature=original.open('rb').read(4)
-              if not(signature.startswith(b'RIFF') or signature.startswith(b'OggS') or signature.startswith(b'ID3') or signature[:1]==b'\\xff'):
+              if not(signature.startswith(b'RIFF') or signature.startswith(b'OggS') or signature.startswith(b'ID3') or signature[:1]==b'\xff'):
                 raise ValueError('Unexpected source-audio file header')
               target=base/t['out']
               arguments=['ffmpeg','-hide_banner','-loglevel','error','-nostdin','-y']
@@ -116,7 +120,7 @@ jobs:
               t["duration_seconds"]=round(duration,2)
               t["license"]="CC0 1.0"
               print(t["out"],duration,'sec',target.stat().st_size,'bytes',flush=True)
-          (base/'SOURCES.json').write_text(json.dumps(tracks,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          (base/'SOURCES.json').write_text(json.dumps(tracks,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           PY
       - name: Commit originals evidence and five MP3 files only
         shell: bash
