@@ -27,6 +27,26 @@
  paper:'<rect class="rest-drift" x="111" y="55" width="222" height="268" rx="5" fill="#f8eedf" transform="rotate(-3 222 189)"/><path d="M156 113H292M159 140H287M164 168H299M165 202H284" stroke="#cdbbae" stroke-width="3"/><path d="M220 266Q200 228 223 214Q247 203 246 224Q248 240 223 248V255" fill="none" stroke="#a0b4a0" stroke-width="7"/><circle cx="222" cy="272" r="5" fill="#a0b4a0"/>',
  night:'<path d="M0 298Q123 250 217 287T440 269V380H0Z" fill="#7a908e"/><circle cx="296" cy="107" r="49" fill="#ecd6b9"/><circle cx="316" cy="85" r="49" fill="#adb8af"/><g class="rest-stars" fill="#f5e9cd"><circle cx="76" cy="98" r="4"/><circle cx="132" cy="159" r="3"/><circle cx="363" cy="207" r="4"/><circle cx="205" cy="84" r="3"/></g>'
  };
+
+ // Each rest experience has its own moving motif. Animations operate inside the SVG
+ // continuously while the stage is open, rather than only animating modal entrance.
+ const motion={
+ window:'<g class="scene-flying-leaves" fill="#a9b69a"><ellipse cx="68" cy="90" rx="10" ry="5"/><ellipse cx="116" cy="50" rx="7" ry="4"/><ellipse cx="370" cy="145" rx="8" ry="5"/></g>',
+ hands:'<g class="scene-hand-glow" fill="none" stroke="#edc59e" stroke-width="5"><circle cx="220" cy="209" r="62"/><circle cx="220" cy="209" r="97"/></g>',
+ sound:'<g class="scene-sound-waves" fill="none" stroke="#f4dfb7" stroke-width="4"><path d="M267 130Q375 200 267 276"/><path d="M285 92Q429 205 288 315"/></g>',
+ cup:'<g class="scene-steam" fill="none" stroke="#fffaf0" stroke-width="7" stroke-linecap="round"><path d="M174 143Q153 117 170 95T170 44"/><path d="M219 132Q197 101 219 77T219 23"/><path d="M264 143Q243 118 262 89T262 39"/></g>',
+ chair:'<g class="scene-chair-light" fill="#fff1bd" opacity=".7"><ellipse cx="349" cy="112" rx="42" ry="44"/><path d="M330 143L266 281L407 270Z"/></g>',
+ hills:'<g class="scene-clouds" fill="#fff9f0" opacity=".65"><ellipse cx="124" cy="93" rx="92" ry="18"/><ellipse cx="325" cy="70" rx="75" ry="12"/></g>',
+ sunlight:'<g class="scene-sunrays" stroke="#fff4cd" stroke-width="13" opacity=".68"><path d="M80 85L365 288"/><path d="M80 129L306 310"/></g>',
+ eyes:'<g class="scene-breath-mist" fill="#fff3dc" opacity=".57"><ellipse cx="215" cy="111" rx="70" ry="16"/><ellipse cx="216" cy="282" rx="60" ry="12"/></g>',
+ stretch:'<g class="scene-stretch-particles" fill="#b1c8b5"><circle cx="91" cy="120" r="13"/><circle cx="342" cy="141" r="10"/><circle cx="319" cy="67" r="7"/></g>',
+ phone:'<g class="scene-phone-off" fill="#f0d5a9" opacity=".86"><circle cx="334" cy="101" r="12"/><circle cx="366" cy="147" r="8"/><circle cx="352" cy="229" r="9"/></g>',
+ flower:'<g class="scene-petals" fill="#f5d7c8"><ellipse cx="129" cy="70" rx="12" ry="6"/><ellipse cx="342" cy="137" rx="9" ry="5"/><ellipse cx="108" cy="248" rx="8" ry="4"/></g>',
+ desk:'<g class="scene-paper-shimmer" fill="#f5e8d9" opacity=".9"><rect x="178" y="168" width="84" height="13" rx="3"/><rect x="192" y="190" width="106" height="10" rx="3"/></g>',
+ leaf:'<g class="scene-leaf-fall" fill="#b6bf98"><ellipse cx="105" cy="90" rx="13" ry="8" transform="rotate(-32 105 90)"/><ellipse cx="350" cy="70" rx="11" ry="7" transform="rotate(27 350 70)"/></g>',
+ paper:'<g class="scene-notes" stroke="#d5bca7" stroke-width="3" fill="none"><path d="M109 281Q175 344 292 309"/><path d="M320 92Q380 107 367 174"/></g>',
+ night:'<g class="scene-shooting-star"><path d="M70 98L206 152" stroke="#fff0c0" stroke-width="5" stroke-linecap="round"/><circle cx="206" cy="152" r="5" fill="#fff8db"/></g>'
+ };
  function pick(title){const found=states.find(([fragment])=>title.includes(fragment));return found||states[0]}
  function init(){
    const modal=document.getElementById('restStage');if(!modal)return;
@@ -41,7 +61,7 @@
      line.textContent=item.text;
      detail.textContent=item.note||'不用照著任何速度完成。';
      art.dataset.type=type;
-     art.innerHTML='<svg viewBox="0 0 440 380" aria-hidden="true" focusable="false">'+drawing[type]+'</svg>';
+     art.innerHTML='<svg viewBox="0 0 440 380" aria-hidden="true" focusable="false">'+drawing[type]+(motion[type]||'')+'</svg>';
      modal.hidden=false;
      document.body.classList.add('rest-theatre-open');
      modal.querySelector('.rest-stage-close').focus();

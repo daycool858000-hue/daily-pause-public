@@ -19,11 +19,11 @@ const companionLines = (window.dailyContent && window.dailyContent.companionLine
 const dailyExperiences = (window.dailyContent && window.dailyContent.experiences) || [];
 
 const cards = [
-  { type: '經典引文', text: '有些事在我們的掌握之中，有些事不在。', source: '愛比克泰德《手冊》1｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual', tag: '分辨能掌握的事', art: 'sun' },
+  { type: '古典文本概述', text: '有些事在我們的掌握之中，有些事不在。', source: '愛比克泰德《手冊》1｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual', tag: '分辨能掌握的事', art: 'sun' },
   { type: '觀察', text: '窗外的燈亮了，也許有人剛回到家；我們能看見燈，卻看不見他的整天。', source: '今日一息｜AI 協助撰寫原創文字', tag: '看見與未知', art: 'leaf' },
   { type: '生活', text: '熱水壺停下來的聲音，讓廚房忽然安靜。這是今天的一個小小轉場。', source: '今日一息｜AI 協助撰寫原創文字', tag: '廚房聲音', art: 'cloud' },
   { type: '閱讀', text: '在書頁邊緣寫下一個問號，就能留下當時沒想通的地方。', source: '今日一息｜AI 協助撰寫原創文字', tag: '閱讀的痕跡', art: 'flower' },
-  { type: '經典引文', text: '向內探看；善的泉源就在內心，只要你願意挖掘，它總會湧出。', source: '馬可·奧理略《沉思錄》7.59｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7', tag: '往內留一點空間', art: 'star' }
+  { type: '古典文本概述', text: '向內探看；善的泉源就在內心，只要你願意挖掘，它總會湧出。', source: '馬可·奧理略《沉思錄》7.59｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7', tag: '往內留一點空間', art: 'star' }
 ];
 cards.push(...(window.freshCards || window.extraCards || []));
 function localDateKey(date = new Date()) {
@@ -200,8 +200,8 @@ function cardMarkup(card, index, revealed) {
       <div class="card-face card-front">
         <span class="card-type">${card.type}</span>
         <span class="card-art card-art-${card.art}" aria-hidden="true"></span>
-        <blockquote>「${card.text}」</blockquote>
-        <div class="card-source"><strong>${card.sourceLink ? `<a href="${card.sourceLink}" target="_blank" rel="noopener noreferrer">${card.source}</a>` : card.source}</strong></div>
+        <blockquote>${card.quote ? `「${card.text}」` : card.text}</blockquote>
+        <div class="card-source"><strong>${card.sourceLink ? `<a href="${card.sourceLink}" target="_blank" rel="noopener noreferrer">${card.source}</a>` : card.source}</strong>${card.provenance ? `<small class="card-provenance">${card.provenance}</small>` : ""}</div>
         <span class="card-tag">${card.tag}</span>
         <div class="card-actions"><button type="button" class="card-action" data-card-action="save" aria-label="${saved ? '取消收藏' : '收藏這張卡'}">${saved ? '♥ 已收藏' : '♡ 收藏'}</button><button type="button" class="card-action" data-card-action="share" aria-label="分享這張卡">分享 ↗</button></div>
       </div>

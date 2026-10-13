@@ -22,7 +22,7 @@
     ['garden','小花園','草葉與細花'],['night','月光夜晚','夜色與微燈'],['island','慢慢的小島','海面與山影'],
     ['balcony','黃昏陽台','藤椅與遠方'],['hill','霧中的山坡','山線與老樹'],
     ['lake','湖邊','水面與山影'],['library','安靜書房','閱讀與溫熱茶氣'],
-    ['cloud','雲上','柔軟的空氣'],['sunrise','初醒時','窗與第一道光']
+    ['cloud','雲上','柔軟的空氣'],['sunrise','初醒時','窗與第一道光'],['blank','空白畫布','暖白紙張，自由創作']
   ];
   const elements=[
     ['tree','樹木','♧'],['wave','海浪','≈'],['cloud','雲','☁'],['leaf','葉片','♧'],
@@ -51,7 +51,7 @@
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'leaf',size:1,velocity:.5,paused:false,selected:null};
-    let activeTab='element',pointer=null,frames=null,lastMoment=0;
+    let activeTab=null,pointer=null,frames=null,lastMoment=0;
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
@@ -61,7 +61,7 @@
       write:old=>{
         Object.assign(model,JSON.parse(JSON.stringify(old)));
         updateSelections();paint(performance.now(),true);
-        stampMessage('作品回到剛剛的一步。');
+        
       },
       onChange:state=>{ for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!state.canUndo; for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!state.canRedo; },
       limit:20
@@ -82,12 +82,16 @@
     function paint(time=0,still=false) {
       const t=reduce||model.paused||still?0:time*model.velocity;
       ctx.save();ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
-      art.drawScene(ctx,model.scene,t);
+      if(model.scene==='blank'){
+        ctx.fillStyle='#faf7f1';ctx.fillRect(0,0,W,H);
+        ctx.save();ctx.globalAlpha=.15;ctx.fillStyle='#b4aa99';
+        for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
+      }else art.drawScene(ctx,model.scene,t);
       const m=moodFor(),special=m[0];
-      if(['想哭','疲倦','悶住','孤單'].includes(special)){
+      if(model.scene!=='blank' && ['想哭','疲倦','悶住','孤單'].includes(special)){
         ctx.fillStyle='rgba(60,72,86,.11)';ctx.fillRect(0,0,W,H);
       }
-      if(['期待','希望','想暖一點','想重新開始'].includes(special)){
+      if(model.scene!=='blank' && ['期待','希望','想暖一點','想重新開始'].includes(special)){
         const glow=ctx.createRadialGradient(730,120,5,720,150,450);
         glow.addColorStop(0,'rgba(255,231,165,.24)');glow.addColorStop(1,'rgba(255,231,165,0)');
         ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
@@ -141,7 +145,7 @@
       $('worldSceneLabel').textContent=moodFor()[2];
       $('worldPause').textContent=model.paused?'恢復流動':'暫停流動';
       $('worldBrushSize').value=String(model.size);
-      $('worldToolsToggle').setAttribute('aria-expanded',String(!$('worldControlPanel').classList.contains('is-closed')));
+      // No large tool drawer: each category is an inline collapsible panel.
     }
     function screenPosition(e){
       const rect=canvas.getBoundingClientRect();
@@ -163,11 +167,11 @@
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
       const p=screenPosition(e);const prop=hitProp(p);
-      if(prop){model.selected=prop.id;pointer={id:e.pointerId,mode:'move',from:p,old:{...prop},recorded:false};stampMessage('可以拖曳它，讓房間慢慢變成自己的。');}
+      if(prop){model.selected=prop.id;pointer={id:e.pointerId,mode:'move',from:p,old:{...prop},recorded:false};}
       else if(canMark()){
         history.record();model.selected=null;let mark=createMark(p);
         pointer={id:e.pointerId,mode:'mark',from:p,mark,last:p};
-        stampMessage('畫在這裡就好。');
+        
       }
       try{canvas.setPointerCapture(e.pointerId)}catch(_){}
       updateSelections();paint(performance.now(),true);
@@ -191,13 +195,13 @@
     const release=e=>{if(pointer?.id===e.pointerId){pointer=null;try{canvas.releasePointerCapture(e.pointerId)}catch(_){}updateSelections();schedule()}};
     canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
     function addProp(type){
-      if(model.props.length>=45){stampMessage('空間有點滿了，可以移動或移除一些物件。');return}
+      if(model.props.length>=45){return}
       change(()=>{
         const id='prop-'+Date.now()+'-'+Math.round(Math.random()*1e5);
         model.props.push({id,type,x:W*.48+(model.props.length%4-2)*55,y:H*.57+(model.props.length%3)*25,scale:1,angle:0,z:model.props.length});
         model.selected=id;
       });
-      stampMessage('一件生活物件，安靜地住進畫裡。');
+      
     }
     function editProp(action){
       const p=currentProp();if(!p)return;
@@ -219,25 +223,25 @@
         change(()=>{model.mood=name;model.scene=moods.find(x=>x[0]===name)[1];});
         stampMessage(moodFor()[2]);return;
       }
-      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});stampMessage('這個地方也可以裝下你原本畫的東西。');return;}
-      if(b.dataset.element){model.tool=b.dataset.element;activeTab='element';updateSelections();stampMessage('可以和剛剛的元素一起留在畫裡。');return;}
+      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
+      if(b.dataset.element){model.tool=b.dataset.element;activeTab='element';updateSelections();return;}
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
       if(b.dataset.color){model.color=b.dataset.color;updateSelections();return;}
-      if(b.dataset.worldTab){activeTab=b.dataset.worldTab;updateSelections();return;}
+      if(b.dataset.worldTab){activeTab=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;updateSelections();return;}
       if(b.dataset.propAction){editProp(b.dataset.propAction);return;}
     });
     $('worldBrushSize').addEventListener('input',e=>model.size=Number(e.target.value));
     $('worldCustomColor').addEventListener('input',e=>{model.color=e.target.value;updateSelections()});
-    $('worldBrushInk').addEventListener('click',()=>{model.tool='pencil';activeTab='element';updateSelections()});
-    $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';activeTab='element';updateSelections()});
-    $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';activeTab='element';updateSelections()});
+    $('worldBrushInk').addEventListener('click',()=>{model.tool='pencil';updateSelections()});
+    $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';updateSelections()});
+    $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';updateSelections()});
     $('worldUndo').addEventListener('click',()=>history.undo());
     $('worldQuickUndo').addEventListener('click',()=>history.undo());
     $('worldRedo').addEventListener('click',()=>history.redo());
     $('worldQuickRedo').addEventListener('click',()=>history.redo());
     const clearWorld=()=>{
       change(()=>{model.marks=[];model.props=[];model.selected=null});
-      stampMessage('空白也可以是一幅作品。');
+      
     };
     $('worldClear').addEventListener('click',clearWorld);
     $('worldQuickClear').addEventListener('click',clearWorld);
@@ -250,29 +254,15 @@
       try{
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
-        stampMessage('已送交瀏覽器下載，記得確認是否保存成功。');
+        
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
-    // Palette companion now uses the same discreet, animated icon as every site section.
-    const panel=$('worldControlPanel');
-    const togglePanel=open=>{
-      panel.classList.toggle('is-closed',!open);
-      document.body.classList.toggle('world-tools-open',open&&window.matchMedia('(max-width: 920px)').matches);
-      $('worldToolsToggle').setAttribute('aria-expanded',String(open));
-      $('worldToolsToggle').textContent=open?'收起素材':'打開素材';
-      $('worldToolsClose').hidden=!open;
-      if(open && window.matchMedia('(max-width: 920px)').matches){
-        $('worldStage').scrollIntoView({block:'start',behavior:'smooth'});
-      }
-    };
-    $('worldToolsToggle').addEventListener('click',()=>togglePanel(panel.classList.contains('is-closed')));
-    $('worldToolsClose').addEventListener('click',()=>togglePanel(false));
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.classList.contains('is-closed'))togglePanel(false)});
-    togglePanel(!window.matchMedia('(max-width: 920px)').matches);
+    // Inline accordion tool categories: never cover the canvas with a modal sheet.
+    // The categories are independently selectable and their controls live below the artwork.
     const onVisible=()=>{
-      if(document.hidden||$('palette').hidden){stop();if($('palette').hidden)togglePanel(false);return}
+      if(document.hidden||$('palette').hidden){stop();return}
       sizeCanvas();schedule();
     };
     document.addEventListener('visibilitychange',onVisible);

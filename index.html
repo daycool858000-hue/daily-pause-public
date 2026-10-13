@@ -8,7 +8,7 @@
     <title>今日一息｜每日療癒小卡</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./styles.css?v=20261013-3" />
-    <link rel="stylesheet" href="./world-style.css?v=20261013-2" />
+    <link rel="stylesheet" href="./world-style.css?v=20261013-3" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -179,7 +179,6 @@
               <div class="world-stage" id="worldStage">
                 <canvas id="worldCanvas" width="960" height="630" aria-label="自然場景與生活物件的互動畫布；可單指畫畫或移動物件"></canvas>
                   <div class="world-quick-tools" aria-label="隨手畫布操作">
-                    <button id="worldToolsToggle" type="button" aria-controls="worldControlPanel" aria-expanded="false">打開素材</button>
                     <button id="worldQuickUndo" type="button" disabled aria-label="復原上一筆">↶</button>
                     <button id="worldQuickRedo" type="button" disabled aria-label="重做上一筆">↷</button>
                     <button id="worldQuickClear" type="button">清空</button>
@@ -187,17 +186,19 @@
                   </div>
               </div>
               <div class="world-caption"><p id="worldSceneLabel">微光停在房間裡。</p><button id="worldPause" type="button">暫停流動</button></div>
-              <p class="world-inline-note">右下角的小光點會偶爾回應，你可以隨時關閉。畫布工具收在「打開素材」裡，不必為了清空或復原往下找。</p>
+              <p class="world-inline-note">小蝴蝶或光點會在網站裡緩慢飛行，想聊聊時點一下即可。工具就在畫布旁：點「顏色」只看色票，點「形狀」只看元素。</p>
             </div>
-            <aside class="world-control-panel" id="worldControlPanel" aria-label="情緒畫室工具"><button id="worldToolsClose" class="world-tools-close" type="button" hidden>收起素材 ×</button>
-              <h2>把喜歡的放進來</h2>
-              <p>每一種元素都能並存；選擇其他元素，不會將已畫出的樹、雲或海浪取代。</p>
-              <div class="world-tabs" role="tablist" aria-label="畫室工具分類">
-                <button type="button" role="tab" data-world-tab="element" aria-selected="true">自然元素</button>
-                <button type="button" role="tab" data-world-tab="scene" aria-selected="false">場景</button>
-                <button type="button" role="tab" data-world-tab="object" aria-selected="false">生活物件</button>
+            <aside class="world-control-panel" id="worldControlPanel" aria-label="情緒畫室工具">
+              <h2>畫布工具</h2>
+              <p>點一下工具名稱，才會打開那組選項。選好後就能在上方畫布創作。</p>
+              <div class="world-tabs" role="tablist" aria-label="按需開啟畫室工具">
+                <button type="button" role="tab" data-world-tab="color" aria-selected="false">顏色</button>
+                <button type="button" role="tab" data-world-tab="element" aria-selected="false">形狀</button>
+                <button type="button" role="tab" data-world-tab="brush" aria-selected="false">畫筆</button>
+                <button type="button" role="tab" data-world-tab="scene" aria-selected="false">景觀</button>
+                <button type="button" role="tab" data-world-tab="object" aria-selected="false">物件</button>
               </div>
-              <section class="world-panel" data-world-panel="element" role="tabpanel">
+              <section class="world-panel" data-world-panel="element" role="tabpanel" hidden>
                 <p class="world-tool-help">點選一種元素，再在畫面上點擊或拖曳。樹、花、海浪與雲可以一起留下來，也有緩慢的動態。</p>
                 <div id="worldElements" class="world-option-grid"></div>
               </section>
@@ -218,13 +219,16 @@
                   </div>
                 </div>
               </section>
-              <div class="world-paint-row">
-                <p class="world-tool-help">也可以自由畫幾筆，把顏色留在景色上。</p>
-                <div class="world-brushes"><button id="worldBrushLine" type="button">細線</button><button id="worldBrushInk" type="button">鉛筆</button><button id="worldBrushWash" type="button">水彩</button></div>
+              <section class="world-panel world-paint-row" data-world-panel="color" role="tabpanel" hidden>
+                <p class="world-tool-help">選好顏色後，再點選形狀或畫筆。已經畫好的元素不會被替換。</p>
                 <div id="worldColors" class="world-colors" aria-label="畫筆顏色"></div>
                 <label class="world-color-custom">自選顏色 <input id="worldCustomColor" type="color" value="#b78072" aria-label="自選筆觸顏色"></label>
+              </section>
+              <section class="world-panel world-paint-row" data-world-panel="brush" role="tabpanel" hidden>
+                <p class="world-tool-help">先選筆觸，再在畫布上畫出線條；也能調整自然元素大小。</p>
+                <div class="world-brushes"><button id="worldBrushLine" type="button">細線</button><button id="worldBrushInk" type="button">鉛筆</button><button id="worldBrushWash" type="button">水彩</button></div>
                 <label for="worldBrushSize">筆觸與元素大小</label><input id="worldBrushSize" type="range" min=".5" max="2.4" value="1" step=".1">
-              </div>
+              </section>
               <div class="world-actions">
                 <button id="worldUndo" type="button" disabled>↶ 復原</button><button id="worldRedo" type="button" disabled>↷ 重做</button>
                 <button id="worldClear" type="button">清空元素</button><button id="worldDownload" type="button">保存 PNG ↓</button>
@@ -314,17 +318,17 @@
     <script src="./long-articles.js?v=20261012-7" defer></script>
     <script src="./short-articles.js?v=20261010-4" defer></script>
     <script src="./cards-data.js?v=20261013-2" defer></script>
-    <script src="./fresh-cards.js?v=20261013-1" defer></script>
+    <script src="./fresh-cards.js?v=20261013-2" defer></script>
     <script src="./curiosity.js?v=20261012-5" defer></script>
     <script src="./daily-content.js?v=20261012-2" defer></script>
     <script src="./reading-20261013.js?v=20261013-2" defer></script>
     <script src="./palette-history.js?v=20261013-1" defer></script>
     <script src="./world-art.js?v=20261013-1" defer></script>
-    <script src="./palette-world.js?v=20261013-2" defer></script>
+    <script src="./palette-world.js?v=20261013-3" defer></script>
     <script src="./photo-rotation.js?v=20261013-1" defer></script>
-    <script src="./companion-site.js?v=20261013-1" defer></script>
-    <script src="./rest-stage.js?v=20261013-1" defer></script>
-    <script src="./app.js?v=20261013-3" defer></script>
+    <script src="./companion-site.js?v=20261013-2" defer></script>
+    <script src="./rest-stage.js?v=20261013-2" defer></script>
+    <script src="./app.js?v=20261013-4" defer></script>
     <script src="./quiet-spaces.js?v=20261012-8" defer></script>
   </body>
 </html>
