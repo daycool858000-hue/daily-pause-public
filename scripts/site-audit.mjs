@@ -310,6 +310,8 @@ assert.ok(read('world-style.css').includes('@keyframes rGardenBreath') && read('
 const surprise=read('surprise-visit.js');
 assert.ok(surprise.includes('setTimeout(show,5000)'),'second greeting must wait 5 seconds after entry');
 assert.ok(!surprise.includes("if(e.target===panel)hide()"),'backdrop clicks must never close the encouragement letter');
+assert.ok(html.includes('surprise-visit.js?v=20261013-4'),'fresh greeting deck must not use old cache');
+
 assert.ok(read('surprise-style.css').includes('animation:surpriseWords .48s .72s'),'message should appear promptly');
 assert.ok(read('app.js').includes("if (tab.dataset.experience === 'rest')"), 'rest entrance must immediately open its scene without another click');
 assert.ok(surprise.includes('MutationObserver') && surprise.includes('attributeFilter:[\'hidden\']'),'second animation starts after the original welcome closes');
@@ -328,8 +330,20 @@ const actualGreetings=vm.runInNewContext(
   surprise.slice(messagesStart+'const messages='.length,messagesEnd),{}, {timeout:2000});
 assert.equal(JSON.stringify(actualGreetings),JSON.stringify(expectedGreetings),
   'five author-written greetings must match exactly, in order and with original line breaks');
-assert.ok(surprise.includes('messages[random(messages.length)]'),
-  'random greeting must draw from all five original messages');
+assert.ok(surprise.includes('messages[nextGreetingIndex()]'),
+  'all five greetings must be selected through a fair shuffled deck');
+const selectionSource=surprise.slice(surprise.indexOf('function random(max){'),surprise.indexOf('function init(){'));
+assert.ok(selectionSource.includes('function nextGreetingIndex()'),'greeting deck implementation missing');
+const noteStorage=new Map();
+const noteBrowser={localStorage:{
+  getItem:key=>noteStorage.get(key)||null,
+  setItem:(key,v)=>noteStorage.set(key,v)
+}};
+const deck=vm.runInNewContext(selectionSource+'\nArray.from({length:10},()=>nextGreetingIndex())',
+  {window:noteBrowser,Uint32Array,Math,messages:expectedGreetings},{filename:'surprise-five-visit-deck',timeout:5000});
+assert.equal(new Set(deck.slice(0,5)).size,5,'one of the five surprise greetings never appears in a five-visit cycle');
+assert.equal(new Set(deck.slice(5,10)).size,5,'the following greeting cycle does not cover all five');
+
 
 assert.ok(surprise.includes('surprise-cat') && surprise.includes('surprise-bear') && surprise.includes('surprise-hero-heart'),'heart/cat/bear surprise variations missing');
 assert.ok(surprise.includes("if(done||document.hidden)return"),'surprise must show at most once per visit');

@@ -49,6 +49,23 @@ function random(max){
  if(window.crypto?.getRandomValues){const a=new Uint32Array(1);window.crypto.getRandomValues(a);return a[0]%max}
  return Math.floor(Math.random()*max);
 }
+// A shuffled five-message deck: each entrance is random, while all five
+// author-written greetings get a turn before any repeat on this browser.
+const messageDeckKey='daily-pause-surprise-deck-v1';
+function nextGreetingIndex(){
+  const indices=messages.map((_,i)=>i);
+  try{
+    const saved=JSON.parse(window.localStorage.getItem(messageDeckKey)||'[]');
+    const used=Array.isArray(saved)?saved.filter(i=>Number.isInteger(i)&&i>=0&&i<messages.length):[];
+    const unseen=indices.filter(i=>!used.includes(i));
+    const choices=unseen.length?unseen:indices;
+    const chosen=choices[random(choices.length)];
+    window.localStorage.setItem(messageDeckKey,JSON.stringify(unseen.length?[...used,chosen]:[chosen]));
+    return chosen;
+  }catch(_){
+    return random(messages.length);
+  }
+}
 function init(){
  const welcome=document.getElementById('welcomeModal');if(!welcome)return;
  const panel=document.createElement('div');panel.id='surpriseNote';panel.className='surprise-backdrop';panel.hidden=true;
@@ -80,7 +97,7 @@ function init(){
   stage.innerHTML='<svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
    +defs+'<ellipse cx="229" cy="153" rx="174" ry="148" fill="url(#sl)"/>'
    +art[kind]+'</svg>';
-  sentence.textContent=messages[random(messages.length)];
+  sentence.textContent=messages[nextGreetingIndex()];
   panel.hidden=false;document.body.classList.add('surprise-visible');
   panel.querySelector('.surprise-close').focus({preventScroll:true});
   window.dispatchEvent(new CustomEvent('pause:companion-close'));
