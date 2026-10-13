@@ -51,6 +51,7 @@ assert.ok(html.indexOf('palette-world.js') < html.indexOf('./app.js'), 'world st
 assert.ok(html.indexOf('photo-rotation.js') < html.indexOf('./app.js'), 'photo rotation must load before app');
 assert.ok(html.indexOf('fresh-cards.js') < html.indexOf('./app.js'), 'new card library must load before app');
 assert.ok(html.indexOf('daily-reminders.js') < html.indexOf('./app.js'), 'daily reminder rotation must load before app');
+assert.ok(html.includes('./daily-reminders.js?v=20261013-2'),'55-message equal-pool selection must bust browser cache');
 
 const historySandbox = { window: {} };
 vm.runInNewContext(read('palette-history.js'), historySandbox, { filename: 'palette-history.js', timeout: 5000 });
