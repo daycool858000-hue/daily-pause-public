@@ -173,7 +173,7 @@ assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeUp
 assert.ok(audioScript.includes("['today','stream']") && audioScript.includes("['read','forest']"), 'homepage and reading sound defaults missing');
 assert.ok(audioScript.includes("['curiosity','rain']") && audioScript.includes("['palette','handpan']") && audioScript.includes("['holding','ocean']"), 'remaining navigation sound defaults missing');
 assert.ok(audioScript.includes("document.addEventListener('visibilitychange'") && audioScript.includes("window.addEventListener('pagehide'"), 'sounds must stop in background');
-assert.ok(audioScript.includes("wrap.querySelector('button').addEventListener('click'"), 'sound must start only on explicit click');
+assert.ok(audioScript.includes("bar.querySelector('[data-sound-toggle]').addEventListener('click'"), 'sound must start only on explicit click');
 assert.ok(!/\bautoplay\s*=|\.autoplay\s*=/.test(audioScript), 'browser audio may not autoplay');
 assert.ok(read('companion-site.js').includes('window.PauseSound?.bell?.()'), 'creature bell not wired');
 const worldCode = read('palette-world.js');
