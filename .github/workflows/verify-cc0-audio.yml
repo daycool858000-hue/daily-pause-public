@@ -22,10 +22,10 @@ jobs:
           from html.parser import HTMLParser
 
           choices = [
-            ('First Light Particles','https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track','first_light_particles.wav'),
-            ('Calm Piano 1','https://opengameart.org/content/calm-piano-1-vaporware','003_Vaporware.mp3'),
-            ('Forget Me Not','https://opengameart.org/content/forget-me-not','forget_me_not_in_f_major.ogg'),
-            ('Calm Ambient 3','https://opengameart.org/content/calm-ambient-3-lifewave-2k','006_lifeWave2k.mp3'),
+            ('First Light Particles','https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track','first_light_particles_0.wav'),
+            ('Calm Piano 1','https://opengameart.org/content/calm-piano-1-vaporware','003_Vaporware_2.mp3'),
+            ('Forget Me Not','https://opengameart.org/content/forget-me-not','forget_me_not_in_f_major_0.ogg'),
+            ('Calm Ambient 3','https://opengameart.org/content/calm-ambient-3-lifewave-2k','006_lifeWave2k_0.mp3'),
             ('Rain on Window Loop','https://opengameart.org/content/rain-on-window-loop','rain_on_window_loop.wav'),
             ('Rain in the Gutter Loop','https://opengameart.org/content/rain-gutter-loop','rain-gutter-loop_0.mp3')
           ]
