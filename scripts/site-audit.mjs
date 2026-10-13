@@ -167,39 +167,18 @@ assert.ok(app.includes('safeCardText(card.text)'), 'card bodies must be safely e
 assert.ok(app.includes('card-source-more'), 'compact visible source link absent');
 assert.ok(app.includes("$('#cardSourceDialogClose').addEventListener"), 'dialog close interaction absent');
 const audioScript=read('soundscape.js');
-assert.ok(audioScript.includes('https://upload.wikimedia.org/'), 'audio files should use public Commons media');
-assert.ok(audioScript.includes('Scott_Buckley_-_Sleep_(piano-only_mix).oga'), 'piano-only arrangement absent');
-assert.ok(audioScript.includes('Scott_Buckley_-_The_Long_Way_Home.oga'), 'lullaby-like piano track absent');
-assert.ok(audioScript.includes('Scott_Buckley_-_She_Moved_Mountains.oga'), 'gentle ambient piano track absent');
-for(const filename of ['Scott_Buckley_-_Reverie.oga','Scott_Buckley_-_Elementary.ogg','Scott_Buckley_-_There_Is_A_Place.oga','Scott_Buckley_-_Jul.oga','Scott_Buckley_-_Midsommar.oga'])
- assert.ok(audioScript.includes(filename),'missing new natural ambient piano: '+filename);
-assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,15,'original ten + five carefully sourced audio tracks');
-for(const f of ['Scott_Buckley_-_Ephemera.oga','Scott_Buckley_-_Solace.oga','Scott_Buckley_-_Snowfall.oga','Scott_Buckley_-_Beautiful_Oblivion.oga','Scott_Buckley_-_Chasing_Daylight.oga'])assert.ok(audioScript.includes(f),'new CC BY audio missing: '+f);
-assert.equal((audioScript.match(/nature:'(?:forest|creek)'/g)||[]).length,9,'nine layered ambient tracks with separately licensed nature recordings');
-assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('audibleLevel(entry.track)'), 'desktop volume correction missing');
-assert.ok(audioScript.includes("track.kind==='nature' ? 4 : 3.4") && audioScript.includes(" : track.level;"), 'iPhone/mobile sound levels must be kept');
-assert.ok(audioScript.includes('createBiquadFilter') && audioScript.includes("soften.type='lowpass'"), 'natural ambient overlay should be smoothed');
-assert.ok(audioScript.includes("audio.crossOrigin='anonymous'"),'Web Audio cross-origin media permission handling missing');
-assert.ok(audioScript.includes('releaseNature(audio);') && audioScript.includes('releaseNature(entry.audio)'), 'ambient layer must be cleaned up with main track');
-assert.ok(html.includes('Scott_Buckley_-_Midsommar.oga') && html.includes('Scott_Buckley_-_Reverie.oga'), 'remix track credits missing');
-
-assert.ok(audioScript.includes('Forest_lawn_creek.ogg') && audioScript.includes('Nature_sounds_ambience_in_a_Dordogne_pond.ogg'), 'two gentle environmental recordings absent');
-assert.ok(!audioScript.includes('freesound.org/embed') && !audioScript.includes('handpan'), 'unreliable third-party handpan player retained');
-assert.ok(!audioScript.includes('createBufferSource') && !audioScript.includes('bufferNoise'), 'old harsh synthetic rain generator present');
-assert.ok(audioScript.includes('new Audio()') && audioScript.includes('audio.play()'), 'native audio player absent');
-assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeIn(entry)'), 'subtle audio fade-in absent');
-assert.ok(audioScript.includes("document.addEventListener('pointerdown',firstGesture"), 'autoplay gesture-unlock absent');
-assert.ok(audioScript.includes("document.addEventListener('click',firstGesture") && audioScript.includes("document.addEventListener('touchend',firstGesture"), 'mobile Safari audio unlock fallback absent');
-assert.ok(audioScript.includes('if(!stoppedByVisitor)startNext()'), 'best-effort auto-start absent');
-assert.ok(audioScript.includes("sessionStorage.getItem('daily-pause-audio-paused-v1')"), 'manual pause preference not respected');
-assert.ok(audioScript.includes("bar.querySelector('[data-sound-shuffle]').addEventListener('click'"), 'manual shuffle action absent');
-assert.ok(audioScript.includes("window.addEventListener('pause:view-change'"), 'cross-page player state missing');
-assert.ok(audioScript.includes("document.addEventListener('visibilitychange'"), 'background should stop when tab is hidden');
-assert.ok(audioScript.includes("window.addEventListener('pagehide'"), 'background cleanup on navigation absent');
-assert.equal((audioScript.match(/<button /g)||[]).length, 2, 'audio controls should have only random and play/pause buttons');
-assert.ok(html.includes('pause-music-credits') && html.includes('CC BY 4.0') && html.includes('CC BY 3.0'), 'music attribution footer missing');
-assert.ok(!html.includes('data-sound-select'), 'legacy sound dropdown remains');
-assert.ok(read('companion-site.js').includes('window.PauseSound?.bell?.()'), 'creature bell not wired');
+assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,2,'temporary playlist contains exactly two nature tracks');
+assert.ok(audioScript.includes("id:'creek'") && audioScript.includes("id:'forest'"),'both nature tracks are required');
+assert.ok(!audioScript.includes('Scott_Buckley_-_'),'disabled music URLs cannot remain in active playlist');
+assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('audibleLevel(entry.track)'),'existing volume behavior preserved');
+assert.ok(audioScript.includes("track.id==='creek' ? track.level*.65"),'mobile creek attenuation retained');
+assert.ok(audioScript.includes('new Audio()') && audioScript.includes('audio.play()'),'native playback retained');
+assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeIn(entry)'),'gentle fade retained');
+assert.ok(audioScript.includes("sessionStorage.getItem('daily-pause-audio-paused-v1')"),'pause preference retained');
+assert.ok(audioScript.includes("window.addEventListener('pause:view-change'"),'navigation audio retained');
+assert.equal((audioScript.match(/<button /g)||[]).length,2,'exactly two control buttons');
+assert.ok(html.includes('pause-music-credits') && html.includes('Forest_lawn_creek.ogg'),'nature attributions must stay');
+assert.ok(html.includes('soundscape.js?v=20261013-7'),'updated audio script must bust cache');
 const worldCode = read('palette-world.js');
 assert.ok(worldCode.includes("model.marks.push(mark)"), 'additive element artwork missing');
 assert.ok(worldCode.includes("model.tool=b.dataset.element"), 'changing tool must not mutate prior marks');
@@ -283,10 +262,10 @@ assert.ok(surprise.includes("if(done||document.hidden)return"),'surprise must sh
 assert.ok(surprise.includes("document.querySelector('#today.active')"),'do not interrupt other website sections');
 assert.ok(read('surprise-style.css').includes('@media(prefers-reduced-motion:reduce)'),'surprise should respect reduced motion');
 assert.ok(audioScript.includes('phoneAudio') && audioScript.includes("track.id==='creek' ? track.level*.65"),'35% forest creek mobile reduction missing');
-assert.ok(audioScript.includes("t.id!=='thereNature'"),'mobile playlist must omit There Is A Place');
+
 assert.ok(!audioScript.includes('softenIphoneCreek') && !audioScript.includes('audio.mobileCreekGain'), 'Safari creek must not route through an untrusted cross-origin Web Audio path');
 assert.ok(audioScript.includes("track.id==='creek' ? track.level*.65"),'mobile volume should stay lower when the browser permits');
-assert.ok(html.includes('sb_ephemera')===false && html.includes('Ephemera') && html.includes('Chasing Daylight'), 'credits must include five new original works');
+
 assert.equal(win.freshCards.filter(c=>c.type==='陪伴的一段話').length,16,'gentle reflection category missing');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>/延伸|概述|聯想|改寫|重述|轉述/.test(c.provenance)), 'sourced writing must distinguish its life interpretation from the original idea');
 

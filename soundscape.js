@@ -4,82 +4,19 @@
 // Soft autoplay is best-effort: Safari/iOS/Chrome can block until user interaction.
 (() => {
   'use strict';
+  // The 13 music tracks were suspended at the site owner's request; see MUSIC_RIGHTS_REVIEW_20261013.md.
   const tracks = [
     {
-      id:'sleep',title:'夢裡的鋼琴',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d0/Scott_Buckley_-_Sleep_(piano-only_mix).oga/Scott_Buckley_-_Sleep_(piano-only_mix).oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/sleep/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Sleep (Piano Only Mix)',level:.075
-    },{
-      id:'home',title:'溫柔的歸途',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f7/Scott_Buckley_-_The_Long_Way_Home.oga/Scott_Buckley_-_The_Long_Way_Home.oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/the-long-way-home/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'The Long Way Home',level:.065
-    },{
-      id:'mountains',title:'安靜的琴聲',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Scott_Buckley_-_She_Moved_Mountains.oga/Scott_Buckley_-_She_Moved_Mountains.oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/she-moved-mountains/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'She Moved Mountains',level:.065
-    },{
       id:'creek',title:'森林溪流',kind:'nature',
       src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3',
       page:'https://commons.wikimedia.org/wiki/File:Forest_lawn_creek.ogg',
       license:'Public domain',artist:'Dsw4',work:'Forest lawn creek',level:.06
-    },{
+    },
+    {
       id:'forest',title:'森林黃昏',kind:'nature',
       src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
       page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',
       license:'CC BY 3.0',artist:'Glaneur de sons',work:'Nature sounds ambience in a Dordogne pond',level:.052
-    },{
-      id:'reverieNature',title:'林間的夢',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6a/Scott_Buckley_-_Reverie.oga/Scott_Buckley_-_Reverie.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Reverie.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Reverie',level:.064,nature:'forest'
-    },{
-      id:'elementaryNature',title:'溪畔的琴',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e0/Scott_Buckley_-_Elementary.ogg/Scott_Buckley_-_Elementary.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Elementary.ogg',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Elementary',level:.066,nature:'creek'
-    },{
-      id:'thereNature',title:'森林裡的歸處',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c8/Scott_Buckley_-_There_Is_A_Place.oga/Scott_Buckley_-_There_Is_A_Place.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_There_Is_A_Place.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'There Is A Place',level:.064,nature:'forest'
-    },{
-      id:'julNature',title:'微光與細流',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a3/Scott_Buckley_-_Jul.oga/Scott_Buckley_-_Jul.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Jul.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Jul',level:.060,nature:'creek'
-    },{
-      id:'midsommarNature',title:'黃昏的鋼琴',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/Scott_Buckley_-_Midsommar.oga/Scott_Buckley_-_Midsommar.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Midsommar.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Midsommar',level:.058,nature:'forest'
-    },{
-      id:'ephemera',title:'海風裡的大提琴',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7d/Scott_Buckley_-_Ephemera.oga/Scott_Buckley_-_Ephemera.oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/ephemera/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Ephemera',level:.058
-    },{
-      id:'solace',title:'安靜的慰藉',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/89/Scott_Buckley_-_Solace.oga/Scott_Buckley_-_Solace.oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/solace/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Solace',level:.060,nature:'forest'
-    },{
-      id:'snowfall',title:'雪落時的琴聲',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/54/Scott_Buckley_-_Snowfall.oga/Scott_Buckley_-_Snowfall.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Snowfall.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Snowfall',level:.061,nature:'forest'
-    },{
-      id:'oblivion',title:'慢慢流動的時光',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f7/Scott_Buckley_-_Beautiful_Oblivion.oga/Scott_Buckley_-_Beautiful_Oblivion.oga.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Beautiful_Oblivion.oga',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Beautiful Oblivion',level:.055,nature:'forest'
-    },{
-      id:'daylight',title:'微光裡的散步',kind:'music',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e5/Scott_Buckley_-_Chasing_Daylight.oga/Scott_Buckley_-_Chasing_Daylight.oga.mp3',
-      page:'https://www.scottbuckley.com.au/library/chasing-daylight/',
-      license:'CC BY 4.0',artist:'Scott Buckley',work:'Chasing Daylight',level:.056,nature:'creek'
     }
   ];
   const areas=['today','read','curiosity','palette','holding'];
