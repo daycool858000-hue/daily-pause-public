@@ -10,7 +10,7 @@ const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(root, relative));
 const required = [
   'index.html', 'styles.css', 'world-style.css', 'sound-style.css', 'soundscape.js', 'app.js', 'cards-data.js',
-  'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
+  'daily-content.js', 'daily-reminders.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
   'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
   'world-art.js', 'palette-world.js', 'card-originals.js', 'card-sourced.js', 'fresh-cards.js',
   'photo-rotation.js', 'companion-site.js', 'rest-stage.js', 'surprise-visit.js', 'surprise-style.css'
@@ -31,7 +31,7 @@ assert.ok(html.includes('styles.css'), 'CSS link absent');
 assert.ok(html.includes('./sound-style.css?v='), 'sound UI CSS absent');
 assert.ok(html.includes('./surprise-style.css?v='),'second greeting animation CSS absent');
 assert.ok(html.indexOf('surprise-visit.js') < html.indexOf('./app.js'),'surprise script should observe the original welcome');
-assert.ok(html.includes('./rest-stage.js?v=20261013-4'),'new rest-scene renderer not linked');
+assert.ok(html.includes('./rest-stage.js?v=20261013-5'),'new rest-scene renderer not linked');
 assert.ok(html.includes('id="cardSourceDialog"') && html.includes('id="cardSourceDialogClose"'), 'accessible credit dialog absent');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('companion-site.js'), 'soundscape must load before companion');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('./app.js'), 'soundscape must load before navigation controls');
@@ -50,6 +50,7 @@ assert.ok(html.indexOf('world-art.js') < html.indexOf('palette-world.js'), 'worl
 assert.ok(html.indexOf('palette-world.js') < html.indexOf('./app.js'), 'world studio must load before app');
 assert.ok(html.indexOf('photo-rotation.js') < html.indexOf('./app.js'), 'photo rotation must load before app');
 assert.ok(html.indexOf('fresh-cards.js') < html.indexOf('./app.js'), 'new card library must load before app');
+assert.ok(html.indexOf('daily-reminders.js') < html.indexOf('./app.js'), 'daily reminder rotation must load before app');
 
 const historySandbox = { window: {} };
 vm.runInNewContext(read('palette-history.js'), historySandbox, { filename: 'palette-history.js', timeout: 5000 });
@@ -138,7 +139,33 @@ for(const item of win.additionalLongReads){
 }
 assert.equal(win.curiosityData.length, 36);
 assert.equal(win.extraCards.length, 75);
-assert.equal(win.dailyContent.companionLines.length, 31);
+assert.equal(win.dailyContent.companionLines.length, 55);
+
+// Daily reminders: 55 distinct sentences, one stable selection per local date,
+// with no re-use until all have appeared on this device.
+const reminderText=win.dailyContent.companionLines.map(x=>x.reminder);
+assert.equal(new Set(reminderText).size,55,'duplicate reminder bodies');
+const reminderWindow={};
+vm.runInNewContext(read('daily-reminders.js'),{window:reminderWindow},{filename:'daily-reminders.js',timeout:5000});
+assert.equal(typeof reminderWindow.PauseDailyReminders?.select,'function');
+const reminderStorage=new Map();
+const reminderAdapter={
+  getItem:k=>reminderStorage.get(k)||null,
+  setItem:(k,v)=>reminderStorage.set(k,v)
+};
+const selectedLines=[];
+for(let day=0;day<55;day++){
+  const d=new Date(Date.UTC(2026,9,13+day)).toISOString().slice(0,10);
+  const item=reminderWindow.PauseDailyReminders.select(win.dailyContent.companionLines,d,'audited-device',reminderAdapter);
+  const repeated=reminderWindow.PauseDailyReminders.select(win.dailyContent.companionLines,d,'audited-device',reminderAdapter);
+  assert.equal(item.reminder,repeated.reminder,'reminder changed upon reload on '+d);
+  selectedLines.push(item.reminder);
+}
+assert.equal(new Set(selectedLines).size,55,'reminder repeated before all 55 messages were used');
+const nextDate=new Date(Date.UTC(2026,9,13+55)).toISOString().slice(0,10);
+assert.ok(reminderWindow.PauseDailyReminders.select(win.dailyContent.companionLines,nextDate,'audited-device',reminderAdapter),'reminder cycle did not restart after completion');
+assert.ok(read('app.js').includes('window.PauseDailyReminders?.select('),'daily reminder selector not wired');
+
 assert.equal(win.dailyContent.experiences.length, 15);
 assert.equal(win.mediaData.length, 15);
 assert.equal(new Set(win.curiosityData.map(d => d.id)).size, 36);
@@ -200,6 +227,13 @@ assert.ok(worldCode.includes("'worldActiveColorPreview'") && worldCode.includes(
 assert.ok(html.includes('id="worldActiveColorPreview"') && html.includes('id="worldColorStatus"'),'visible current color missing');
 assert.ok(read('world-art.js').includes('const curtainBreeze=') && read('world-art.js').includes('const steamDrift='),'default room motion must be perceptible');
 assert.ok(worldCode.includes("model.props.push("), 'physical scene props missing');
+assert.ok(worldCode.includes('const effects=') && worldCode.includes('art.drawAtmosphere?.('),
+  '24 mood-specific animation overlays absent');
+const arts=read('world-art.js');
+assert.ok(arts.includes('function library(ctx,pal,t)') && arts.includes('function sunrise(ctx,pal,t)')
+  && arts.includes('function drawAtmosphere(ctx,profile,t)'),
+  'library, sunrise and emotion-specific atmosphere must be distinct');
+
 assert.ok(worldCode.includes("window.createPaletteHistory({"), 'studio history integration absent');
 assert.ok(worldCode.includes("document.addEventListener('visibilitychange'"), 'background animation pause missing');
 assert.ok(worldCode.includes("$('worldQuickClear').addEventListener"), 'quick clear absent');
@@ -222,6 +256,12 @@ assert.ok(lines.every(x=>x.length>=12),'creature speech cannot be just a slogan'
 assert.ok(!companionText.includes("window.addEventListener('pause:companion',"),'creature cannot interrupt navigation');
 assert.ok(read('companion-site.js').includes('sprite-butterfly') && read('companion-site.js').includes('sprite-firefly'), 'roaming species absent');
 const restScript=read('rest-stage.js');
+assert.ok(restScript.includes('r-sunray-fan') && restScript.includes('r-sun-dust')
+  && restScript.includes('r-sun-shadows') && restScript.includes('r-ray-soft'),
+  'sunlight must be layered rays, soft glow, moving dust and grounded shadows');
+assert.ok(read('world-style.css').includes('@keyframes rSunFan') && read('world-style.css').includes('rSunDust'),
+  'soft sunlight ray/dust animations missing');
+
 
 // Exercise all 15 live rest-entry render paths, not merely the presence of SVG strings.
 // This simulated DOM catches missing variables and scene-key mapping errors.
@@ -274,6 +314,21 @@ assert.ok(read('surprise-style.css').includes('animation:surpriseWords .48s .72s
 assert.ok(read('app.js').includes("if (tab.dataset.experience === 'rest')"), 'rest entrance must immediately open its scene without another click');
 assert.ok(surprise.includes('MutationObserver') && surprise.includes('attributeFilter:[\'hidden\']'),'second animation starts after the original welcome closes');
 assert.ok(surprise.includes('哩賀') && surprise.includes('你是世界上非常重要的人'),'all user-provided encouragement must be preserved');
+const expectedGreetings=[
+  '哩賀\\n有沒有人告訴過你\\n你今天真的很棒',
+  '嘿我明白的\\n你今天真的做到了\\n非常厲害',
+  '什麼 全世界最棒的人正在看著我\\n對的 就是你 不要懷疑自己',
+  '親愛的 你不用是誰\\n你是你\\n不是任何人任何角色',
+  '我要當第一個也可能是好幾個\\n今天對你說\\n你是世界上非常重要的人'
+].map(x=>x.replace(/\\\\n/g,'\\n'));
+const sourceGreetings=surprise.match(/const messages=(\\[[\\s\\S]*?\\]);\\nconst defs=/);
+assert.ok(sourceGreetings,'surprise greeting data structure changed');
+const actualGreetings=vm.runInNewContext(sourceGreetings[1],{}, {timeout:2000});
+assert.equal(JSON.stringify(actualGreetings),JSON.stringify(expectedGreetings),
+  'five original greetings must match author text byte-for-byte and in order');
+assert.ok(surprise.includes('messages[random(messages.length)]'),
+  'random greeting must draw from all five original messages');
+
 assert.ok(surprise.includes('surprise-cat') && surprise.includes('surprise-bear') && surprise.includes('surprise-hero-heart'),'heart/cat/bear surprise variations missing');
 assert.ok(surprise.includes("if(done||document.hidden)return"),'surprise must show at most once per visit');
 assert.ok(surprise.includes("document.querySelector('#today.active')"),'do not interrupt other website sections');
