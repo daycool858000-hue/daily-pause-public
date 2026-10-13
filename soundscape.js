@@ -58,12 +58,15 @@
     }
   ];
   const areas=['today','read','curiosity','palette','holding'];
-  // iPhone volume controls were already accepted in testing, so preserve them.
+  // Keep the accepted desktop mix. On phones, soften only Forest Creek by 35% and skip There Is A Place.
   // Desktop fine-pointer devices previously had volume levels as low as 0.052.
   const desktopAudio=window.matchMedia?.('(pointer: fine)')?.matches
     && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+  const phoneAudio=/iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent||'') ||
+    (window.matchMedia?.('(pointer: coarse) and (max-width: 700px)')?.matches ?? false);
   function audibleLevel(track) {
-    return desktopAudio ? Math.min(track.kind==='nature' ? .32 : .34, track.level * (track.kind==='nature' ? 4 : 3.4)) : track.level;
+    if(desktopAudio)return Math.min(track.kind==='nature' ? .32 : .34, track.level*(track.kind==='nature' ? 4 : 3.4));
+    return phoneAudio && track.id==='creek' ? track.level*.65 : track.level;
   }
   let ambientContext=null;
   function unlockAmbientContext(){
@@ -103,6 +106,23 @@
     try{layer.audio.pause();layer.audio.removeAttribute('src');layer.audio.load()}catch(_){}
     try{layer.source.disconnect();layer.soften.disconnect();layer.gain.disconnect()}catch(_){}
   }
+  function softenIphoneCreek(audio,track) {
+    // iPhone Safari may ignore HTMLMediaElement.volume; use a Web Audio gain.
+    // Android and desktops retain their previous volume behavior.
+    if(track.id!=='creek'||!/iPhone|iPod/i.test(navigator.userAgent||''))return;
+    const ctx=unlockAmbientContext();if(!ctx)return;
+    try{
+      const src=ctx.createMediaElementSource(audio);
+      const gain=ctx.createGain();gain.gain.value=.65;
+      src.connect(gain);gain.connect(ctx.destination);
+      audio.mobileCreekGain={src,gain,ctx};
+    }catch(_){/* media-element volume .65 remains the fallback */}
+  }
+  function releaseCreekGain(audio){
+    const layer=audio?.mobileCreekGain;if(!layer)return;
+    delete audio.mobileCreekGain;
+    try{layer.src.disconnect();layer.gain.disconnect()}catch(_){}
+  }
   const bars=new Map();
   let activeArea='today',active=null,waiting=false,stoppedByVisitor=false;
   let queue=[],raf=null,advanceTimer=null,sequence=0,fadeOutSet=new Set();
@@ -126,7 +146,10 @@
     return copy;
   }
   function nextTrack(skipId){
-    if(!queue.length)queue=shuffled(tracks.map(t=>t.id));
+    // Never pick "森林裡的歸處" for phone listeners; it remains available on desktop.
+    const eligible=tracks.filter(t=>!phoneAudio||t.id!=='thereNature').map(t=>t.id);
+    queue=queue.filter(id=>eligible.includes(id));
+    if(!queue.length)queue=shuffled(eligible);
     if(queue.length>1 && queue[0]===skipId)queue.push(queue.shift());
     const chosen=queue.shift();
     return tracks.find(t=>t.id===chosen)||tracks[0];
@@ -157,6 +180,7 @@
   function cancelFade(){if(raf!==null)cancelAnimationFrame(raf);raf=null}
   function release(audio){
     releaseNature(audio);
+    releaseCreekGain(audio);
     try{audio.pause();audio.removeAttribute('src');audio.load()}catch(_){}
   }
   function fadeOut(audio,ms=550){
@@ -173,7 +197,7 @@
   }
   function fadeIn(entry){
     cancelFade();
-    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=audibleLevel(entry.track);
+    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=entry.audio.mobileCreekGain ? entry.track.level : audibleLevel(entry.track);
     const f=t=>{
       if(active!==entry){raf=null;return}
       const x=Math.min(1,(t-from)/length);
@@ -209,8 +233,10 @@
     audio.preload='auto';
     audio.volume=0;
     audio.loop=false;
+    if(phoneAudio&&chosen.id==='creek')audio.crossOrigin='anonymous';
     audio.src=chosen.src;
     audio.playsInline=true;
+    softenIphoneCreek(audio,chosen);
     const entry={audio,track:chosen,id:++sequence,gesture:userGesture};
     active=entry;
     waiting=false;

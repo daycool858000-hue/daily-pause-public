@@ -1,78 +1,110 @@
-// Rest experiences have distinct visual responses; this is a quiet interaction, not guided treatment.
+// Original, lightweight watercolor scenes for the fifteen quiet-rest activities.
+// Handmade SVG + CSS animations; no external images or fixed therapeutic breathing pace.
 (() => {
- const states=[
- ['看窗外','window','窗外的光'],['放鬆手指','hands','手指慢慢鬆開'],
- ['環境聲音','sound','留一點位置給聲音'],['一口水','cup','杯中的水光'],
- ['舒服的位置','chair','安穩的位置'],['看遠方','hills','讓視線走遠'],
- ['光影','sunlight','光影慢慢移動'],['閉眼','eyes','暫時閉上眼睛'],
- ['伸展','stretch','一段伸展'],['手機','phone','讓訊息安靜'],
- ['微笑','flower','很小的好事'],['小角落','desk','清出一小塊地方'],
- ['花或一片葉子','leaf','一片葉子的時間'],['問題','paper','把疑問留給紙張'],
- ['收尾','night','今天的收尾']
- ];
- const drawing={
- window:'<rect x="115" y="48" width="230" height="234" rx="7" fill="#c9d5cd"/><path d="M115 220Q191 120 265 210T345 192V280H115Z" fill="#92ada0"/><path d="M230 48V282M115 164H345" stroke="#f7ecda" stroke-width="13"/><path class="rest-drift" d="M87 49Q144 111 111 276H51Q85 183 54 49Z" fill="#ebd6c4"/><path class="rest-drift" d="M373 49Q337 119 360 276H400Q373 192 407 49Z" fill="#e6c9b7"/>',
- hands:'<path class="rest-soft" d="M154 310Q99 243 116 213L150 149Q165 131 176 154L181 194L199 101Q203 83 218 91L228 190L250 75Q263 60 274 79L270 202L299 116Q309 96 322 112L303 235Q318 274 283 308Z" fill="#d9aa95" stroke="#b98b7d" stroke-width="5"/><path d="M100 325Q208 349 336 315" fill="none" stroke="#edd0bc" stroke-width="10" stroke-linecap="round"/>',
- sound:'<path d="M162 135V257L99 219H70V170H100Z" fill="#b8a994"/><path class="rest-sound" d="M196 163Q257 199 197 238M213 128Q317 196 212 267M232 98Q380 195 232 302" fill="none" stroke="#a0b5ab" stroke-width="9" stroke-linecap="round"/>',
- cup:'<ellipse cx="225" cy="302" rx="130" ry="20" fill="#d0bdb0"/><path d="M144 147H291L274 283Q220 307 162 279Z" fill="#c6a18a"/><path class="rest-water" d="M153 184Q217 171 284 184L266 272Q220 290 173 267Z" fill="#83b5b9"/><path d="M290 166Q373 150 335 239Q315 259 283 250" fill="none" stroke="#c7a48a" stroke-width="19"/><ellipse cx="217" cy="147" rx="74" ry="18" fill="#e9daca"/>',
- chair:'<rect x="142" y="106" width="175" height="141" rx="29" fill="#b1b9a5"/><path d="M125 231H334V291Q224 308 125 286Z" fill="#d2c2af"/><path d="M153 279L148 353M306 281L313 353" stroke="#806c5e" stroke-width="14" stroke-linecap="round"/><rect x="180" y="170" width="110" height="65" rx="14" fill="#dfc7ba"/>',
- hills:'<circle cx="320" cy="96" r="44" fill="#e9cca5"/><path d="M0 282L107 180L188 267L290 145L440 285V380H0Z" fill="#9bb4ab"/><path class="rest-drift" d="M0 325Q105 258 213 317T440 300V380H0Z" fill="#648f85"/><path d="M0 351Q190 309 440 348" fill="none" stroke="#dfd9c3" stroke-width="8"/>',
- sunlight:'<rect x="79" y="62" width="280" height="242" rx="5" fill="#d7dbce"/><path d="M219 62V304M79 185H359" stroke="#f0e4d5" stroke-width="14"/><path class="rest-sunbeam" d="M220 90L385 335H116Z" fill="#f2d3a5" opacity=".55"/><circle cx="275" cy="132" r="34" fill="#f2d3a5"/>',
- eyes:'<path class="rest-eyes" d="M78 192Q145 120 212 192Q145 256 78 192ZM233 192Q302 120 370 192Q302 257 233 192Z" fill="#f0e2d4" stroke="#bc9c8d" stroke-width="6"/><path d="M93 204Q147 230 198 204M249 204Q302 230 353 204" fill="none" stroke="#ae9587" stroke-width="5" stroke-linecap="round"/>',
- stretch:'<circle cx="217" cy="88" r="30" fill="#d3ac99"/><path class="rest-soft" d="M217 118L215 256M216 165L128 208M215 166L302 96M214 257L152 326M214 255L273 332" stroke="#b49d8b" stroke-width="17" stroke-linecap="round" fill="none"/><path d="M88 330H351" stroke="#d6bba5" stroke-width="7" stroke-linecap="round"/>',
- phone:'<rect x="155" y="60" width="146" height="265" rx="22" fill="#a69c94"/><rect x="167" y="80" width="122" height="221" rx="12" fill="#d5dfd8"/><path class="rest-drift" d="M203 169Q228 142 254 169M193 194Q226 226 264 191" stroke="#95b2a6" stroke-width="8" fill="none"/><circle cx="228" cy="310" r="5" fill="#e8d9c5"/>',
- flower:'<path d="M221 329Q211 261 223 185" fill="none" stroke="#789986" stroke-width="10"/><path d="M221 242Q157 181 132 211Q173 271 221 242ZM219 270Q281 213 307 237Q273 294 219 270Z" fill="#a4b89a"/><g class="rest-soft" fill="#dcb6a5"><ellipse cx="221" cy="124" rx="32" ry="60"/><ellipse cx="221" cy="124" rx="32" ry="60" transform="rotate(72 221 165)"/><ellipse cx="221" cy="124" rx="32" ry="60" transform="rotate(-72 221 165)"/></g><circle cx="221" cy="160" r="24" fill="#f1d59e"/>',
- desk:'<path d="M64 257H375V276H64Z" fill="#a7806a"/><path d="M89 270V352M347 271V352" stroke="#a7806a" stroke-width="15"/><g class="rest-drift"><rect x="145" y="182" width="160" height="70" rx="3" fill="#eee6d8" transform="rotate(-5 225 218)"/><path d="M173 209H265M175 225H252" stroke="#c3ada0" stroke-width="3"/></g><path d="M105 213H143L137 255H113Z" fill="#d1a58f"/><path d="M122 214L122 147" stroke="#8fa58e" stroke-width="5"/><ellipse cx="109" cy="174" rx="12" ry="31" fill="#a2b798" transform="rotate(-34 109 174)"/>',
- leaf:'<path d="M222 330L222 155" fill="none" stroke="#8a9a78" stroke-width="8"/><path class="rest-leaf" d="M228 177Q76 77 96 227Q179 279 228 177Z" fill="#8eab89"/><path class="rest-leaf" d="M221 229Q374 105 354 264Q269 307 221 229Z" fill="#afc3a0"/><path d="M221 190L117 200M221 239L336 244" stroke="#e1dfb9" stroke-width="3"/>',
- paper:'<rect class="rest-drift" x="111" y="55" width="222" height="268" rx="5" fill="#f8eedf" transform="rotate(-3 222 189)"/><path d="M156 113H292M159 140H287M164 168H299M165 202H284" stroke="#cdbbae" stroke-width="3"/><path d="M220 266Q200 228 223 214Q247 203 246 224Q248 240 223 248V255" fill="none" stroke="#a0b4a0" stroke-width="7"/><circle cx="222" cy="272" r="5" fill="#a0b4a0"/>',
- night:'<path d="M0 298Q123 250 217 287T440 269V380H0Z" fill="#7a908e"/><circle cx="296" cy="107" r="49" fill="#ecd6b9"/><circle cx="316" cy="85" r="49" fill="#adb8af"/><g class="rest-stars" fill="#f5e9cd"><circle cx="76" cy="98" r="4"/><circle cx="132" cy="159" r="3"/><circle cx="363" cy="207" r="4"/><circle cx="205" cy="84" r="3"/></g>'
- };
-
- // Each rest experience has its own moving motif. Animations operate inside the SVG
- // continuously while the stage is open, rather than only animating modal entrance.
- const motion={
- window:'<g class="scene-flying-leaves" fill="#a9b69a"><ellipse cx="68" cy="90" rx="10" ry="5"/><ellipse cx="116" cy="50" rx="7" ry="4"/><ellipse cx="370" cy="145" rx="8" ry="5"/></g>',
- hands:'<g class="scene-hand-glow" fill="none" stroke="#edc59e" stroke-width="5"><circle cx="220" cy="209" r="62"/><circle cx="220" cy="209" r="97"/></g>',
- sound:'<g class="scene-sound-waves" fill="none" stroke="#f4dfb7" stroke-width="4"><path d="M267 130Q375 200 267 276"/><path d="M285 92Q429 205 288 315"/></g>',
- cup:'<g class="scene-steam" fill="none" stroke="#fffaf0" stroke-width="7" stroke-linecap="round"><path d="M174 143Q153 117 170 95T170 44"/><path d="M219 132Q197 101 219 77T219 23"/><path d="M264 143Q243 118 262 89T262 39"/></g>',
- chair:'<g class="scene-chair-light" fill="#fff1bd" opacity=".7"><ellipse cx="349" cy="112" rx="42" ry="44"/><path d="M330 143L266 281L407 270Z"/></g>',
- hills:'<g class="scene-clouds" fill="#fff9f0" opacity=".65"><ellipse cx="124" cy="93" rx="92" ry="18"/><ellipse cx="325" cy="70" rx="75" ry="12"/></g>',
- sunlight:'<g class="scene-sunrays" stroke="#fff4cd" stroke-width="13" opacity=".68"><path d="M80 85L365 288"/><path d="M80 129L306 310"/></g>',
- eyes:'<g class="scene-breath-mist" fill="#fff3dc" opacity=".57"><ellipse cx="215" cy="111" rx="70" ry="16"/><ellipse cx="216" cy="282" rx="60" ry="12"/></g>',
- stretch:'<g class="scene-stretch-particles" fill="#b1c8b5"><circle cx="91" cy="120" r="13"/><circle cx="342" cy="141" r="10"/><circle cx="319" cy="67" r="7"/></g>',
- phone:'<g class="scene-phone-off" fill="#f0d5a9" opacity=".86"><circle cx="334" cy="101" r="12"/><circle cx="366" cy="147" r="8"/><circle cx="352" cy="229" r="9"/></g>',
- flower:'<g class="scene-petals" fill="#f5d7c8"><ellipse cx="129" cy="70" rx="12" ry="6"/><ellipse cx="342" cy="137" rx="9" ry="5"/><ellipse cx="108" cy="248" rx="8" ry="4"/></g>',
- desk:'<g class="scene-paper-shimmer" fill="#f5e8d9" opacity=".9"><rect x="178" y="168" width="84" height="13" rx="3"/><rect x="192" y="190" width="106" height="10" rx="3"/></g>',
- leaf:'<g class="scene-leaf-fall" fill="#b6bf98"><ellipse cx="105" cy="90" rx="13" ry="8" transform="rotate(-32 105 90)"/><ellipse cx="350" cy="70" rx="11" ry="7" transform="rotate(27 350 70)"/></g>',
- paper:'<g class="scene-notes" stroke="#d5bca7" stroke-width="3" fill="none"><path d="M109 281Q175 344 292 309"/><path d="M320 92Q380 107 367 174"/></g>',
- night:'<g class="scene-shooting-star"><path d="M70 98L206 152" stroke="#fff0c0" stroke-width="5" stroke-linecap="round"/><circle cx="206" cy="152" r="5" fill="#fff8db"/></g>'
- };
- function pick(title){const found=states.find(([fragment])=>title.includes(fragment));return found||states[0]}
- function init(){
-   const modal=document.getElementById('restStage');if(!modal)return;
-   const art=modal.querySelector('.rest-stage-art');
-   const heading=modal.querySelector('.rest-stage-heading');
-   const line=modal.querySelector('.rest-stage-text');
-   const detail=modal.querySelector('.rest-stage-note');
-   const close=()=>{modal.hidden=true;document.body.classList.remove('rest-theatre-open')};
-   function open(item){
-     if(!item)return; const [,,name]=pick(item.title),type=pick(item.title)[1];
-     heading.textContent=item.title;
-     line.textContent=item.text;
-     detail.textContent=item.note||'不用照著任何速度完成。';
-     art.dataset.type=type;
-     art.innerHTML='<svg viewBox="0 0 440 380" aria-hidden="true" focusable="false">'+drawing[type]+(motion[type]||'')+'</svg>';
-     modal.hidden=false;
-     document.body.classList.add('rest-theatre-open');
-     modal.querySelector('.rest-stage-close').focus();
-     window.dispatchEvent(new CustomEvent('pause:companion-close'));
-   }
-   modal.querySelector('.rest-stage-close').addEventListener('click',close);
-   modal.querySelector('.rest-stage-finish').addEventListener('click',close);
-   modal.addEventListener('click',event=>{if(event.target===modal)close()});
-   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidden)close()});
-   window.PauseRestStage={open,close};
+'use strict';
+const keys=[['看窗外','window'],['放鬆手指','hands'],['環境聲音','sound'],['一口水','cup'],['舒服的位置','chair'],['看遠方','hills'],['光影','sunlight'],['閉眼','eyes'],['伸展','stretch'],['手機','phone'],['微笑','flower'],['小角落','desk'],['花或一片葉子','leaf'],['問題','paper'],['收尾','night']];
+const defs='<defs>'
++'<linearGradient id="r-sky" x2="0.3" y2="1"><stop stop-color="#fff0d8"/><stop offset=".52" stop-color="#e7e9df"/><stop offset="1" stop-color="#d1dfd6"/></linearGradient>'
++'<linearGradient id="r-sage" x2="1" y2="1"><stop stop-color="#b9cbb2"/><stop offset=".6" stop-color="#8cafa1"/><stop offset="1" stop-color="#698e82"/></linearGradient>'
++'<linearGradient id="r-linen" x2="1" y2="1"><stop stop-color="#fdf9ed"/><stop offset=".5" stop-color="#eee4d5"/><stop offset="1" stop-color="#d7cebf"/></linearGradient>'
++'<linearGradient id="r-skin" x2=".2" y2="1"><stop stop-color="#f5d5bd"/><stop offset=".65" stop-color="#dcb29d"/><stop offset="1" stop-color="#c79787"/></linearGradient>'
++'<radialGradient id="r-light"><stop stop-color="#fff6d5" stop-opacity=".85"/><stop offset="1" stop-color="#fff6d5" stop-opacity="0"/></radialGradient>'
++'<radialGradient id="r-mist"><stop stop-color="#fffaf1" stop-opacity=".75"/><stop offset="1" stop-color="#fffaf1" stop-opacity="0"/></radialGradient>'
++'<filter id="r-blur"><feGaussianBlur stdDeviation="9"/></filter>'
++'<filter id="r-texture"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="3" seed="14"/><feColorMatrix type="saturate" values=".2"/><feComponentTransfer><feFuncA type="linear" slope=".10"/></feComponentTransfer></filter>'
++'</defs>';
+const leaf='<g class="r-sway"><path d="M224 348Q206 240 230 136" fill="none" stroke="#829780" stroke-width="6" stroke-linecap="round"/>'
++'<path d="M223 176Q91 84 94 190Q151 254 223 176Z" fill="url(#r-sage)"/><path d="M228 235Q365 121 366 235Q304 290 228 235Z" fill="url(#r-sage)"/>'
++'<path d="M220 176L113 166M226 233L354 221" fill="none" stroke="#f8f1d5" stroke-width="3" opacity=".7"/>'
++'<g fill="none" stroke="#eee9ca" stroke-width="1.6" opacity=".6"><path d="M153 169L130 134M160 173L136 210M285 229L312 192M311 224L335 249"/></g></g>';
+const grass='<g class="r-sway" stroke="#8ba895" stroke-width="3" stroke-linecap="round" fill="none"><path d="M48 380Q77 325 60 260M86 380Q91 322 113 278M348 380Q330 319 350 255M391 380Q410 320 395 275"/></g>';
+const window='<rect x="78" y="48" width="287" height="270" rx="7" fill="#f7eddb"/>'
++'<rect x="93" y="62" width="257" height="213" fill="#c5d8c9"/>'
++'<path d="M93 239Q149 191 212 223T350 204V277H93Z" fill="#a9c6b3"/><path d="M93 266Q173 219 251 245T350 218V277H93Z" fill="#8eb09c"/>'
++'<path d="M223 63V277M92 172H350" stroke="#f8f0e1" stroke-width="12"/>'
++'<path class="r-curtain" d="M81 48Q152 58 135 178T118 312H72Q107 177 81 48Z" fill="url(#r-linen)" opacity=".88"/>'
++'<path class="r-curtain" d="M361 49Q320 100 338 176T375 315H406Q362 159 361 49Z" fill="url(#r-linen)" opacity=".86"/>'
++'<path d="M91 274H354L373 313H71Z" fill="#dcccba"/><path class="r-glow" d="M160 68L329 273" stroke="#f9edd2" stroke-width="28" opacity=".21"/>';
+const hills='<path d="M0 257Q100 161 164 184T289 214Q363 145 440 202V380H0Z" fill="#b9cdbd"/>'
++'<path d="M0 287Q102 219 186 255T346 211T440 259V380H0Z" fill="#91b1a3"/>'
++'<path d="M0 321Q132 276 239 303T440 275V380H0Z" fill="#71988b" opacity=".84"/>'
++'<g class="r-cloud" fill="#fffaf0" opacity=".63"><ellipse cx="126" cy="112" rx="100" ry="14"/><ellipse cx="315" cy="79" rx="75" ry="12"/></g>'+grass;
+const flower='<g class="r-sway"><path d="M221 345Q227 248 233 179" fill="none" stroke="#799b86" stroke-width="7" stroke-linecap="round"/>'
++'<path d="M218 258Q144 196 125 232Q157 282 218 258ZM233 285Q308 225 326 253Q295 306 233 285Z" fill="url(#r-sage)"/>'
++'<g class="r-bloom" fill="url(#r-skin)" stroke="#d6aa9a" stroke-width="1.8"><path d="M229 166Q181 143 183 107Q203 64 228 116Q250 67 276 107Q285 141 244 170Q306 147 307 186Q290 218 245 188Q253 245 215 234Q186 228 208 190Q153 206 156 175Q162 152 229 166Z"/></g>'
++'<circle cx="230" cy="176" r="21" fill="#e6c790"/><path d="M230 172L208 155M230 172L251 157M230 172L259 182" stroke="#a38969" stroke-width="2"/></g>';
+const floor='<path d="M0 294Q185 282 440 295V380H0Z" fill="#dbc8b3" opacity=".65"/>';
+const body={
+window,
+hands:'<ellipse cx="223" cy="317" rx="149" ry="28" fill="#b2b4a5" opacity=".2" filter="url(#r-blur)"/>'
++'<g class="r-hands" fill="url(#r-skin)" stroke="#bc9488" stroke-width="2" stroke-linejoin="round">'
++'<path d="M84 312Q109 281 123 249L146 203Q151 189 162 193Q173 199 163 220L154 244L181 145Q186 128 198 135Q205 140 201 156L187 224L217 116Q224 102 236 110Q244 115 238 135L213 224L251 146Q263 131 273 142Q277 150 268 168L227 252L280 205Q294 191 303 205Q310 216 290 236L243 290Q224 316 208 333Z"/>'
++'<path d="M355 316Q330 289 314 265L290 221Q283 204 273 210Q265 216 275 234L284 254L261 203Q253 186 244 195Q239 200 248 218L265 268L238 228Q224 209 215 219Q211 226 220 242L251 296Q264 321 281 333Z" opacity=".77"/></g>'
++'<path d="M121 290Q151 276 169 281M180 306Q217 292 241 298" stroke="#f2d4c3" fill="none" stroke-width="2"/>',
+sound:hills+'<g class="r-breeze" fill="none" stroke="#fff8df" stroke-width="3" opacity=".58"><path d="M88 167Q213 136 344 169"/><path d="M120 195Q210 184 300 205"/></g>',
+cup:floor+'<ellipse cx="224" cy="307" rx="134" ry="17" fill="#aca998" opacity=".18"/>'
++'<path d="M141 154Q217 172 295 155L281 280Q219 307 161 283Z" fill="url(#r-linen)" stroke="#cfb5a0" stroke-width="3"/>'
++'<path d="M295 170Q348 150 348 220Q341 254 286 245" stroke="#d9bba8" stroke-width="18" fill="none" stroke-linecap="round"/>'
++'<ellipse cx="220" cy="156" rx="77" ry="14" fill="#c9a588" stroke="#f3e9dc" stroke-width="5"/>'
++'<g class="r-steam" stroke="#fffaf1" stroke-width="6" stroke-linecap="round" fill="none" opacity=".78"><path d="M179 143Q163 118 181 97T176 45"/><path d="M224 134Q204 105 225 80T221 33"/><path d="M264 139Q246 110 264 88T262 47"/></g>',
+chair:window+floor+'<path d="M182 291L165 164Q159 133 191 118H318Q348 121 346 161L336 291Z" fill="url(#r-sage)" stroke="#97aa9c" stroke-width="3"/>'
++'<path d="M167 242Q176 216 202 214H327Q350 221 345 256L337 290H183Z" fill="#dbc3b0"/>'
++'<rect x="188" y="178" width="101" height="70" rx="24" fill="url(#r-linen)"/>'
++'<path d="M180 286L172 342M338 288L345 345" stroke="#aa917c" stroke-width="12" stroke-linecap="round"/>',
+hills,
+sunlight:window+floor+'<path class="r-glow" d="M164 72L392 328L352 366L112 135Z" fill="#fff1c7" opacity=".34"/>'
++'<path class="r-glow" d="M111 79L307 314L265 364L72 142Z" fill="#ffead0" opacity=".23"/>'
++'<g class="r-shadows" fill="#92aa98" opacity=".31"><path d="M28 338Q133 237 211 323Q116 302 28 338Z"/><path d="M211 358Q249 256 344 305Q277 353 211 358Z"/></g>',
+eyes:hills+'<ellipse class="r-mist" cx="232" cy="217" rx="235" ry="91" fill="url(#r-mist)" opacity=".86"/>',
+stretch:hills+'<g class="r-sway" fill="none" stroke="#809b86" stroke-width="5" stroke-linecap="round"><path d="M212 368Q204 266 225 133T295 75"/><path d="M213 253Q154 199 124 209M229 182Q277 143 315 157"/></g>'
++'<g class="r-sway" fill="#a5bc9f"><path d="M225 176Q176 126 167 177Q199 210 225 176ZM213 249Q147 191 134 221Q145 266 213 249ZM230 148Q280 95 315 117Q304 157 230 148Z"/></g>',
+phone:window+floor+'<path d="M66 283H376V302H66Z" fill="#bca18a"/>'
++'<g transform="rotate(-11 230 244)"><rect x="172" y="217" width="116" height="53" rx="12" fill="#718780"/><rect x="180" y="224" width="100" height="39" rx="7" fill="#b3c1b6"/></g>',
+flower,
+desk:floor+'<path d="M60 274H382V296H60Z" fill="#bba18b"/>'
++'<g transform="rotate(-6 222 203)"><rect x="133" y="160" width="190" height="87" rx="5" fill="#faf3e7"/><path d="M162 189H290M162 211H273M169 231H238" stroke="#cdbdaf" stroke-width="2.5"/></g>'
++'<path d="M319 176L341 246" stroke="#bb9578" stroke-width="8" stroke-linecap="round"/>'+grass,
+leaf,
+paper:floor+'<g transform="rotate(-5 217 190)"><rect x="116" y="54" width="223" height="271" rx="6" fill="#dbcdbb" opacity=".6"/><rect x="107" y="46" width="223" height="272" rx="5" fill="url(#r-linen)"/>'
++'<path d="M144 111H286M145 143H278M144 176H297M144 208H263" stroke="#cdbdaf" stroke-width="2.6" opacity=".8"/></g>'
++'<path d="M329 140L341 250" stroke="#bc967c" stroke-width="8" stroke-linecap="round"/>',
+night:'<rect width="440" height="380" fill="#819c98" opacity=".79"/><circle cx="289" cy="95" r="47" fill="#f6e7c9" class="r-glow"/>'
++'<path d="M0 254Q100 211 201 261T440 241V380H0Z" fill="#8bab9d"/>'
++'<path d="M0 298Q130 249 240 291T440 272V380H0Z" fill="#608a82"/>'
++grass+'<g class="r-twinkle" fill="#fff0d6"><circle cx="71" cy="99" r="2.4"/><circle cx="137" cy="137" r="2"/><circle cx="365" cy="168" r="2.7"/><circle cx="222" cy="62" r="2"/></g>'
+};
+function sceneKey(title){return lookup.find(([k])=>String(title||'').includes(k))?.[1]||'window'}
+function init(){
+ const modal=document.getElementById('restStage');if(!modal)return;
+ const art=modal.querySelector('.rest-stage-art'),heading=modal.querySelector('.rest-stage-heading');
+ const line=modal.querySelector('.rest-stage-text'),note=modal.querySelector('.rest-stage-note');
+ let returnFocus=null;
+ function close(){
+  if(modal.hidden)return;
+  modal.hidden=true;document.body.classList.remove('rest-theatre-open');
+  art.replaceChildren();returnFocus?.isConnected&&returnFocus.focus({preventScroll:true});
+  returnFocus=null;
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
- else init();
+ function open(item){
+  if(!item)return;
+  returnFocus=document.activeElement;
+  const kind=sceneKey(item.title);heading.textContent=item.title;line.textContent=item.text;
+  note.textContent=item.note||'不用照著任何速度完成。';
+  art.dataset.type=kind;
+  art.innerHTML='<svg viewBox="0 0 440 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
+     +defs+'<rect width="440" height="380" fill="url(#r-sky)"/>'
+     +'<ellipse cx="323" cy="105" rx="175" ry="175" fill="url(#r-light)" class="r-glow"/>'
+     +(body[kind]||body.window)
+     +'<rect width="440" height="380" filter="url(#r-texture)" opacity=".43" pointer-events="none"/></svg>';
+  modal.hidden=false;document.body.classList.add('rest-theatre-open');
+  modal.querySelector('.rest-stage-close').focus({preventScroll:true});
+  window.dispatchEvent(new CustomEvent('pause:companion-close'));
+ }
+ modal.querySelector('.rest-stage-close').addEventListener('click',close);
+ modal.querySelector('.rest-stage-finish').addEventListener('click',close);
+ modal.addEventListener('click',e=>{if(e.target===modal)close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+ window.PauseRestStage={open,close};
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

@@ -13,7 +13,7 @@ const required = [
   'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
   'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
   'world-art.js', 'palette-world.js', 'card-originals.js', 'card-sourced.js', 'fresh-cards.js',
-  'photo-rotation.js', 'companion-site.js', 'rest-stage.js'
+  'photo-rotation.js', 'companion-site.js', 'rest-stage.js', 'surprise-visit.js', 'surprise-style.css'
 ];
 for (const file of required) assert.ok(exists(file), 'missing required file: ' + file);
 
@@ -29,6 +29,9 @@ for (const js of required.filter(name => name.endsWith('.js'))) {
 }
 assert.ok(html.includes('styles.css'), 'CSS link absent');
 assert.ok(html.includes('./sound-style.css?v='), 'sound UI CSS absent');
+assert.ok(html.includes('./surprise-style.css?v='),'second greeting animation CSS absent');
+assert.ok(html.indexOf('surprise-visit.js') < html.indexOf('./app.js'),'surprise script should observe the original welcome');
+assert.ok(html.includes('./rest-stage.js?v=20261013-3'),'new rest-scene renderer not linked');
 assert.ok(html.includes('id="cardSourceDialog"') && html.includes('id="cardSourceDialogClose"'), 'accessible credit dialog absent');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('companion-site.js'), 'soundscape must load before companion');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('./app.js'), 'soundscape must load before navigation controls');
@@ -221,9 +224,22 @@ assert.equal(new Set(lines).size,36,'no duplicated creature speech');
 assert.ok(lines.every(x=>x.length>=12),'creature speech cannot be just a slogan');
 assert.ok(!companionText.includes("window.addEventListener('pause:companion',"),'creature cannot interrupt navigation');
 assert.ok(read('companion-site.js').includes('sprite-butterfly') && read('companion-site.js').includes('sprite-firefly'), 'roaming species absent');
-assert.ok(read('rest-stage.js').includes('motion[type]'), '15 rest scenes need individually animated layers');
-assert.equal((read('rest-stage.js').match(/class="scene-[a-z-]+"/g)||[]).length,15,'all fifteen rest scenes need individual moving motifs');
-assert.ok(read('world-style.css').includes('@keyframes sceneLeafTravel') && read('world-style.css').includes('@keyframes sceneShoot'), 'continuous scene-specific animations missing');
+const restScript=read('rest-stage.js');
+assert.ok(restScript.includes('(body[kind]||body.window)'), 'render each of 15 painted, independent rest scenes');
+assert.equal((restScript.match(/^\s*(?:window|hands|sound|cup|chair|hills|sunlight|eyes|stretch|phone|flower|desk|leaf|paper|night):/gm)||[]).length,15,'15 distinct natural scene vignettes required');
+assert.ok(restScript.includes('r-texture') && restScript.includes('r-sky'),'rest scene should use soft texture and light');
+assert.ok(read('world-style.css').includes('@keyframes rGardenBreath') && read('world-style.css').includes('@keyframes rCurtain'),'continuous quiet scene animations missing');
+const surprise=read('surprise-visit.js');
+assert.ok(surprise.includes('setTimeout(show,5000)'),'second greeting must wait 5 seconds after entry');
+assert.ok(surprise.includes('MutationObserver') && surprise.includes('attributeFilter:[\'hidden\']'),'second animation starts after the original welcome closes');
+assert.ok(surprise.includes('哩賀') && surprise.includes('你是世界上非常重要的人'),'all user-provided encouragement must be preserved');
+assert.ok(surprise.includes('surprise-cat') && surprise.includes('surprise-bear') && surprise.includes('surprise-hero-heart'),'heart/cat/bear surprise variations missing');
+assert.ok(surprise.includes("if(done||document.hidden)return"),'surprise must show at most once per visit');
+assert.ok(surprise.includes("document.querySelector('#today.active')"),'do not interrupt other website sections');
+assert.ok(read('surprise-style.css').includes('@media(prefers-reduced-motion:reduce)'),'surprise should respect reduced motion');
+assert.ok(audioScript.includes('phoneAudio') && audioScript.includes("track.id==='creek' ? track.level*.65"),'35% forest creek mobile reduction missing');
+assert.ok(audioScript.includes("t.id!=='thereNature'"),'mobile playlist must omit There Is A Place');
+assert.ok(audioScript.includes("softenIphoneCreek"),'iPhone Web Audio fallback for lowering creek volume absent');
 assert.equal(win.freshCards.filter(c=>c.type==='陪伴的一段話').length,16,'gentle reflection category missing');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>/延伸|概述|聯想|改寫|重述|轉述/.test(c.provenance)), 'sourced writing must distinguish its life interpretation from the original idea');
 
