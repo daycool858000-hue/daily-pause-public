@@ -47,7 +47,7 @@ jobs:
             {
               "id":"river-lapping","title":"細流輕拍","artist":"RandomMind",
               "page":"https://opengameart.org/content/sea-and-river-wave-sounds",
-              "filename":"VistulaShort.mp3","out":"river-lapping.mp3","kind":"nature",
+              "filename":"VistulaShort_0.mp3","out":"river-lapping.mp3","kind":"nature",
             },
           ]
           class Links(HTMLParser):
