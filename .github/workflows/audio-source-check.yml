@@ -1,9 +1,7 @@
 name: External audio source reachability and CORS QA
 
+# Manual only: automated CDN probing can trigger Wikimedia HTTP 429 rate limits.
 on:
-  push:
-    paths:
-      - '.github/workflows/audio-source-check.yml'
   workflow_dispatch:
 
 permissions:
@@ -58,6 +56,8 @@ jobs:
                 break
               except (URLError, HTTPError, TimeoutError, OSError) as error:
                 row["error"] = str(error)
+                # Respect Wikimedia rate limits and do not retry a policy/429 response.
+                if isinstance(error, HTTPError) and error.code == 429: break
                 if attempt < 2: sleep(2)
             print(f"{name}: status={row.get('status')} mp3={row.get('has_mp3_header')} CORS={row.get('cors','<none>')} ok={row['ok']} error={row.get('error','<none>')}")
             results.append(row)
