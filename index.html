@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#f6f1e8" />
     <title>今日一息｜每日療癒小卡</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=20261011-19" />
+    <link rel="stylesheet" href="./styles.css?v=20261013-1" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -177,7 +177,7 @@
               <section class="palette-tool-panel palette-objects-panel" data-palette-panel="objects" role="tabpanel" hidden><span class="palette-section-label">生活物件</span><p class="palette-tool-note">選一個物件放入畫布，再直接拖曳它。物件可以縮放、旋轉、前後移動或單獨刪除。</p><div id="paletteObjects" class="palette-object-grid"></div><div id="paletteObjectEditor" class="palette-object-editor" hidden></div></section>
             </div>
             <div class="palette-ranges"><label>光影強度 <input id="paletteIntensity" type="range" min="0.2" max="1" step="0.05" value="0.7" /></label><label>流動速度 <input id="paletteSpeed" type="range" min="0" max="2" step="0.1" value="0.8" /></label></div>
-            <div class="palette-actions"><button id="paletteRandom" type="button">隨機生成</button><button id="paletteClear" type="button">清空</button><button id="paletteDownload" type="button">保存 PNG</button></div><p class="palette-note">調色盤作品只在目前開啟的頁面中保留，重新整理或關閉頁面後可能消失；請使用「保存 PNG」下載圖片。圖片會保存匯出當下的畫面，但不能再編輯圖層。</p>
+            <div class="palette-actions"><button id="paletteUndo" type="button" disabled aria-label="復原上一步">↶ 復原</button><button id="paletteRedo" type="button" disabled aria-label="重做上一步">↷ 重做</button><button id="paletteRandom" type="button">隨機生成</button><button id="paletteClear" type="button">清空</button><button id="paletteDownload" type="button">保存 PNG</button></div><p class="palette-note">調色盤可復原、重做最近 20 個操作；歷史僅在這次開啟頁面期間保留，重新整理或關閉頁面後可能消失。請使用「保存 PNG」下載作品。圖片會保存匯出當下的畫面，但不能再編輯圖層。</p>
           </aside>
         </div>
       </section>
@@ -240,7 +240,8 @@
     <script src="./cards-data.js?v=20261010-6" defer></script>
     <script src="./curiosity.js?v=20261012-5" defer></script>
     <script src="./daily-content.js?v=20261012-2" defer></script>
-    <script src="./app.js?v=20261012-26" defer></script>
+    <script src="./palette-history.js?v=20261013-1" defer></script>
+    <script src="./app.js?v=20261013-1" defer></script>
     <script src="./quiet-spaces.js?v=20261012-8" defer></script>
   </body>
 </html>

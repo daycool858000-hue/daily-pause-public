@@ -10,7 +10,7 @@ const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(root, relative));
 const required = [
   'index.html', 'styles.css', 'app.js', 'cards-data.js',
-  'daily-content.js', 'quiet-spaces.js', 'long-articles.js',
+  'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
   'short-articles.js', 'curiosity.js', 'media.js'
 ];
 for (const file of required) assert.ok(exists(file), 'missing required file: ' + file);
@@ -26,6 +26,43 @@ for (const js of required.filter(name => name.endsWith('.js'))) {
   assert.ok(html.includes('./' + js + '?v='), 'HTML script missing: ' + js);
 }
 assert.ok(html.includes('styles.css'), 'CSS link absent');
+assert.match(html, /id="paletteUndo"[^>]+disabled/, 'palette undo must begin disabled');
+assert.match(html, /id="paletteRedo"[^>]+disabled/, 'palette redo must begin disabled');
+assert.ok(html.indexOf('palette-history.js') < html.indexOf('./app.js'), 'palette history must load before app.js');
+
+const historySandbox = { window: {} };
+vm.runInNewContext(read('palette-history.js'), historySandbox, { filename: 'palette-history.js', timeout: 5000 });
+assert.equal(typeof historySandbox.window.createPaletteHistory, 'function');
+const model = { points: [1], nested: { x: 1 } };
+let buttons = null;
+const history = historySandbox.window.createPaletteHistory({
+  read: () => model,
+  write: state => {
+    model.points = state.points;
+    model.nested = state.nested;
+  },
+  onChange: state => { buttons = { ...state }; },
+  limit: 2
+});
+assert.ok(!buttons.canUndo && !buttons.canRedo, 'history must start empty');
+history.record(); model.points.push(2); model.nested.x = 2;
+assert.ok(buttons.canUndo && !buttons.canRedo);
+assert.equal(history.undo(), true);
+assert.equal(model.points.join(','), '1', 'undo should restore earlier points');
+assert.equal(model.nested.x, 1, 'history must deep-clone');
+assert.ok(buttons.canRedo);
+assert.equal(history.redo(), true);
+assert.equal(model.points.join(','), '1,2', 'redo should restore new points');
+history.undo();
+history.record(); model.points.push(3);
+assert.ok(!buttons.canRedo, 'new edit must invalidate redo');
+assert.equal(history.redo(), false);
+history.record(); model.points.push(4);
+history.record(); model.points.push(5);
+assert.equal(history.undo(), true);
+assert.equal(history.undo(), true);
+assert.equal(history.undo(), false, 'undo stack must respect configured memory limit');
+
 
 const win = {
   localStorage: {
@@ -59,6 +96,12 @@ for (const ref of refs) assert.match(ref, /^https:\/\//, 'unsafe or relative sou
 assert.equal(refs.filter(u => u.includes('openstax.org')).length, 0);
 
 const app = read('app.js');
+assert.ok(app.includes('const history = window.createPaletteHistory('), 'palette history integration absent');
+assert.ok(app.includes("$('#paletteUndo').addEventListener('click'"), 'palette undo control not connected');
+assert.ok(app.includes("$('#paletteRedo').addEventListener('click'"), 'palette redo control not connected');
+assert.ok(app.includes("document.addEventListener('visibilitychange'"), 'background animation pause missing');
+assert.ok(app.includes("window.addEventListener('palette-view-change'"), 'hidden palette animation pause missing');
+assert.ok(app.includes('Math.hypot(next.x - activePointer.x'), 'pointer distance filtering missing');
 const prefixCut = app.indexOf('const defaultLongArticles = []');
 assert.ok(prefixCut > 0, 'outdated fallback was not removed');
 assert.ok(!app.includes('openstax.org'), 'outdated OpenStax reference remains in app.js');

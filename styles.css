@@ -1113,3 +1113,7 @@ h1 em, .welcome-modal h2 em { color: var(--coral); font-style: normal; }
 @media (max-width: 390px) {
   .palette-object-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* 2026-10-13: Clear disabled state for palette undo/redo on desktop and touch. */
+.palette-actions button:disabled { opacity: .43; cursor: not-allowed; }
+.palette-actions button:focus-visible { outline: 2px solid #285a55; outline-offset: 3px; }
