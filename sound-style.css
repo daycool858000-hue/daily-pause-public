@@ -1,31 +1,41 @@
-/* Daily Pause soundscapes and compact, accessible five-card reading — 2026-10-13 */
+/* Today's music: quietly sits within each section, only two small controls. */
 .pause-soundbar{
-  margin:13px 6.5% 20px;padding:10px 15px;display:flex;flex-wrap:wrap;
-  align-items:center;gap:9px 15px;border:1px solid rgba(108,142,129,.19);
-  border-radius:16px;background:rgba(254,250,243,.88);color:#667d6e;
+  display:flex;align-items:center;justify-content:flex-end;gap:7px;
+  width:max-content;max-width:calc(100% - 28px);min-height:33px;
+  margin:4px 5% 8px auto;padding:4px 5px 4px 9px;
+  border:1px solid rgba(112,145,128,.18);border-radius:999px;
+  background:rgba(251,248,240,.73);color:#688075;
+  box-shadow:0 2px 12px rgba(63,82,67,.045);
 }
-.pause-soundbar-label{display:inline-flex;align-items:center;gap:7px;margin-right:auto;color:#617c6e;font-size:.78rem;font-weight:600}
-.pause-soundbar-label::first-letter{font-size:1.15rem}
-.pause-sound-select-label{display:flex;align-items:center;gap:8px;font-size:.71rem;color:#7a8178}
-.pause-soundbar select{
-  appearance:auto;border:1px solid #deded2;border-radius:12px;
-  padding:7px 10px;color:#597566;background:#fffefa;font:inherit;font-size:.73rem;
-  max-width:175px;
-}
+.pause-sound-icon{font-size:.72rem;color:#98aa9b;line-height:1}
+.pause-sound-name{max-width:102px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#6c8278;font-size:.67rem;text-decoration:none;line-height:1.2}
+.pause-sound-name[href]:hover{text-decoration:underline;text-underline-offset:3px}
 .pause-soundbar button{
-  border:1px solid #668276;border-radius:999px;padding:8px 15px;
-  color:#597468;background:transparent;font-size:.73rem;cursor:pointer;
+  border:0;width:27px;height:27px;display:grid;place-items:center;
+  background:rgba(231,237,227,.72);border-radius:50%;color:#53766a;
+  padding:0;font-size:.83rem;cursor:pointer;line-height:1
 }
-.pause-soundbar button[aria-pressed="true"]{background:#5f8273;color:white}
-.pause-soundbar button:disabled{opacity:.5;cursor:not-allowed}
-.pause-soundbar :focus-visible{outline:2px solid #51796e;outline-offset:3px}
+.pause-soundbar [data-sound-toggle][aria-pressed="true"]{
+  background:#688b7c;color:white
+}
+.pause-soundbar button:hover{background:#d8e8dd}
+.pause-soundbar button:focus-visible,.pause-soundbar a:focus-visible{
+  outline:2px solid #57796c;outline-offset:3px
+}
+.pause-soundbar .pause-sound-error{display:none;font-size:.63rem;color:#976b58;max-width:166px}
+.pause-soundbar[data-error="true"] .pause-sound-error{display:block}
+.pause-soundbar[data-error="true"] .pause-sound-name{display:none}
+.pause-soundbar[data-waiting="true"] [data-sound-toggle]{
+  box-shadow:0 0 0 1px rgba(85,120,105,.13)
+}
 @media(max-width:640px){
-  .pause-soundbar{margin:10px 4% 15px;gap:8px 10px;padding:10px 12px}
-  .pause-soundbar-label{flex:1 0 100%}
-  .pause-sound-select-label{flex:1;min-width:0}
-  .pause-soundbar select{width:100%;min-width:0}
-  .pause-soundbar button{white-space:nowrap}
+  .pause-soundbar{margin:3px 12px 8px auto;max-width:calc(100% - 22px);
+    padding:3px 5px 3px 8px;min-height:31px;gap:5px}
+  .pause-sound-name{font-size:.62rem;max-width:85px}
+  .pause-soundbar button{width:27px;height:27px}
 }
+
 @media(min-width:641px){
   .card-slot,.card-inner{min-height:314px}
 }
@@ -56,14 +66,14 @@
   .card-source-more{font-size:.61rem}
 }
 
-.pause-sound-meta{flex:1 0 100%;display:flex;gap:6px 15px;flex-wrap:wrap;align-items:baseline;font-size:.66rem;line-height:1.55;color:#8b9188}
-.pause-sound-meta small{font-size:.64rem;color:#808981;display:inline-flex;gap:4px;flex-wrap:wrap}
-.pause-sound-meta a{color:#5f8075;text-decoration:underline;text-underline-offset:2px}
-.pause-handpan-frame{display:block;flex:1 0 100%;width:100%;height:96px;border:0;border-radius:12px;background:#f9f5ec}
-@media(min-width:650px){.pause-soundbar{margin-top:5px;margin-bottom:20px}}
-@media(prefers-reduced-motion:no-preference){
- .welcome-backdrop:not([hidden]) .welcome-modal{animation:welcomeCardEnter 1s cubic-bezier(.2,.8,.26,1) both}
- .welcome-backdrop:not([hidden]) .modal-breath{animation:welcomeLightWake 1.8s ease-in-out both}
+/* Licensing remains directly accessible without crowding the two playback controls. */
+.site-footer .pause-music-credits{
+  width:100%;flex-basis:100%;max-width:740px;margin:10px auto 0;
+  color:#78857c;font-size:.69rem;line-height:1.75;
 }
-@keyframes welcomeCardEnter{0%{opacity:0;transform:translateY(24px) scale(.92)}65%{opacity:1;transform:translateY(-5px) scale(1.015)}100%{transform:translateY(0) scale(1)}}
-@keyframes welcomeLightWake{0%{opacity:.15;transform:scale(.72)}60%{opacity:.9;transform:scale(1.16)}100%{opacity:1;transform:scale(1)}}
+.site-footer .pause-music-credits summary{
+  display:list-item;cursor:pointer;width:max-content;max-width:100%;margin:0 auto;
+  font-size:.7rem;color:#677f73;list-style-position:inside;
+}
+.site-footer .pause-music-credits p{margin:9px auto;text-align:left}
+.site-footer .pause-music-credits a{color:#51786c;text-decoration:underline;text-underline-offset:3px}

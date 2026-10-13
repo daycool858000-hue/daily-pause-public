@@ -1,129 +1,237 @@
-// Daily Pause real field recordings. CC0/PD records from Wikimedia Commons;
-// source information is shown in the menu; no generated white noise is used.
-// Only user-initiated playback, low volume, fade in/out, and stop on navigation.
-// Handpan is an explicitly user-initiated Freesound CC0 external embed.
+// Daily Pause - discreet background listening, 2026-10-13.
+// No iframe, synthesized rain or stand-alone music service. All recordings are
+// streamed from Wikimedia Commons MP3 transcodes. Attribution is linked in the UI.
+// Soft autoplay is best-effort: Safari/iOS/Chrome can block until user interaction.
 (() => {
   'use strict';
-  const streams={
-    stream:{title:'森林溪流',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Forest_lawn_creek.ogg',credit:'Dsw4／公有領域｜溪流實景錄音約 7 分半',gain:.092},
-    forest:{title:'森林黃昏',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',credit:'Glaneur de sons／CC BY 3.0｜池邊蛙鳴與蟲鳴',gain:.075},
-    ocean:{title:'水岸波浪',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/Waves.ogg/Waves.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Waves.ogg',credit:'Dsw4／公有領域｜安大略湖畔實景浪聲約 4 分半',gain:.08},
-    rain:{title:'小雨聲',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/1/15/Sound_of_light_rainfall.ogg/Sound_of_light_rainfall.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Sound_of_light_rainfall.ogg',credit:'Mijesty／CC BY-SA 4.0｜真實小雨錄音，來源頁載明授權',gain:.085},
-    handpan:{title:'手碟真人演奏',page:'https://freesound.org/people/HECKFRICKER/sounds/625312/',
-      credit:'HECKFRICKER／CC0；Freesound 外部播放器',external:true}
+  const tracks = [
+    {
+      id:'sleep',title:'夢裡的鋼琴',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d0/Scott_Buckley_-_Sleep_(piano-only_mix).oga/Scott_Buckley_-_Sleep_(piano-only_mix).oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/sleep/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Sleep (Piano Only Mix)',level:.075
+    },{
+      id:'home',title:'溫柔的歸途',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f7/Scott_Buckley_-_The_Long_Way_Home.oga/Scott_Buckley_-_The_Long_Way_Home.oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/the-long-way-home/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'The Long Way Home',level:.065
+    },{
+      id:'mountains',title:'安靜的琴聲',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Scott_Buckley_-_She_Moved_Mountains.oga/Scott_Buckley_-_She_Moved_Mountains.oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/she-moved-mountains/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'She Moved Mountains',level:.065
+    },{
+      id:'creek',title:'森林溪流',kind:'nature',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Forest_lawn_creek.ogg',
+      license:'Public domain',artist:'Dsw4',work:'Forest lawn creek',level:.06
+    },{
+      id:'forest',title:'森林黃昏',kind:'nature',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',
+      license:'CC BY 3.0',artist:'Glaneur de sons',work:'Nature sounds ambience in a Dordogne pond',level:.052
+    }
+  ];
+  const areas=['today','read','curiosity','palette','holding'];
+  const bars=new Map();
+  let activeArea='today',active=null,waiting=false,stoppedByVisitor=false;
+  let queue=[],raf=null,advanceTimer=null,sequence=0,fadeOutSet=new Set();
+  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  // Silence after explicit pause lasts in this tab, including page reload.
+  try{stoppedByVisitor=sessionStorage.getItem('daily-pause-audio-paused-v1')==='yes'}catch(_){}
+  function rememberPause(value) {
+    stoppedByVisitor=value;
+    try{if(value)sessionStorage.setItem('daily-pause-audio-paused-v1','yes');
+      else sessionStorage.removeItem('daily-pause-audio-paused-v1')}catch(_){}
+  }
+  const random=()=>{
+    if(window.crypto?.getRandomValues) {
+      const num=new Uint32Array(1);window.crypto.getRandomValues(num);return num[0]/4294967296;
+    }
+    return Math.random();
   };
-  const sections=[['today','stream'],['read','forest'],['curiosity','rain'],['palette','handpan'],['holding','ocean']];
-  const selects=new Map(),panels=new Map();
-  const prefs=new Map(sections);
-  let view='today',player=null,iframe=null,playing=null,animation=null,context=null;
-  const fadeMillis=950;
-  function clearAnimation(){if(animation){cancelAnimationFrame(animation);animation=null}}
-  function updateButtons(){
-    for(const [id,bar] of panels){
-      const button=bar.querySelector('[data-sound-toggle]');
-      const on=playing===id;
-      button.textContent=on?'停止播放 Ⅱ':'聽聽這裡的聲音 ▷';
-      button.setAttribute('aria-pressed',String(on));
-    }
+  function shuffled(items){
+    const copy=items.slice();
+    for(let i=copy.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}
+    return copy;
   }
-  function stop(instant=false){
-    clearAnimation();
-    const old=player;
-    player=null;
-    if(iframe){iframe.remove();iframe=null}
-    if(old){
-      if(instant){old.pause();old.removeAttribute('src');old.load()}
-      else {
-        const start=performance.now(),initial=old.volume;
-        const fade=t=>{
-          const progress=Math.min(1,(t-start)/fadeMillis);
-          old.volume=Math.max(0,initial*(1-progress));
-          if(progress<1)animation=requestAnimationFrame(fade);
-          else {old.pause();old.removeAttribute('src');old.load();animation=null}
-        };
-        animation=requestAnimationFrame(fade);
+  function nextTrack(skipId){
+    if(!queue.length)queue=shuffled(tracks.map(t=>t.id));
+    if(queue.length>1 && queue[0]===skipId)queue.push(queue.shift());
+    const chosen=queue.shift();
+    return tracks.find(t=>t.id===chosen)||tracks[0];
+  }
+  function nowTrack(){return active?.track||null}
+  function updateBar(){
+    const track=nowTrack(),playback=Boolean(active&&!active.audio.paused);
+    for(const [area,bar] of bars){
+      const label=bar.querySelector('.pause-sound-name');
+      const play=bar.querySelector('[data-sound-toggle]');
+      const shuffle=bar.querySelector('[data-sound-shuffle]');
+      const shown=track;
+      if(shown){
+        label.textContent=shown.title;
+        label.href=shown.page;
+        label.title=shown.work+' — '+shown.artist+' · '+shown.license+' (查看來源)';
+      }else{
+        label.textContent='輕柔聲景';label.removeAttribute('href');label.removeAttribute('title');
       }
+      play.textContent=playback?'Ⅱ':'▷';
+      play.setAttribute('aria-label',playback?'暫停背景聲':'播放背景聲');
+      play.setAttribute('aria-pressed',String(playback));
+      shuffle.setAttribute('aria-label','隨機換一首背景聲');
+      bar.dataset.playing=String(playback&&area===activeArea);
+      bar.dataset.waiting=String(waiting&&area===activeArea);
     }
-    playing=null;updateButtons();
   }
-  function fadeUp(audio,target) {
-    const started=performance.now();
-    const animate=t=>{
-      if(player!==audio){animation=null;return}
-      const p=Math.min(1,(t-started)/1300);
-      audio.volume=target*(.5-.5*Math.cos(Math.PI*p));
-      animation=p<1?requestAnimationFrame(animate):null;
+  function cancelFade(){if(raf!==null)cancelAnimationFrame(raf);raf=null}
+  function release(audio){
+    try{audio.pause();audio.removeAttribute('src');audio.load()}catch(_){}
+  }
+  function fadeOut(audio,ms=550){
+    if(!audio||fadeOutSet.has(audio))return;
+    fadeOutSet.add(audio);
+    const start=performance.now(),from=audio.volume;
+    const fade=t=>{
+      const k=Math.min(1,(t-start)/ms);
+      if(!audio.paused)audio.volume=Math.max(0,from*(1-k));
+      if(k<1)requestAnimationFrame(fade);
+      else{release(audio);fadeOutSet.delete(audio)}
     };
-    clearAnimation();animation=requestAnimationFrame(animate);
+    requestAnimationFrame(fade);
   }
-  function updateCredit(bar,mode){
-    const data=streams[mode],label=bar.querySelector('[data-sound-credit]');
-    label.textContent=data.credit+' · ';
-    const a=bar.querySelector('[data-sound-credit-link]');
-    a.href=data.page;
+  function fadeIn(entry){
+    cancelFade();
+    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=entry.track.level;
+    const f=t=>{
+      if(active!==entry){raf=null;return}
+      const x=Math.min(1,(t-from)/length);
+      el.volume=Math.max(0,volume*(.5-.5*Math.cos(Math.PI*x)));
+      raf=x<1?requestAnimationFrame(f):null;
+    };
+    raf=requestAnimationFrame(f);
   }
-  function fail(bar){
-    stop(true);
-    const hint=bar.querySelector('[data-sound-hint]');
-    hint.textContent='目前無法讀取音源。請查看原始錄音或稍後再試；不會切換成電子雜訊。';
+  function cancelAdvance(){if(advanceTimer!==null){clearTimeout(advanceTimer);advanceTimer=null}}
+  function teardown({fade=false}={}){
+    ++sequence;waiting=false;cancelFade();cancelAdvance();
+    const before=active;active=null;
+    if(before){if(fade)fadeOut(before.audio);else release(before.audio)}
+    updateBar();
   }
-  function play(id){
-    if(view!==id)return;
-    const bar=panels.get(id),mode=prefs.get(id),data=streams[mode];
-    stop(true);updateCredit(bar,mode);
-    const hint=bar.querySelector('[data-sound-hint]');
-    if(data.external){
-      hint.textContent='CC0 真人手碟演奏。點下方播放器的播放鍵；若播放器無法顯示，可開啟原站。';
-      const frame=document.createElement('iframe');
-      frame.title='Freesound：真人手碟演奏公開試聽（CC0）';
-      frame.src='https://freesound.org/embed/sound/iframe/625312/simple/medium/';
-      frame.loading='lazy';frame.referrerPolicy='no-referrer';
-      frame.setAttribute('allow','autoplay');
-      frame.className='pause-handpan-frame';
-      bar.appendChild(frame);iframe=frame;playing=id;updateButtons();
-      return;
-    }
-    hint.textContent='低音量播放真實環境錄音，可隨時停止。';
+  function canAdvance(entry){
+    return active===entry&&!document.hidden&&!stoppedByVisitor;
+  }
+  function scheduleEnd(entry){
+    cancelAdvance();
+    if(!Number.isFinite(entry.audio.duration))return;
+    const remaining=Math.max(0,entry.audio.duration-entry.audio.currentTime);
+    // Slightly overlap the end of the current selection, avoiding abrupt gaps.
+    advanceTimer=setTimeout(()=>{if(canAdvance(entry))startNext(false)},Math.max(0,(remaining-2.4)*1000));
+  }
+  function startNext(userGesture=false){
+    if(stoppedByVisitor||document.hidden)return;
+    const previous=active,chosen=nextTrack(previous?.track.id);
+    cancelAdvance();cancelFade();
+    if(previous)fadeOut(previous.audio,1700);
     const audio=new Audio();
-    audio.preload='none';audio.loop=true;audio.volume=0;
-    audio.src=data.url;
-    // Commons MP3 transcodes are usually available; try the original OGG as fallback.
-    // This is the same recording, not an alternative synthesized noise source.
-    let originalFallback=false;
-    audio.addEventListener('error',()=>{
-      if(player!==audio)return;
-      if(!originalFallback){
-        originalFallback=true;
-        const original=data.page.slice(data.page.indexOf('File:')+5);
-        const path=decodeURIComponent(original).replaceAll(' ','_');
-        audio.src='https://commons.wikimedia.org/wiki/Special:Redirect/file/'+encodeURIComponent(path);
-        audio.play().catch(()=>{if(player===audio)fail(bar)});
-      }else fail(bar);
+    audio.preload='auto';
+    audio.volume=0;
+    audio.loop=false;
+    audio.src=chosen.src;
+    audio.playsInline=true;
+    const entry={audio,track:chosen,id:++sequence,gesture:userGesture};
+    active=entry;
+    waiting=false;
+    audio.addEventListener('loadedmetadata',()=>{if(canAdvance(entry))scheduleEnd(entry)});
+    audio.addEventListener('timeupdate',()=>{
+      if(canAdvance(entry)&&Number.isFinite(audio.duration)&&audio.duration-audio.currentTime<2.5){
+        startNext(false);
+      }
     });
-    audio.addEventListener('ended',()=>{if(player===audio){audio.currentTime=0;audio.play().catch(()=>fail(bar))}});
-    player=audio;playing=id;updateButtons();
-    // A deliberate button click is required before reaching play().
+    audio.addEventListener('ended',()=>{if(canAdvance(entry))startNext(false)});
+    audio.addEventListener('error',()=>{
+      if(active!==entry)return;
+      // A broken remote file is reported, never replaced with synthetic noise.
+      waiting=false;release(entry.audio);active=null;updateBar();
+      const bar=bars.get(activeArea);if(bar)bar.dataset.error='true';
+    });
+    updateBar();
     const promise=audio.play();
-    if(promise && typeof promise.then==='function')promise.then(()=>{
-      if(player===audio)fadeUp(audio,data.gain);
-      else audio.pause();
-    }).catch(()=>{if(player===audio)fail(bar)});
-    else fadeUp(audio,data.gain);
+    if(promise&&typeof promise.then==='function')promise.then(()=>{
+      if(active!==entry){release(audio);return}
+      fadeIn(entry);scheduleEnd(entry);updateBar();
+    }).catch(err=>{
+      if(active!==entry)return;
+      release(audio);active=null;
+      if(err?.name==='NotAllowedError'){waiting=true;updateBar()}
+      else{const bar=bars.get(activeArea);if(bar)bar.dataset.error='true';updateBar()}
+    });
   }
-  function changeView(next){
-    view=sections.some(([x])=>x===next)?next:'today';
-    stop(true);
+  function onView(view) {
+    if(!areas.includes(view))return;
+    activeArea=view;
+    // Keep the same sound gently playing throughout the site's five sections.
+    // Music does not restart or overlap every time the user changes pages.
+    updateBar();
+    if(!active&&!stoppedByVisitor)startNext();
   }
-  // Preserve the already-approved soft creature chime; never play ambient sounds for it.
+  function enable(){
+    rememberPause(false);
+    const bar=bars.get(activeArea);if(bar)bar.dataset.error='false';
+    if(active){
+      if(active.audio.paused){
+        const promise=active.audio.play();if(promise?.then)promise.then(()=>fadeIn(active)).catch(()=>startNext(true));
+      }
+    }else startNext(true);
+  }
+  function pause(){
+    rememberPause(true);
+    teardown({fade:false});
+  }
+  function randomNext(){
+    rememberPause(false);
+    const bar=bars.get(activeArea);if(bar)bar.dataset.error='false';
+    startNext(true);
+  }
+  function firstGesture(event){
+    if(!waiting||stoppedByVisitor||active||document.hidden)return;
+    if(event?.target?.closest?.('.pause-soundbar'))return;
+    // Autoplay is retried synchronously during the user's first interaction.
+    startNext(true);
+  }
+  function init(){
+    for(const area of areas){
+      const section=document.getElementById(area);if(!section)continue;
+      const bar=document.createElement('div');bar.className='pause-soundbar';
+      bar.setAttribute('aria-label','網站背景聲');
+      bar.innerHTML='<span class="pause-sound-icon" aria-hidden="true">♫</span>'
+        +'<a class="pause-sound-name" target="_blank" rel="noopener noreferrer">輕柔聲景</a>'
+        +'<button data-sound-shuffle type="button" aria-label="隨機換一首背景聲" title="隨機">⤨</button>'
+        +'<button data-sound-toggle type="button" aria-label="播放背景聲" title="播放或暫停" aria-pressed="false">▷</button>'
+        +'<span class="pause-sound-error">音源目前無法播放，按隨機換一首。</span>';
+      bar.querySelector('[data-sound-shuffle]').addEventListener('click',randomNext);
+      bar.querySelector('[data-sound-toggle]').addEventListener('click',()=>{
+        if(active&&!active.audio.paused)pause();else enable();
+      });
+      section.prepend(bar);bars.set(area,bar);
+    }
+    updateBar();
+    document.addEventListener('pointerdown',firstGesture,{capture:true});
+    document.addEventListener('keydown',firstGesture,{capture:true});
+    window.addEventListener('pause:view-change',e=>onView(e.detail?.view||'today'));
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden){teardown();return}
+      if(!stoppedByVisitor)startNext();
+    });
+    window.addEventListener('pagehide',()=>teardown());
+    if(!stoppedByVisitor)startNext();
+  }
+  // Preserve the existing user-approved little spirit bell as-is.
   let bellContext=null;
-  function bell() {
+  function bell(){
     const AudioContext=window.AudioContext||window.webkitAudioContext;
     if(!AudioContext||document.hidden)return;
-    try {
+    try{
       bellContext=bellContext||new AudioContext();
       Promise.resolve(bellContext.resume()).then(()=>{
         const t=bellContext.currentTime;
@@ -138,34 +246,9 @@
           osc.onended=()=>{osc.disconnect();gain.disconnect()};
         }
       }).catch(()=>{});
-    } catch(_){}
+    }catch(_){}
   }
-  function init(){
-    for(const [id,initial] of sections){
-      const section=document.getElementById(id);if(!section)continue;
-      const bar=document.createElement('div');bar.className='pause-soundbar';
-      bar.innerHTML='<span class="pause-soundbar-label">♫ 這裡的聲音</span>'
-        +'<label class="pause-sound-select-label">選擇聲景 <select data-sound-select aria-label="選擇環境聲"></select></label>'
-        +'<button type="button" data-sound-toggle aria-pressed="false">聽聽這裡的聲音 ▷</button>'
-        +'<div class="pause-sound-meta"><span data-sound-hint>不會自動播放，音量保持輕柔。</span>'
-        +'<small><span data-sound-credit></span><a data-sound-credit-link target="_blank" rel="noopener noreferrer">原始錄音與授權 ↗</a></small></div>';
-      const select=bar.querySelector('select');
-      for(const [key,data] of Object.entries(streams)){
-        const option=document.createElement('option');option.value=key;option.textContent=data.title;select.appendChild(option);
-      }
-      select.value=initial;updateCredit(bar,initial);
-      selects.set(id,select);panels.set(id,bar);
-      select.addEventListener('change',()=>{prefs.set(id,select.value);updateCredit(bar,select.value);stop(true);
-        bar.querySelector('[data-sound-hint]').textContent='已更換聲景。點播放鍵才會發出聲音。'});
-      bar.querySelector('[data-sound-toggle]').addEventListener('click',()=>{
-        if(playing===id){stop(true);return}play(id);
-      });
-      section.prepend(bar);
-    }
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop(true)});
-    window.addEventListener('pagehide',()=>stop(true));
-    window.addEventListener('pause:view-change',e=>changeView(e.detail?.view||'today'));
-  }
-  window.PauseSound={bell,stop,switchTo:changeView,get active(){return playing},tracks:streams};
+  window.PauseSound={bell,stop:pause,shuffle:randomNext,switchTo:onView,
+    get active(){return active?.track.id||null},tracks};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
