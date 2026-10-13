@@ -84,7 +84,7 @@ const articles = [
   { title: 'Stress | NCCIH', category: '壓力', language: 'English', source: 'NIH／NCCIH', description: '美國國家補充與整合健康中心介紹壓力反應、放鬆方法、研究限制與需要專業支持的時機。', url: 'https://www.nccih.nih.gov/health/stress', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'sun' },
   { title: 'Why Is Sleep Important? | NHLBI', category: '睡眠', language: 'English', source: 'NIH／NHLBI', description: '美國國家心肺暨血液研究所說明睡眠對學習記憶、健康及日常功能的重要性與研究限制。', url: 'https://www.nhlbi.nih.gov/health/sleep/why-sleep-important', status: '官方健康知識', rights: '美國政府衛教外部連結；本站自行整理，非醫療建議', art: 'moon' }
 ];
-articles.push(...(window.shortArticlesData || []));
+articles.push(...(window.shortArticlesData || []), ...(window.additionalShortReads || []));
 
 const articleBodies = {
   '壓力來的時候，先做一件能讓自己回到當下的事': ['壓力很大時，腦中常常同時出現很多待辦事項。先不用急著解決全部，找一個感覺得到的東西：腳踩著地面的重量、手心的溫度，或眼前一個顏色。', '當注意力回到當下，事情不一定立刻變少，但你會多一點選擇。接著只問自己：「下一個最小、最溫柔的動作是什麼？」喝水、伸展，或把一件事寫下來，都算是開始。'],
@@ -108,11 +108,11 @@ const articleBodies = {
   'Stress | NCCIH': ['Stress is a message from the body and mind, not a personal failure. Start by noticing a pattern: when does tension rise, and what helps even a little? A glass of water, a pause, or a conversation can be useful data.', 'Healthy routines are built through repeatable choices, not heroic effort. Pick one small routine that supports your energy and allow it to be imperfect while it becomes familiar.'],
   'Why Is Sleep Important? | NHLBI': ['睡眠讓身體與心智有機會整理一天的經驗。夢境有時鮮明、有時模糊，不必急著為每個夢尋找固定的象徵或答案。', '若睡眠困擾持續影響日常，請尋求醫療或專業協助。這篇短文只提供一般知識與溫和提醒，不是對個人狀況的診斷。']
 };
-Object.assign(articleBodies, window.shortArticleBodies || {});
+Object.assign(articleBodies, window.shortArticleBodies || {}, window.additionalShortBodies || {});
 
 // Avoid showing an outdated, unreviewed fallback article if the data script fails to load.
 const defaultLongArticles = [];
-const longArticles = window.longArticlesData || defaultLongArticles;
+const longArticles = [...(window.longArticlesData || defaultLongArticles), ...(window.additionalLongReads || [])];
 const mediaItems = window.mediaData || [];
 let currentMediaIndex = -1;
 
@@ -240,6 +240,22 @@ function drawCard() {
   slot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 }
 
+function renderDailyRecommendation() {
+  const host = $('#dailyRecommendation');
+  if (!host) return;
+  const pool = [
+    ...articles.map(article => ({ ...article, kind: 'short' })),
+    ...longArticles.map(article => ({ ...article, kind: 'long' }))
+  ];
+  if (!pool.length) return;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  const image = window.PauseEditorialArt?.markup(picked) || '';
+  host.innerHTML = `<div class="recommendation-art">${image}</div><div class="recommendation-copy"><p class="section-kicker">TODAY'S READING ／ 隨機的一篇</p><h2></h2><p class="recommendation-description"></p><button class="recommendation-open" type="button">今天先讀這篇 ↗</button></div>`;
+  host.querySelector('h2').textContent = picked.title;
+  host.querySelector('.recommendation-description').textContent = picked.description;
+  host.querySelector('button').addEventListener('click', () => picked.kind === 'long' ? openLongArticle(picked.title) : openArticle(picked.title));
+}
+
 function categoryList() {
   return ['全部', ...new Set(articles.map(article => article.category))];
 }
@@ -254,7 +270,7 @@ function renderArticles() {
     return matchesFilter && (!q || haystack.includes(q));
   });
   $('#articleGrid').innerHTML = visible.map(article => `<article class="article-card">
-    <span class="article-art article-art-${article.art}" aria-hidden="true"></span>
+    ${window.PauseEditorialArt?.markup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
     <div class="article-meta"><span>${article.category}</span><span>${article.language}</span></div>
     <h2>${article.title}</h2>
     <p>${article.description}</p>
@@ -265,11 +281,11 @@ function renderArticles() {
 
 function renderLongArticles() {
   $('#longArticleGrid').innerHTML = longArticles.map(article => `<article class="long-article-card">
-    <span class="article-art article-art-${article.art}" aria-hidden="true"></span>
+    ${window.PauseEditorialArt?.markup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
     <p class="long-article-label">${article.category} · ${article.language}</p>
     <h3>${article.title}</h3>
     <p>${article.description}</p>
-    <div class="long-article-footer"><span>${article.sources.length} 個可查證來源<br />${article.note}</span><button class="article-link read-long-article" type="button" data-long-article-title="${article.title}">開始閱讀 →</button></div>
+    <div class="long-article-footer"><span>${article.sources.length ? `${article.sources.length} 個可查證來源` : '原創散文'}<br />${article.note}</span><button class="article-link read-long-article" type="button" data-long-article-title="${article.title}">開始閱讀 →</button></div>
   </article>`).join('');
 }
 
@@ -298,7 +314,7 @@ function openArticle(title) {
   $('#articleReaderArt').className = `article-reader-art article-art-${article.art}`;
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 站內短文`;
   $('#articleReaderTitle').textContent = article.title;
-  $('#articleReaderBody').innerHTML = mediaMarkup() + (articleBodies[title] || [article.description]).map(paragraph => `<p>${paragraph}</p>`).join('');
+  $('#articleReaderBody').innerHTML = (window.PauseEditorialArt?.markup(article, true) || '') + (articleBodies[title] || [article.description]).map(paragraph => `<p>${paragraph}</p>`).join('');
   const sourceElement = $('#articleReaderSource');
   sourceElement.textContent = '本文由「今日一息」重新撰寫；主題參考：';
   if (article.url && /^https:\/\//.test(article.url)) {
@@ -323,8 +339,8 @@ function openLongArticle(title) {
   $('#articleReaderArt').className = `article-reader-art article-art-${article.art}`;
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 長篇原創整理`;
   $('#articleReaderTitle').textContent = article.title;
-  $('#articleReaderBody').innerHTML = mediaMarkup() + article.sections.map(section => `<section class="long-reader-section"><h3>${section.heading}</h3><p>${section.text}</p></section>`).join('');
-  $('#articleReaderSource').innerHTML = `<strong>${article.note}</strong><br />內容由「今日一息」自行撰寫與整理，未複製下列來源全文。資料來源：${article.sources.map(source => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>（${source.rights}）`).join('；')}`;
+  $('#articleReaderBody').innerHTML = (window.PauseEditorialArt?.markup(article, true) || '') + article.sections.map(section => `<section class="long-reader-section"><h3>${section.heading}</h3><p>${section.text}</p></section>`).join('');
+  $('#articleReaderSource').innerHTML = `<strong>${article.note}</strong><br />內容由「今日一息」自行撰寫與整理，未複製下列來源全文。${article.sources.length ? `資料來源：${article.sources.map(source => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>（${source.rights}）`).join('；')}` : '此篇為生活觀察與文學性敘述，不以研究證據主張心理療效。'}`;
   $('#articleReader').hidden = false;
   document.body.classList.add('modal-open');
   setTimeout(() => $('#articleReaderClose').focus(), 40);
@@ -1019,5 +1035,6 @@ renderExperience();
 setLibraryMode('short');
 renderMedia();
 renderMediaGallery();
-setupPalette();
+window.setupPaletteNew?.();
+renderDailyRecommendation();
 setTimeout(showWelcome, 260);

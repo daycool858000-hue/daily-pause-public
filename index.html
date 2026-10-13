@@ -7,7 +7,8 @@
     <meta name="theme-color" content="#f6f1e8" />
     <title>今日一息｜每日療癒小卡</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=20261013-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261013-2" />
+    <link rel="stylesheet" href="./world-style.css?v=20261013-1" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -54,6 +55,8 @@
             </div>
           </div>
         </div>
+
+        <section id="dailyRecommendation" class="daily-recommendation" aria-label="今天隨機推薦的文章"></section>
 
         <section class="draw-panel" id="drawPanel" aria-labelledby="drawTitle">
           <div class="section-heading">
@@ -121,8 +124,8 @@
           <p>短文適合現在就讀完；長篇整理則提供更多背景、身體訊號與可查證來源。兩種閱讀方式都留在本站完成。</p>
         </div>
         <div class="library-switcher" role="tablist" aria-label="文章長度選擇">
-          <button class="library-tab active" type="button" data-library-mode="short" role="tab" aria-selected="true"><span>01</span>短文與語錄 <em>45 篇</em></button>
-          <button class="library-tab" type="button" data-library-mode="long" role="tab" aria-selected="false"><span>02</span>長篇文章 <em>27 篇</em></button>
+          <button class="library-tab active" type="button" data-library-mode="short" role="tab" aria-selected="true"><span>01</span>短文與語錄 <em>57 篇</em></button>
+          <button class="library-tab" type="button" data-library-mode="long" role="tab" aria-selected="false"><span>02</span>長篇文章 <em>30 篇</em></button>
         </div>
         <figure class="media-deck" id="mediaDeck">
           <img id="mediaImage" src="./media/forest-public-domain.jpg" alt="" />
@@ -157,28 +160,72 @@
         <section class="drawer-reader" id="drawerReader" hidden></section>
       </section>
 
-      <section class="view palette-view" id="palette" data-view-panel hidden>
-        <div class="directory-intro"><p class="eyebrow"><span class="eyebrow-dot"></span> EMOTION PALETTE ／ 情緒調色盤</p><h1>不用解釋，<br /><em>先讓顏色流動。</em></h1><p>畫布是主角。選一個小工具，讓它只在需要時展開；每一次觸碰都會把目前的顏色、材質與空間感留在作品裡。</p></div>
-        <div class="palette-emotion-strip" aria-label="情緒入口">
-          <span class="palette-section-label">先選一個此刻的情緒</span>
-          <div class="palette-emotions" id="paletteEmotions"></div>
-        </div>
-        <div class="palette-workspace">
-          <div class="palette-canvas-wrap" id="paletteCanvasWrap"><canvas id="paletteCanvas" width="900" height="620" aria-label="可互動的情緒調色盤畫布"></canvas><div class="palette-overlay"><span id="paletteStatus">觸碰畫面，讓光點留下來。</span><button id="palettePause" type="button">暫停動畫</button></div></div>
-          <aside class="palette-controls" id="paletteControls" aria-label="畫布工具">
-            <div class="palette-current"><span class="palette-current-dot" id="paletteCurrentDot"></span><div><strong id="paletteCurrentLabel">珊瑚</strong><small>下一次觸碰會使用目前選擇</small></div></div>
-            <div class="palette-toolbar" role="tablist" aria-label="調色盤工具分類"><button type="button" class="palette-tool-tab active" data-palette-tab="color" role="tab" aria-selected="true">顏色</button><button type="button" class="palette-tool-tab" data-palette-tab="material" role="tab" aria-selected="false">筆觸／材質</button><button type="button" class="palette-tool-tab" data-palette-tab="force" role="tab" aria-selected="false">動態</button><button type="button" class="palette-tool-tab" data-palette-tab="layer" role="tab" aria-selected="false">空間</button><button type="button" class="palette-tool-tab" data-palette-tab="transform" role="tab" aria-selected="false">作品轉換</button><button type="button" class="palette-tool-tab" data-palette-tab="objects" role="tab" aria-selected="false">生活物件</button></div>
-            <div class="palette-tool-panels">
-              <section class="palette-tool-panel" data-palette-panel="color" role="tabpanel"><span class="palette-section-label">色票</span><div class="palette-swatches" id="paletteSwatches"></div><div class="palette-custom"><button type="button" id="paletteCustomToggle">自選顏色</button><input id="paletteCustomColor" type="color" value="#e78b72" aria-label="自選顏色" /></div></section>
-              <section class="palette-tool-panel" data-palette-panel="material" role="tabpanel" hidden><span class="palette-section-label">材質</span><div id="paletteMaterials" class="advanced-buttons"></div><span class="palette-section-label">筆觸</span><div class="palette-effects" id="paletteEffects"></div></section>
-              <section class="palette-tool-panel" data-palette-panel="force" role="tabpanel" hidden><span class="palette-section-label">環境力</span><div id="paletteForces" class="advanced-buttons"></div><p class="palette-tool-note">動態會直接作用在已留下的元素，也不會阻止你繼續畫。</p></section>
-              <section class="palette-tool-panel" data-palette-panel="layer" role="tabpanel" hidden><span class="palette-section-label">空間</span><div id="paletteLayers" class="advanced-buttons"></div><p class="palette-tool-note">前景、中景與背景會改變元素的大小、透明度與移動速度。</p></section>
-              <section class="palette-tool-panel" data-palette-panel="transform" role="tabpanel" hidden><span class="palette-section-label">自然元素與形狀</span><div class="palette-shapes" id="paletteShapes"></div><span class="palette-section-label">把目前作品轉成自然景觀</span><div id="paletteTransforms" class="advanced-buttons"></div><div class="advanced-actions palette-canvas-actions"><button type="button" data-palette-action="restore">復原原作</button><button type="button" data-palette-action="scatter">讓它散開</button><button type="button" data-palette-action="wind">吹一陣風</button><button type="button" data-palette-action="rain">下一場雨</button><button type="button" data-palette-action="still">全部停住</button><button type="button" data-palette-action="grow">重新長出來</button></div></section>
-              <section class="palette-tool-panel palette-objects-panel" data-palette-panel="objects" role="tabpanel" hidden><span class="palette-section-label">生活物件</span><p class="palette-tool-note">選一個物件放入畫布，再直接拖曳它。物件可以縮放、旋轉、前後移動或單獨刪除。</p><div id="paletteObjects" class="palette-object-grid"></div><div id="paletteObjectEditor" class="palette-object-editor" hidden></div></section>
+      <section class="view palette-view world-v2" id="palette" data-view-panel hidden>
+        <div id="paletteWorld">
+          <div class="world-intro">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-dot"></span> EMOTION STUDIO ／ 一個可以慢慢留下來的地方</p>
+              <h1>讓今天的感覺，<br /><em>長成一個世界。</em></h1>
+              <p class="world-summary">情緒可以很複雜，也可以暫時沒有名字。選一片風景，再慢慢放進樹木、海浪、杯子與自己的筆觸。你可以只是待著。</p>
             </div>
-            <div class="palette-ranges"><label>光影強度 <input id="paletteIntensity" type="range" min="0.2" max="1" step="0.05" value="0.7" /></label><label>流動速度 <input id="paletteSpeed" type="range" min="0" max="2" step="0.1" value="0.8" /></label></div>
-            <div class="palette-actions"><button id="paletteUndo" type="button" disabled aria-label="復原上一步">↶ 復原</button><button id="paletteRedo" type="button" disabled aria-label="重做上一步">↷ 重做</button><button id="paletteRandom" type="button">隨機生成</button><button id="paletteClear" type="button">清空</button><button id="paletteDownload" type="button">保存 PNG</button></div><p class="palette-note">調色盤可復原、重做最近 20 個操作；歷史僅在這次開啟頁面期間保留，重新整理或關閉頁面後可能消失。請使用「保存 PNG」下載作品。圖片會保存匯出當下的畫面，但不能再編輯圖層。</p>
-          </aside>
+            <span class="world-intro-note">不需要登入，也沒有評分</span>
+          </div>
+          <section class="world-mood-section" aria-labelledby="worldMoodsTitle">
+            <div class="world-section-head"><h2 id="worldMoodsTitle">此刻，比較接近哪種感覺？</h2><p>24 種心情｜選擇後會轉換風景與氣氛，原有作品保留</p></div>
+            <div id="worldMoods" class="world-moods" role="group" aria-label="心情與氛圍"></div>
+          </section>
+          <div class="world-main">
+            <div class="world-stage-col">
+              <div class="world-stage" id="worldStage">
+                <canvas id="worldCanvas" width="960" height="630" aria-label="自然場景與生活物件的互動畫布；可單指畫畫或移動物件"></canvas>
+              </div>
+              <div class="world-caption"><p id="worldSceneLabel">微光停在房間裡。</p><button id="worldPause" type="button">暫停流動</button></div>
+              <div id="worldCompanion" class="world-companion" aria-live="polite"><span class="world-light" aria-hidden="true"></span><p id="worldCompanionText">我在這裡。不必急著做什麼。</p><button id="worldCompanionTap" type="button" aria-label="再聽一句陪伴">聽一句</button></div>
+              <div class="world-caption"><p>這是一個可關閉的簡短陪伴，不會分析你或記錄你的情緒。</p><button id="worldCompanionToggle" type="button" aria-pressed="true">關閉陪伴回應</button></div>
+            </div>
+            <aside class="world-control-panel" aria-label="情緒畫室工具">
+              <h2>把喜歡的放進來</h2>
+              <p>每一種元素都能並存；選擇其他元素，不會將已畫出的樹、雲或海浪取代。</p>
+              <div class="world-tabs" role="tablist" aria-label="畫室工具分類">
+                <button type="button" role="tab" data-world-tab="element" aria-selected="true">自然元素</button>
+                <button type="button" role="tab" data-world-tab="scene" aria-selected="false">場景</button>
+                <button type="button" role="tab" data-world-tab="object" aria-selected="false">生活物件</button>
+              </div>
+              <section class="world-panel" data-world-panel="element" role="tabpanel">
+                <p class="world-tool-help">點選一種元素，再在畫面上點擊或拖曳。樹、花、海浪與雲可以一起留下來，也有緩慢的動態。</p>
+                <div id="worldElements" class="world-option-grid"></div>
+              </section>
+              <section class="world-panel" data-world-panel="scene" role="tabpanel" hidden>
+                <p class="world-tool-help">挑選真正的生活或自然風景。更換背景時，不會覆蓋你的筆跡與物件。</p>
+                <div id="worldScenes" class="world-scene-grid"></div>
+              </section>
+              <section class="world-panel" data-world-panel="object" role="tabpanel" hidden>
+                <p class="world-tool-help">挑一件有生活感的物品，放進畫裡後可直接拖曳、旋轉、縮放與調整前後位置。</p>
+                <div id="worldProps" class="world-option-grid"></div>
+                <div id="worldPropEditor" class="world-prop-editor" hidden>
+                  <strong id="worldPropName">生活物件</strong>
+                  <div class="world-prop-actions">
+                    <button type="button" data-prop-action="smaller">縮小</button><button type="button" data-prop-action="larger">放大</button>
+                    <button type="button" data-prop-action="left">左轉</button><button type="button" data-prop-action="right">右轉</button>
+                    <button type="button" data-prop-action="back">後移</button><button type="button" data-prop-action="front">前移</button>
+                    <button type="button" data-prop-action="delete">刪除</button><button type="button" data-prop-action="deselect">完成</button>
+                  </div>
+                </div>
+              </section>
+              <div class="world-paint-row">
+                <p class="world-tool-help">也可以自由畫幾筆，把顏色留在景色上。</p>
+                <div class="world-brushes"><button id="worldBrushLine" type="button">細線</button><button id="worldBrushInk" type="button">鉛筆</button><button id="worldBrushWash" type="button">水彩</button></div>
+                <div id="worldColors" class="world-colors" aria-label="畫筆顏色"></div>
+                <label class="world-color-custom">自選顏色 <input id="worldCustomColor" type="color" value="#b78072" aria-label="自選筆觸顏色"></label>
+                <label for="worldBrushSize">筆觸與元素大小</label><input id="worldBrushSize" type="range" min=".5" max="2.4" value="1" step=".1">
+              </div>
+              <div class="world-actions">
+                <button id="worldUndo" type="button" disabled>↶ 復原</button><button id="worldRedo" type="button" disabled>↷ 重做</button>
+                <button id="worldClear" type="button">清空元素</button><button id="worldDownload" type="button">保存 PNG ↓</button>
+              </div>
+              <p class="world-notice">你的作品只存在這次開啟的頁面中，重新整理會消失。請下載 PNG 保存圖片；它不是可重新編輯的圖層檔。本站不會上傳你的作品。</p>
+            </aside>
+          </div>
         </div>
       </section>
 
@@ -237,11 +284,15 @@
     <script src="./media.js?v=20261010-7" defer></script>
     <script src="./long-articles.js?v=20261012-7" defer></script>
     <script src="./short-articles.js?v=20261010-4" defer></script>
-    <script src="./cards-data.js?v=20261010-6" defer></script>
+    <script src="./cards-data.js?v=20261013-2" defer></script>
     <script src="./curiosity.js?v=20261012-5" defer></script>
     <script src="./daily-content.js?v=20261012-2" defer></script>
+    <script src="./reading-20261013.js?v=20261013-1" defer></script>
     <script src="./palette-history.js?v=20261013-1" defer></script>
-    <script src="./app.js?v=20261013-1" defer></script>
+    <script src="./world-art.js?v=20261013-1" defer></script>
+    <script src="./palette-world.js?v=20261013-1" defer></script>
+    <script src="./editorial-art.js?v=20261013-1" defer></script>
+    <script src="./app.js?v=20261013-2" defer></script>
     <script src="./quiet-spaces.js?v=20261012-8" defer></script>
   </body>
 </html>

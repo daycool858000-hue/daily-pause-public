@@ -9,9 +9,10 @@ const root = path.resolve(process.argv[2] || '.');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(root, relative));
 const required = [
-  'index.html', 'styles.css', 'app.js', 'cards-data.js',
+  'index.html', 'styles.css', 'world-style.css', 'app.js', 'cards-data.js',
   'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
-  'short-articles.js', 'curiosity.js', 'media.js'
+  'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
+  'world-art.js', 'palette-world.js', 'editorial-art.js'
 ];
 for (const file of required) assert.ok(exists(file), 'missing required file: ' + file);
 
@@ -26,9 +27,14 @@ for (const js of required.filter(name => name.endsWith('.js'))) {
   assert.ok(html.includes('./' + js + '?v='), 'HTML script missing: ' + js);
 }
 assert.ok(html.includes('styles.css'), 'CSS link absent');
-assert.match(html, /id="paletteUndo"[^>]+disabled/, 'palette undo must begin disabled');
-assert.match(html, /id="paletteRedo"[^>]+disabled/, 'palette redo must begin disabled');
-assert.ok(html.indexOf('palette-history.js') < html.indexOf('./app.js'), 'palette history must load before app.js');
+assert.match(html, /id="worldUndo"[^>]+disabled/, 'new studio undo must begin disabled');
+assert.match(html, /id="worldRedo"[^>]+disabled/, 'new studio redo must begin disabled');
+assert.ok(html.includes('./world-style.css?v='), 'new studio stylesheet not loaded');
+assert.ok(html.includes('id="dailyRecommendation"'), 'random reading recommendation slot absent');
+assert.ok(!html.includes('id="paletteCanvas"'), 'outdated visual canvas must not be displayed');
+assert.ok(html.indexOf('palette-history.js') < html.indexOf('palette-world.js'), 'history library load order wrong');
+assert.ok(html.indexOf('world-art.js') < html.indexOf('palette-world.js'), 'world art load order wrong');
+assert.ok(html.indexOf('palette-world.js') < html.indexOf('./app.js'), 'world studio must load before app');
 
 const historySandbox = { window: {} };
 vm.runInNewContext(read('palette-history.js'), historySandbox, { filename: 'palette-history.js', timeout: 5000 });
@@ -71,12 +77,22 @@ const win = {
 };
 const sandbox = { window: win };
 for (const name of ['cards-data.js', 'daily-content.js', 'long-articles.js',
-                    'short-articles.js', 'curiosity.js', 'media.js']) {
+                    'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
+                    'world-art.js', 'palette-world.js', 'editorial-art.js']) {
   vm.runInNewContext(read(name), sandbox, { filename: name, timeout: 8000 });
 }
 assert.equal(win.longArticlesData.length, 27);
 assert.equal(win.longArticlesData.reduce((n, a) => n + a.sections.length, 0), 108);
-assert.equal(win.shortArticlesData.length, 25);
+assert.equal(win.shortArticlesData.length, 25, '2026-10-12 base remains intact');
+assert.equal(win.additionalShortReads.length, 12, 'new short essay inventory');
+assert.equal(win.additionalLongReads.length, 3, 'new long essay inventory');
+assert.equal(win.additionalLongReads.reduce((n, a) => n + a.sections.length, 0), 12);
+assert.ok(typeof win.setupPaletteNew === 'function', 'new studio entrypoint absent');
+assert.ok(typeof win.PauseWorldArt?.drawScene === 'function', 'visual scene painter missing');
+assert.ok(typeof win.PauseEditorialArt?.markup === 'function', 'article illustration renderer missing');
+assert.equal(new Set([...win.shortArticlesData, ...win.additionalShortReads].map(x => x.title)).size, 37);
+assert.equal(new Set([...win.longArticlesData, ...win.additionalLongReads].map(x => x.title)).size, 30);
+assert.ok(win.additionalLongReads.every(a => a.sections.length === 4 && Array.isArray(a.sources)), 'new long essays malformed');
 assert.equal(win.curiosityData.length, 36);
 assert.equal(win.extraCards.length, 75);
 assert.equal(win.dailyContent.companionLines.length, 31);
@@ -96,12 +112,22 @@ for (const ref of refs) assert.match(ref, /^https:\/\//, 'unsafe or relative sou
 assert.equal(refs.filter(u => u.includes('openstax.org')).length, 0);
 
 const app = read('app.js');
-assert.ok(app.includes('const history = window.createPaletteHistory('), 'palette history integration absent');
-assert.ok(app.includes("$('#paletteUndo').addEventListener('click'"), 'palette undo control not connected');
-assert.ok(app.includes("$('#paletteRedo').addEventListener('click'"), 'palette redo control not connected');
-assert.ok(app.includes("document.addEventListener('visibilitychange'"), 'background animation pause missing');
-assert.ok(app.includes("window.addEventListener('palette-view-change'"), 'hidden palette animation pause missing');
-assert.ok(app.includes('Math.hypot(next.x - activePointer.x'), 'pointer distance filtering missing');
+assert.ok(app.includes('window.setupPaletteNew?.();'), 'new studio is not started');
+assert.ok(app.includes('renderDailyRecommendation();'), 'random recommended reading not initialized');
+const worldCode = read('palette-world.js');
+assert.ok(worldCode.includes("model.marks.push(mark)"), 'additive element artwork missing');
+assert.ok(worldCode.includes("model.tool=b.dataset.element"), 'changing tool must not mutate prior marks');
+assert.ok(worldCode.includes("model.props.push("), 'physical scene props missing');
+assert.ok(worldCode.includes("window.createPaletteHistory({"), 'studio history integration absent');
+assert.ok(worldCode.includes("document.addEventListener('visibilitychange'"), 'background animation pause missing');
+const countArray = (start,end) => {
+  const part=worldCode.slice(worldCode.indexOf(start), worldCode.indexOf(end,worldCode.indexOf(start)));
+  return (part.match(/\['/g) || []).length;
+};
+assert.equal(countArray('const moods=[','const scenes=['),24,'24 distinct emotion choices required');
+assert.equal(countArray('const scenes=[','const elements=['),12,'12 scene choices required');
+assert.equal(countArray('const elements=[','const props=['),22,'22 natural interactive elements required');
+assert.equal(countArray('const props=[','const swatches='),35,'35 life object choices required');
 const prefixCut = app.indexOf('const defaultLongArticles = []');
 assert.ok(prefixCut > 0, 'outdated fallback was not removed');
 assert.ok(!app.includes('openstax.org'), 'outdated OpenStax reference remains in app.js');
@@ -113,11 +139,11 @@ assert.equal(state.cards.length, 80);
 assert.equal(state.dailyCards.length, 5);
 assert.equal(new Set(state.dailyCards.map(c => c.text)).size, 5);
 assert.equal(new Set(state.cards.map(c => c.text)).size, 80);
-assert.equal(state.articles.length, 45, '20 directory entries plus 25 short essays');
+assert.equal(state.articles.length, 57, '20 directory entries plus 25 original + 12 new short essays');
 assert.ok(state.articles.some(a => a.title === '曼荼羅（Mandala）' && a.url.includes('metmuseum.org')), 'mandala reference must point to the religion/art topic, not a disambiguation page');
 assert.ok(!state.articles.some(a => a.url.includes('%E6%9B%BC%E9%99%80%E7%BE%85')), 'misleading mandala disambiguation link must be absent');
-assert.equal(Object.keys(state.articleBodies).length, 45);
-assert.equal(new Set(state.articles.map(a => a.title)).size, 45, 'reading titles must be unique');
+assert.equal(Object.keys(state.articleBodies).length, 57);
+assert.equal(new Set(state.articles.map(a => a.title)).size, 57, 'reading titles must be unique');
 const externalReadings = state.articles.filter(a => a.url && a.url !== '#');
 assert.equal(externalReadings.length, 16, '16 external reading sources must remain available');
 const readingByTitle = title => state.articles.find(a => a.title === title);
@@ -146,7 +172,7 @@ const readerEnd = app.indexOf('function openLongArticle(title) {', readerStart);
 assert.ok(readerStart > 0 && readerEnd > readerStart, 'reader function missing');
 const readerContext = {
   articles: state.articles, articleBodies: state.articleBodies,
-  $: readerSelector, document: readerDocument, mediaMarkup: () => '',
+  $: readerSelector, document: readerDocument, mediaMarkup: () => '', window: {},
   setTimeout: () => {}
 };
 vm.runInNewContext(app.slice(readerStart, readerEnd) + "\nopenArticle('曼荼羅（Mandala）');", readerContext, { timeout: 5000 });
@@ -193,8 +219,8 @@ for (const item of win.mediaData) {
   assert.ok(item.credit && item.license && item.sourceUrl, 'missing photo attribution: ' + rel);
 }
 console.log(JSON.stringify({
-  status: 'pass', root, long: 27, longSections: 108, short: 25,
+  status: 'pass', root, long: 30, longSections: 120, short: 37,
   curiosity: 36, sourceReferences: 117, uniqueSources: 97,
   cards: 80, dailyReminders: 31, experiences: 15,
-  readingEntries: 45, images: 15, scripts: required.filter(x => x.endsWith('.js')).length
+  readingEntries: 57, images: 15, scripts: required.filter(x => x.endsWith('.js')).length
 }, null, 2));
