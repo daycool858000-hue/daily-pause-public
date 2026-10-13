@@ -51,6 +51,8 @@
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'leaf',size:1,velocity:.5,paused:false,selected:null};
+    const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
+      'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
     let activeTab=null,pointer=null,frames=null,lastMoment=0;
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
@@ -88,6 +90,11 @@
         for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
       }else art.drawScene(ctx,model.scene,t);
       const m=moodFor(),special=m[0];
+      const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
+      art.drawAtmosphere?.(ctx,{
+        scene:model.scene,moodTone:m[4],accent:model.color,index:moodIndex,
+        effect:effects[moodIndex]
+      },t);
       if(model.scene!=='blank' && ['想哭','疲倦','悶住','孤單'].includes(special)){
         ctx.fillStyle='rgba(60,72,86,.11)';ctx.fillRect(0,0,W,H);
       }
@@ -231,13 +238,13 @@
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
       if(b.dataset.color){
         model.color=b.dataset.color;
-        updateSelections();return;
+        updateSelections();paint(performance.now(),true);return;
       }
       if(b.dataset.worldTab){activeTab=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;updateSelections();return;}
       if(b.dataset.propAction){editProp(b.dataset.propAction);return;}
     });
     $('worldBrushSize').addEventListener('input',e=>model.size=Number(e.target.value));
-    $('worldCustomColor').addEventListener('input',e=>{model.color=e.target.value;updateSelections()});
+    $('worldCustomColor').addEventListener('input',e=>{model.color=e.target.value;updateSelections();paint(performance.now(),true)});
     $('worldBrushInk').addEventListener('click',()=>{model.tool='pencil';updateSelections()});
     $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';updateSelections()});
     $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';updateSelections()});
