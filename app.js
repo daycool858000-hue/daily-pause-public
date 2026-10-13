@@ -32,22 +32,28 @@ function dateOrdinal(key) {
 const todayKey = localDateKey();
 const todayOrdinal = dateOrdinal(todayKey);
 function pickRandomCards() {
-  // One of each feeling in a five-card visit, with a different order each day.
-  // The visitor doesn't get five variations of the same motivational advice.
+  // Each visit receives five different kinds of care:
+  // three original notes plus two sourced reflections, with no fixed sequence.
   const types = ['心情有人懂', '身體也要被照顧', '關係裡的溫柔', '生活的小幸福', '陪伴的一段話'];
+  const sourceTypes = types.slice();
+  for (let i=sourceTypes.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [sourceTypes[i], sourceTypes[j]] = [sourceTypes[j], sourceTypes[i]];
+  }
+  const sourced = new Set(sourceTypes.slice(0,2));
   const result = types.map(type => {
-    const choices = cards.filter(card => card.type === type);
-    if (!choices.length) throw new Error('Card category is missing: ' + type);
+    const choices = cards.filter(card => card.type === type && Boolean(card.sourceLink) === sourced.has(type));
+    if (!choices.length) throw new Error('Card category or provenance is missing: ' + type);
     return choices[Math.floor(Math.random() * choices.length)];
   });
   for (let i=result.length-1;i>0;i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [result[i], result[j]] = [result[j], result[i]];
+    const j=Math.floor(Math.random()*(i+1));
+    [result[i],result[j]]=[result[j],result[i]];
   }
   return result;
 }
-const dailyCardsKey = `xinli-daily-cards-care-v3-${todayKey}`;
-const dailyProgressKey = `xinli-progress-care-v3-${todayKey}`;
+const dailyCardsKey = `xinli-daily-cards-care-v4-${todayKey}`;
+const dailyProgressKey = `xinli-progress-care-v4-${todayKey}`;
 function loadDailyCards() {
   try {
     const storedIndexes = JSON.parse(safeStorage.getItem(dailyCardsKey) || 'null');

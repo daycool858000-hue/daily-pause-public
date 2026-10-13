@@ -12,7 +12,7 @@ const required = [
   'index.html', 'styles.css', 'world-style.css', 'app.js', 'cards-data.js',
   'daily-content.js', 'quiet-spaces.js', 'palette-history.js', 'long-articles.js',
   'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
-  'world-art.js', 'palette-world.js', 'fresh-cards.js',
+  'world-art.js', 'palette-world.js', 'card-originals.js', 'card-sourced.js', 'fresh-cards.js',
   'photo-rotation.js', 'companion-site.js', 'rest-stage.js'
 ];
 for (const file of required) assert.ok(exists(file), 'missing required file: ' + file);
@@ -86,7 +86,7 @@ const win = {
 const sandbox = { window: win };
 for (const name of ['cards-data.js', 'daily-content.js', 'long-articles.js',
                     'short-articles.js', 'reading-20261013.js', 'curiosity.js', 'media.js',
-                    'world-art.js', 'palette-world.js', 'fresh-cards.js']) {
+                    'world-art.js', 'palette-world.js', 'card-originals.js', 'card-sourced.js', 'fresh-cards.js']) {
   vm.runInNewContext(read(name), sandbox, { filename: name, timeout: 8000 });
 }
 assert.equal(win.longArticlesData.length, 27);
@@ -100,16 +100,25 @@ assert.ok(typeof win.PauseWorldArt?.drawScene === 'function', 'visual scene pain
 assert.ok(!html.includes('editorial-art.js'), 'drawn illustration engine must not be loaded');
 assert.equal(win.freshCards.length, 80, 'entire gentle self-awareness card collection');
 assert.equal(new Set(win.freshCards.map(c=>c.text)).size,80);
-assert.equal(win.freshCards.filter(c=>c.sourceLink).length,16,'16 contextualized source-based readings need links');
+assert.equal(win.freshCards.filter(c=>c.sourceLink).length,40,'40 contextualized sourced reflections required');
 assert.equal(win.freshCards.filter(c=>c.quote).length,0,'no whole-card text is a literal quotation');
 const careTypes=['心情有人懂','身體也要被照顧','關係裡的溫柔','生活的小幸福','陪伴的一段話'];
 assert.equal(new Set(win.freshCards.map(c=>c.type)).size,5,'five different types of caring messages');
-for(const type of careTypes)assert.equal(win.freshCards.filter(c=>c.type===type).length,16,'missing a 16-card care category: '+type);
+for(const type of careTypes){
+ assert.equal(win.freshCards.filter(c=>c.type===type).length,16,'missing a 16-card care category: '+type);
+ assert.equal(win.freshCards.filter(c=>c.type===type&&!c.sourceLink).length,8,'8 original notes needed for '+type);
+ assert.equal(win.freshCards.filter(c=>c.type===type&&c.sourceLink).length,8,'8 sourced ideas needed for '+type);
+}
+assert.equal(win.pauseOriginalCards.length,40);
+assert.equal(win.pauseSourcedCards.length,40);
+assert.ok(new Set(win.pauseSourcedCards.map(c=>c.sourceLink)).size>=20,'source diversity too low');
+assert.ok(win.pauseOriginalCards.every(c=>!c.sourceLink&&c.provenance.includes('AI')));
+assert.ok(win.pauseSourcedCards.every(c=>c.sourceLink&&c.provenance.includes('延伸')));
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>c.provenance && /^https:\/\//.test(c.sourceLink)), 'sourced life reflections require traceable links and context');
-assert.ok(win.freshCards.filter(c=>c.type==='陪伴的一段話').every(c=>c.text.length>=40), 'source-based cards need thoughtful everyday interpretation');
-assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('溫柔不需要委屈自己')), 'Taoist context must convey a usable gentle insight');
+assert.ok(win.freshCards.every(c=>c.text.length>=40),'all reflections must have an actual setting or usable perspective');
+assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('柔軟不等於委屈')), 'Taoist context must explain a gentle everyday implication');
 assert.ok(win.freshCards.every(c=>!/你應該|你必須|比別人|成功人士|別再偷懶/.test(c.text)), 'pressure-based messaging accidentally introduced');
-assert.ok(win.freshCards.every(c=>(c.source||'').includes('AI')||c.sourceLink), 'missing original or classical provenance');
+assert.ok(win.freshCards.every(c=>(c.provenance||'').includes('AI')||c.sourceLink), 'missing original or classical provenance');
 assert.equal(new Set([...win.shortArticlesData, ...win.additionalShortReads].map(x => x.title)).size, 37);
 assert.equal(new Set([...win.longArticlesData, ...win.additionalLongReads].map(x => x.title)).size, 33);
 assert.ok(win.additionalLongReads.every(a => a.sections.length === 4 && Array.isArray(a.sources)), 'new long essays malformed');
@@ -168,7 +177,7 @@ assert.ok(read('companion-site.js').includes('sprite-butterfly') && read('compan
 assert.ok(read('rest-stage.js').includes('motion[type]'), '15 rest scenes need individually animated layers');
 assert.equal((read('rest-stage.js').match(/class="scene-[a-z-]+"/g)||[]).length,15,'all fifteen rest scenes need individual moving motifs');
 assert.ok(read('world-style.css').includes('@keyframes sceneLeafTravel') && read('world-style.css').includes('@keyframes sceneShoot'), 'continuous scene-specific animations missing');
-assert.equal(win.freshCards.filter(c=>c.type==='陪伴的一段話').length,16,'sourced compassionate perspectives must form 16 cards');
+assert.equal(win.freshCards.filter(c=>c.type==='陪伴的一段話').length,16,'gentle reflection category missing');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>/延伸|概述|聯想|改寫|重述|轉述/.test(c.provenance)), 'sourced writing must distinguish its life interpretation from the original idea');
 
 const countArray = (start,end) => {
@@ -183,14 +192,24 @@ const prefixCut = app.indexOf('const defaultLongArticles = []');
 assert.ok(prefixCut > 0, 'outdated fallback was not removed');
 assert.ok(!app.includes('openstax.org'), 'outdated OpenStax reference remains in app.js');
 const bootstrap = app.slice(0, prefixCut) +
-  '\n;globalThis.__AUDIT = { cards, articles, articleBodies, dailyCards };';
+  '\n;globalThis.__AUDIT = { cards, articles, articleBodies, dailyCards, pickRandomCards };';
 vm.runInNewContext(bootstrap, sandbox, { filename: 'app.js:bootstrap', timeout: 10000 });
 const state = sandbox.__AUDIT;
+for(let trial=0;trial<100;trial++){
+ const trialDraw=state.pickRandomCards();
+ assert.equal(trialDraw.length,5);
+ assert.equal(new Set(trialDraw.map(c=>c.type)).size,5);
+ assert.equal(trialDraw.filter(c=>c.sourceLink).length,2);
+ assert.equal(trialDraw.filter(c=>!c.sourceLink).length,3);
+}
+
 assert.equal(state.cards.length, 80);
 assert.equal(state.cards.filter(c=>c.quote).length,0,'raw excerpt cards must not remain');
 assert.equal(new Set(state.dailyCards.map(c=>c.type)).size,5,'five-card experience must include five kinds of care');
-assert.equal(state.cards.filter(c=>c.sourceLink).length,16,'16 contextual source-based readings required');
-assert.ok(state.cards.filter(c=>c.sourceLink).length>=7, 'classics lost source links');
+assert.equal(state.dailyCards.filter(c=>c.sourceLink).length,2,'two of the five need referenced perspectives');
+assert.equal(state.dailyCards.filter(c=>!c.sourceLink).length,3,'three of the five need original daily companionship');
+assert.equal(state.cards.filter(c=>c.sourceLink).length,40,'40 contextual source-based readings required');
+assert.ok(state.cards.filter(c=>c.sourceLink).every(c=>c.provenance && /^https:\/\//.test(c.sourceLink)), 'every idea requires provenance and HTTPS source');
 assert.equal(state.dailyCards.length, 5);
 assert.equal(new Set(state.dailyCards.map(c => c.text)).size, 5);
 assert.equal(new Set(state.cards.map(c => c.text)).size, 80);
