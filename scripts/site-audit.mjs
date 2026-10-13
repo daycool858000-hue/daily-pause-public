@@ -121,7 +121,7 @@ assert.ok(win.pauseSourcedCards.every(c=>c.sourceLink&&/延伸|聯想/.test(c.pr
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>c.provenance && /^https:\/\//.test(c.sourceLink)), 'sourced life reflections require traceable links and context');
 assert.ok(win.freshCards.every(c=>c.text.length>=28 && c.text.length<=48),'cards should be brief, conversational, and readable');
 assert.ok(win.freshCards.every(c=>!c.text.includes('願你')),'stop repeating the same blessing phrase');
-assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('柔軟不等於委屈')), 'Taoist context must explain a gentle everyday implication');
+assert.ok(win.freshCards.some(c=>c.text.includes('上善若水') && c.text.includes('溫柔') && c.text.includes('委屈')), 'Taoist context must explain a gentle everyday implication');
 assert.ok(win.freshCards.every(c=>!/你應該|你必須|比別人|成功人士|別再偷懶/.test(c.text)), 'pressure-based messaging accidentally introduced');
 assert.ok(win.freshCards.every(c=>(c.provenance||'').includes('AI')||c.sourceLink), 'missing original or classical provenance');
 assert.equal(new Set([...win.shortArticlesData, ...win.additionalShortReads].map(x => x.title)).size, 37);
