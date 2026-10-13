@@ -168,6 +168,17 @@ assert.ok(audioScript.includes('https://upload.wikimedia.org/'), 'audio files sh
 assert.ok(audioScript.includes('Scott_Buckley_-_Sleep_(piano-only_mix).oga'), 'piano-only arrangement absent');
 assert.ok(audioScript.includes('Scott_Buckley_-_The_Long_Way_Home.oga'), 'lullaby-like piano track absent');
 assert.ok(audioScript.includes('Scott_Buckley_-_She_Moved_Mountains.oga'), 'gentle ambient piano track absent');
+for(const filename of ['Scott_Buckley_-_Reverie.oga','Scott_Buckley_-_Elementary.ogg','Scott_Buckley_-_There_Is_A_Place.oga','Scott_Buckley_-_Jul.oga','Scott_Buckley_-_Midsommar.oga'])
+ assert.ok(audioScript.includes(filename),'missing new natural ambient piano: '+filename);
+assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,10,'existing five + new five audio tracks must be present');
+assert.equal((audioScript.match(/nature:'(?:forest|creek)'/g)||[]).length,5,'new five tracks should blend licensed nature audio');
+assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('audibleLevel(entry.track)'), 'desktop volume correction missing');
+assert.ok(audioScript.includes("track.kind==='nature' ? 4 : 3.4") && audioScript.includes(" : track.level;"), 'iPhone/mobile sound levels must be kept');
+assert.ok(audioScript.includes('createBiquadFilter') && audioScript.includes("soften.type='lowpass'"), 'natural ambient overlay should be smoothed');
+assert.ok(audioScript.includes("audio.crossOrigin='anonymous'"),'Web Audio cross-origin media permission handling missing');
+assert.ok(audioScript.includes('releaseNature(audio);') && audioScript.includes('releaseNature(entry.audio)'), 'ambient layer must be cleaned up with main track');
+assert.ok(html.includes('Scott_Buckley_-_Midsommar.oga') && html.includes('Scott_Buckley_-_Reverie.oga'), 'remix track credits missing');
+
 assert.ok(audioScript.includes('Forest_lawn_creek.ogg') && audioScript.includes('Nature_sounds_ambience_in_a_Dordogne_pond.ogg'), 'two gentle environmental recordings absent');
 assert.ok(!audioScript.includes('freesound.org/embed') && !audioScript.includes('handpan'), 'unreliable third-party handpan player retained');
 assert.ok(!audioScript.includes('createBufferSource') && !audioScript.includes('bufferNoise'), 'old harsh synthetic rain generator present');

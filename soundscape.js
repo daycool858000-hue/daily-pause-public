@@ -30,9 +30,79 @@
       src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
       page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',
       license:'CC BY 3.0',artist:'Glaneur de sons',work:'Nature sounds ambience in a Dordogne pond',level:.052
+    },{
+      id:'reverieNature',title:'林間的夢',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6a/Scott_Buckley_-_Reverie.oga/Scott_Buckley_-_Reverie.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Reverie.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Reverie',level:.064,nature:'forest'
+    },{
+      id:'elementaryNature',title:'溪畔的琴',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e0/Scott_Buckley_-_Elementary.ogg/Scott_Buckley_-_Elementary.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Elementary.ogg',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Elementary',level:.066,nature:'creek'
+    },{
+      id:'thereNature',title:'森林裡的歸處',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c8/Scott_Buckley_-_There_Is_A_Place.oga/Scott_Buckley_-_There_Is_A_Place.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_There_Is_A_Place.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'There Is A Place',level:.064,nature:'forest'
+    },{
+      id:'julNature',title:'微光與細流',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a3/Scott_Buckley_-_Jul.oga/Scott_Buckley_-_Jul.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Jul.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Jul',level:.060,nature:'creek'
+    },{
+      id:'midsommarNature',title:'黃昏的鋼琴',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/Scott_Buckley_-_Midsommar.oga/Scott_Buckley_-_Midsommar.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Midsommar.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Midsommar',level:.058,nature:'forest'
     }
   ];
   const areas=['today','read','curiosity','palette','holding'];
+  // iPhone volume controls were already accepted in testing, so preserve them.
+  // Desktop fine-pointer devices previously had volume levels as low as 0.052.
+  const desktopAudio=window.matchMedia?.('(pointer: fine)')?.matches
+    && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+  function audibleLevel(track) {
+    return desktopAudio ? Math.min(track.kind==='nature' ? .32 : .34, track.level * (track.kind==='nature' ? 4 : 3.4)) : track.level;
+  }
+  let ambientContext=null;
+  function unlockAmbientContext(){
+    const Constructor=window.AudioContext||window.webkitAudioContext;
+    if(!Constructor)return null;
+    try{
+      if(!ambientContext)ambientContext=new Constructor();
+      if(ambientContext.state==='suspended')ambientContext.resume().catch(()=>{});
+      return ambientContext;
+    }catch(_){return null}
+  }
+  // Companion nature audio is processed with its own GainNode, so iOS can keep
+  // ambience genuinely quieter than the melody even where media.volume is ignored.
+  function addSoftNature(entry){
+    if(!entry.track.nature)return;
+    const bg=tracks.find(t=>t.id===entry.track.nature),ctx=unlockAmbientContext();
+    if(!bg||!ctx||ctx.state==='suspended')return;
+    const audio=new Audio();
+    audio.crossOrigin='anonymous';audio.src=bg.src;audio.preload='auto';audio.loop=true;audio.volume=1;
+    try{
+      const source=ctx.createMediaElementSource(audio),gain=ctx.createGain();
+      const soften=ctx.createBiquadFilter();
+      soften.type='lowpass';soften.frequency.value=1350;soften.Q.value=.55;
+      gain.gain.value=0;
+      source.connect(soften);soften.connect(gain);gain.connect(ctx.destination);
+      const target=desktopAudio ? .043 : .025;
+      gain.gain.setTargetAtTime(target,ctx.currentTime,.9);
+      entry.audio.natureLayer={audio,source,soften,gain,context:ctx};
+      audio.play().catch(()=>{releaseNature(entry.audio)});
+    }catch(_){try{audio.pause();audio.removeAttribute('src')}catch(__){}}
+  }
+  function releaseNature(primary){
+    const layer=primary?.natureLayer;if(!layer)return;
+    delete primary.natureLayer;
+    try{layer.gain.gain.cancelScheduledValues(layer.context.currentTime);
+      layer.gain.gain.setValueAtTime(0,layer.context.currentTime)}catch(_){}
+    try{layer.audio.pause();layer.audio.removeAttribute('src');layer.audio.load()}catch(_){}
+    try{layer.source.disconnect();layer.soften.disconnect();layer.gain.disconnect()}catch(_){}
+  }
   const bars=new Map();
   let activeArea='today',active=null,waiting=false,stoppedByVisitor=false;
   let queue=[],raf=null,advanceTimer=null,sequence=0,fadeOutSet=new Set();
@@ -86,6 +156,7 @@
   }
   function cancelFade(){if(raf!==null)cancelAnimationFrame(raf);raf=null}
   function release(audio){
+    releaseNature(audio);
     try{audio.pause();audio.removeAttribute('src');audio.load()}catch(_){}
   }
   function fadeOut(audio,ms=550){
@@ -102,7 +173,7 @@
   }
   function fadeIn(entry){
     cancelFade();
-    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=entry.track.level;
+    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=audibleLevel(entry.track);
     const f=t=>{
       if(active!==entry){raf=null;return}
       const x=Math.min(1,(t-from)/length);
@@ -131,6 +202,7 @@
   function startNext(userGesture=false){
     if(stoppedByVisitor||document.hidden)return;
     const previous=active,chosen=nextTrack(previous?.track.id);
+    if(chosen.nature)unlockAmbientContext();
     cancelAdvance();cancelFade();
     if(previous)fadeOut(previous.audio,1700);
     const audio=new Audio();
@@ -159,7 +231,7 @@
     const promise=audio.play();
     if(promise&&typeof promise.then==='function')promise.then(()=>{
       if(active!==entry){release(audio);return}
-      fadeIn(entry);scheduleEnd(entry);updateBar();
+      fadeIn(entry);addSoftNature(entry);scheduleEnd(entry);updateBar();
     }).catch(err=>{
       if(active!==entry)return;
       release(audio);active=null;
