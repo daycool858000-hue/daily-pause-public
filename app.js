@@ -19,11 +19,56 @@ const companionLines = (window.dailyContent && window.dailyContent.companionLine
 const dailyExperiences = (window.dailyContent && window.dailyContent.experiences) || [];
 
 const cards = [
-  { type: '古典文本概述', text: '有些事在我們的掌握之中，有些事不在。', source: '愛比克泰德《手冊》1｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual', tag: '分辨能掌握的事', art: 'sun' },
-  { type: '觀察', text: '窗外的燈亮了，也許有人剛回到家；我們能看見燈，卻看不見他的整天。', source: '今日一息｜AI 協助撰寫原創文字', tag: '看見與未知', art: 'leaf' },
-  { type: '生活', text: '熱水壺停下來的聲音，讓廚房忽然安靜。這是今天的一個小小轉場。', source: '今日一息｜AI 協助撰寫原創文字', tag: '廚房聲音', art: 'cloud' },
-  { type: '閱讀', text: '在書頁邊緣寫下一個問號，就能留下當時沒想通的地方。', source: '今日一息｜AI 協助撰寫原創文字', tag: '閱讀的痕跡', art: 'flower' },
-  { type: '古典文本概述', text: '向內探看；善的泉源就在內心，只要你願意挖掘，它總會湧出。', source: '馬可·奧理略《沉思錄》7.59｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7', tag: '往內留一點空間', art: 'star' }
+  {
+    "type": "經典原文",
+    "text": "學而時習之，不亦說乎？",
+    "source": "論語／學而1.1",
+    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E5%AD%B8%E8%80%8C%E7%AC%AC%E4%B8%80",
+    "tag": "學習的喜悅",
+    "art": "book",
+    "quote": true,
+    "provenance": "原文"
+  },
+  {
+    "type": "經典原文",
+    "text": "三人行，必有我師焉。",
+    "source": "論語／述而7.21",
+    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%BF%B0%E8%80%8C%E7%AC%AC%E4%B8%83",
+    "tag": "向身邊的人學",
+    "art": "leaf",
+    "quote": true,
+    "provenance": "原文節錄"
+  },
+  {
+    "type": "經典原文",
+    "text": "君子不以言舉人，不以人廢言。",
+    "source": "論語／衞靈公15.22",
+    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%A1%9E%E9%9D%88%E5%85%AC%E7%AC%AC%E5%8D%81%E4%BA%94",
+    "tag": "人與言論",
+    "art": "star",
+    "quote": true,
+    "provenance": "原文"
+  },
+  {
+    "type": "經典原文",
+    "text": "己所不欲，勿施於人。",
+    "source": "論語／衞靈公15.23",
+    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%A1%9E%E9%9D%88%E5%85%AC%E7%AC%AC%E5%8D%81%E4%BA%94",
+    "tag": "換位與界線",
+    "art": "flower",
+    "quote": true,
+    "provenance": "原文節錄"
+  },
+  {
+    "type": "經典原文",
+    "text": "學而不思則罔，思而不學則殆。",
+    "source": "論語／為政2.15",
+    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E7%88%B2%E6%94%BF%E7%AC%AC%E4%BA%8C",
+    "tag": "學習與思考",
+    "art": "moon",
+    "quote": true,
+    "provenance": "原文"
+  }
 ];
 cards.push(...(window.freshCards || window.extraCards || []));
 function localDateKey(date = new Date()) {

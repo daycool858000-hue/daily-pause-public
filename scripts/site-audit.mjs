@@ -173,6 +173,9 @@ const bootstrap = app.slice(0, prefixCut) +
 vm.runInNewContext(bootstrap, sandbox, { filename: 'app.js:bootstrap', timeout: 10000 });
 const state = sandbox.__AUDIT;
 assert.equal(state.cards.length, 80);
+assert.equal(state.cards.filter(c=>c.quote).length,20,'20 accurately attributed classical excerpts required');
+assert.ok(state.cards.filter(c=>c.quote).every(c=>c.sourceLink&&c.provenance.includes('原文')),'every exact quote must be traceable');
+assert.equal(state.cards.filter(c=>c.sourceLink).length,35,'classical excerpts and sourced reinterpretations must all link');
 assert.ok(state.cards.filter(c=>c.sourceLink).length>=7, 'classics lost source links');
 assert.equal(state.dailyCards.length, 5);
 assert.equal(new Set(state.dailyCards.map(c => c.text)).size, 5);
