@@ -18,59 +18,9 @@ const safeStorage = {
 const companionLines = (window.dailyContent && window.dailyContent.companionLines) || [];
 const dailyExperiences = (window.dailyContent && window.dailyContent.experiences) || [];
 
-const cards = [
-  {
-    "type": "經典原文",
-    "text": "學而時習之，不亦說乎？",
-    "source": "論語／學而1.1",
-    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E5%AD%B8%E8%80%8C%E7%AC%AC%E4%B8%80",
-    "tag": "學習的喜悅",
-    "art": "book",
-    "quote": true,
-    "provenance": "原文"
-  },
-  {
-    "type": "經典原文",
-    "text": "三人行，必有我師焉。",
-    "source": "論語／述而7.21",
-    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%BF%B0%E8%80%8C%E7%AC%AC%E4%B8%83",
-    "tag": "向身邊的人學",
-    "art": "leaf",
-    "quote": true,
-    "provenance": "原文節錄"
-  },
-  {
-    "type": "經典原文",
-    "text": "君子不以言舉人，不以人廢言。",
-    "source": "論語／衞靈公15.22",
-    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%A1%9E%E9%9D%88%E5%85%AC%E7%AC%AC%E5%8D%81%E4%BA%94",
-    "tag": "人與言論",
-    "art": "star",
-    "quote": true,
-    "provenance": "原文"
-  },
-  {
-    "type": "經典原文",
-    "text": "己所不欲，勿施於人。",
-    "source": "論語／衞靈公15.23",
-    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E8%A1%9E%E9%9D%88%E5%85%AC%E7%AC%AC%E5%8D%81%E4%BA%94",
-    "tag": "換位與界線",
-    "art": "flower",
-    "quote": true,
-    "provenance": "原文節錄"
-  },
-  {
-    "type": "經典原文",
-    "text": "學而不思則罔，思而不學則殆。",
-    "source": "論語／為政2.15",
-    "sourceLink": "https://zh.wikisource.org/zh-hant/%E8%AB%96%E8%AA%9E/%E7%88%B2%E6%94%BF%E7%AC%AC%E4%BA%8C",
-    "tag": "學習與思考",
-    "art": "moon",
-    "quote": true,
-    "provenance": "原文"
-  }
-];
-cards.push(...(window.freshCards || window.extraCards || []));
+// The 80 care-focused readings are maintained in fresh-cards.js.
+// Old generic quotes are intentionally excluded from the current draw pool.
+const cards = window.freshCards || [];
 function localDateKey(date = new Date()) {
   const pad = value => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -82,15 +32,22 @@ function dateOrdinal(key) {
 const todayKey = localDateKey();
 const todayOrdinal = dateOrdinal(todayKey);
 function pickRandomCards() {
-  const pool = cards.slice();
-  for (let index = pool.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+  // One of each feeling in a five-card visit, with a different order each day.
+  // The visitor doesn't get five variations of the same motivational advice.
+  const types = ['心情有人懂', '身體也要被照顧', '關係裡的溫柔', '生活的小幸福', '陪伴的一段話'];
+  const result = types.map(type => {
+    const choices = cards.filter(card => card.type === type);
+    if (!choices.length) throw new Error('Card category is missing: ' + type);
+    return choices[Math.floor(Math.random() * choices.length)];
+  });
+  for (let i=result.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
-  return pool.slice(0, Math.min(5, pool.length));
+  return result;
 }
-const dailyCardsKey = `xinli-daily-cards-${todayKey}`;
-const dailyProgressKey = `xinli-progress-${todayKey}`;
+const dailyCardsKey = `xinli-daily-cards-care-v3-${todayKey}`;
+const dailyProgressKey = `xinli-progress-care-v3-${todayKey}`;
 function loadDailyCards() {
   try {
     const storedIndexes = JSON.parse(safeStorage.getItem(dailyCardsKey) || 'null');
