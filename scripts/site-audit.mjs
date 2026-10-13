@@ -303,7 +303,7 @@ for (const experience of win.dailyContent.experiences) {
 assert.equal(checkedRestScenes.size,15,'all 15 experiences should select different rest scenes');
 
 assert.ok(restScript.includes('(body[kind]||body.window)'), 'render each of 15 painted, independent rest scenes');
-const restBody=restScript.slice(restScript.indexOf('const body={'), restScript.indexOf('function sceneKey', restScript.indexOf('const body={')));
+const restBody=restScript.slice(restScript.indexOf('const body={'), restScript.indexOf('const stageAccents=', restScript.indexOf('const body={')));
 assert.equal((restBody.match(/^\s*(?:window|hands|sound|cup|chair|hills|sunlight|eyes|stretch|phone|flower|desk|leaf|paper|night)(?::|,)/gm)||[]).length,15,'15 distinct natural scene vignettes required');
 assert.ok(restScript.includes('r-texture') && restScript.includes('r-sky'),'rest scene should use soft texture and light');
 assert.ok(read('world-style.css').includes('@keyframes rGardenBreath') && read('world-style.css').includes('@keyframes rCurtain'),'continuous quiet scene animations missing');
@@ -315,17 +315,19 @@ assert.ok(read('app.js').includes("if (tab.dataset.experience === 'rest')"), 're
 assert.ok(surprise.includes('MutationObserver') && surprise.includes('attributeFilter:[\'hidden\']'),'second animation starts after the original welcome closes');
 assert.ok(surprise.includes('哩賀') && surprise.includes('你是世界上非常重要的人'),'all user-provided encouragement must be preserved');
 const expectedGreetings=[
-  '哩賀\\n有沒有人告訴過你\\n你今天真的很棒',
-  '嘿我明白的\\n你今天真的做到了\\n非常厲害',
-  '什麼 全世界最棒的人正在看著我\\n對的 就是你 不要懷疑自己',
-  '親愛的 你不用是誰\\n你是你\\n不是任何人任何角色',
-  '我要當第一個也可能是好幾個\\n今天對你說\\n你是世界上非常重要的人'
-].map(x=>x.replace(/\\\\n/g,'\\n'));
-const sourceGreetings=surprise.match(/const messages=(\\[[\\s\\S]*?\\]);\\nconst defs=/);
-assert.ok(sourceGreetings,'surprise greeting data structure changed');
-const actualGreetings=vm.runInNewContext(sourceGreetings[1],{}, {timeout:2000});
+  ['哩賀','有沒有人告訴過你','你今天真的很棒'].join('\n'),
+  ['嘿我明白的','你今天真的做到了','非常厲害'].join('\n'),
+  ['什麼 全世界最棒的人正在看著我','對的 就是你 不要懷疑自己'].join('\n'),
+  ['親愛的 你不用是誰','你是你','不是任何人任何角色'].join('\n'),
+  ['我要當第一個也可能是好幾個','今天對你說','你是世界上非常重要的人'].join('\n')
+];
+const messagesStart=surprise.indexOf('const messages=');
+const messagesEnd=surprise.indexOf(';\nconst defs=',messagesStart);
+assert.ok(messagesStart>=0 && messagesEnd>messagesStart,'surprise greeting source structure missing');
+const actualGreetings=vm.runInNewContext(
+  surprise.slice(messagesStart+'const messages='.length,messagesEnd),{}, {timeout:2000});
 assert.equal(JSON.stringify(actualGreetings),JSON.stringify(expectedGreetings),
-  'five original greetings must match author text byte-for-byte and in order');
+  'five author-written greetings must match exactly, in order and with original line breaks');
 assert.ok(surprise.includes('messages[random(messages.length)]'),
   'random greeting must draw from all five original messages');
 
