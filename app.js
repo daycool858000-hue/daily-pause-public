@@ -184,7 +184,8 @@ const storedProgress = Number(safeStorage.getItem(dailyProgressKey) || 0);
 const state = { revealed: Number.isFinite(storedProgress) ? Math.min(dailyCards.length, Math.max(0, storedProgress)) : 0, filter: '全部', query: '' };
 const openingScenes = ['dawn', 'tide', 'garden', 'star'];
 const openingScene = openingScenes[Math.floor(Math.random() * openingScenes.length)];
-const dailyLine = companionLines[todayOrdinal % companionLines.length] || companionLines[0];
+const dailyLine = window.PauseDailyReminders?.select(companionLines,todayKey,installSeed,safeStorage)
+  || companionLines[todayOrdinal % companionLines.length] || companionLines[0];
 const openingCandidates = companionLines.filter((_, index) => index !== todayOrdinal % companionLines.length);
 let lastOpeningLine = null;
 function pickOpeningLine() {
