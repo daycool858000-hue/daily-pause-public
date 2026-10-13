@@ -24,6 +24,21 @@ function testWorldMotion(){
   drawCalls.length=0;
   w.PauseWorldArt.drawScene(ctx,'room',4700);
   assert.notEqual(JSON.stringify(drawCalls),before,'room scene does not move over time');
+  // Verify each distinct landscape renders at multiple moments, and the
+  // formerly shared room/library/sunrise scenes no longer share identical output.
+  const styles={};
+  for(const scene of ['room','sea','rain','garden','night','island','balcony','hill','lake','library','cloud','sunrise']){
+    drawCalls.length=0;
+    w.PauseWorldArt.drawScene(ctx,scene,4800);
+    styles[scene]=JSON.stringify(drawCalls);
+    w.PauseWorldArt.drawScene(ctx,scene,9800);
+  }
+  assert.notEqual(styles.room,styles.library,'library is still the room canvas');
+  assert.notEqual(styles.room,styles.sunrise,'sunrise is still the room canvas');
+  assert.equal(typeof w.PauseWorldArt.drawAtmosphere,'function','mood-specific renderer is absent');
+  for(const effect of ['light','mist','breeze','rain','ripples','petals','leaves','sparkle','fireflies']){
+    w.PauseWorldArt.drawAtmosphere(ctx,{moodTone:'#a6b5a9',accent:'#d2a780',index:4,effect,scene:'garden'},8700);
+  }
 }
 
 function testPaletteColorAndFrames(){
@@ -40,7 +55,7 @@ function testPaletteColorAndFrames(){
     querySelectorAll(){return []},setAttribute(){},setPointerCapture(){},releasePointerCapture(){},click(){}
   });
   const getNode=id=>{if(!nodes.has(id))nodes.set(id,makeNode(id));return nodes.get(id)};
-  const drawn=[],marked=[];
+  const drawn=[],marked=[],atmospheres=[];
   const canvas=getNode('worldCanvas');
   const gradient={addColorStop(){}};
   const ctx=new Proxy({
@@ -57,6 +72,7 @@ function testPaletteColorAndFrames(){
   const w={
     devicePixelRatio:1,
     PauseWorldArt:{W:960,H:630,drawScene(ctx,scene,t){drawn.push({scene,t})},
+      drawAtmosphere(ctx,profile,t){atmospheres.push({...profile,t})},
       drawElement(ctx,mark){marked.push({...mark})},drawProp(){}},
     createPaletteHistory({onChange}){
       onChange({canUndo:false,canRedo:false});
@@ -81,10 +97,19 @@ function testPaletteColorAndFrames(){
   const [frame,callback]=frames.entries().next().value;
   frames.delete(frame);callback(1200);
   assert.ok(drawn.some(x=>x.t>0),'canvas stayed in still-frame rendering');
+  assert.ok(atmospheres.length>0,'emotion atmosphere never rendered');
+  const originalMood=atmospheres.at(-1);
+  rootListeners.click({target:{closest:()=>({dataset:{mood:'疲倦'}})}});
+  assert.equal(drawn.at(-1)?.scene,'rain','emotion choice must switch its scene');
+  const otherMood=atmospheres.at(-1);
+  assert.notEqual(otherMood.index,originalMood.index,'different emotions use the same visual identity');
+  assert.notEqual(otherMood.effect,originalMood.effect,'emotion animation did not change');
+
   const pickColor='#78aaba';
   rootListeners.click({target:{closest:()=>({dataset:{color:pickColor}})}});
   assert.equal(getNode('worldCustomColor').value,pickColor,'swatch does not sync color picker');
   assert.equal(getNode('worldActiveColorPreview').style.backgroundColor,pickColor,'swatch visual preview did not update');
+  assert.equal(atmospheres.at(-1).accent,pickColor,'color swatch must affect next paint and soft reflected light');
   assert.match(getNode('worldColorStatus').textContent,/#78AABA/,'color feedback text absent');
   const event={button:0,clientX:230,clientY:170,pointerId:4,preventDefault(){}};
   canvasListeners.pointerdown(event);
