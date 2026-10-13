@@ -217,6 +217,8 @@
     }
     updateBar();
     document.addEventListener('pointerdown',firstGesture,{capture:true});
+    document.addEventListener('click',firstGesture,{capture:true});
+    document.addEventListener('touchend',firstGesture,{capture:true,passive:true});
     document.addEventListener('keydown',firstGesture,{capture:true});
     window.addEventListener('pause:view-change',e=>onView(e.detail?.view||'today'));
     document.addEventListener('visibilitychange',()=>{

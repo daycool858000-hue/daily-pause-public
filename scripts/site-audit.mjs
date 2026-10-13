@@ -174,6 +174,7 @@ assert.ok(!audioScript.includes('createBufferSource') && !audioScript.includes('
 assert.ok(audioScript.includes('new Audio()') && audioScript.includes('audio.play()'), 'native audio player absent');
 assert.ok(audioScript.includes('audio.volume=0') && audioScript.includes('fadeIn(entry)'), 'subtle audio fade-in absent');
 assert.ok(audioScript.includes("document.addEventListener('pointerdown',firstGesture"), 'autoplay gesture-unlock absent');
+assert.ok(audioScript.includes("document.addEventListener('click',firstGesture") && audioScript.includes("document.addEventListener('touchend',firstGesture"), 'mobile Safari audio unlock fallback absent');
 assert.ok(audioScript.includes('if(!stoppedByVisitor)startNext()'), 'best-effort auto-start absent');
 assert.ok(audioScript.includes("sessionStorage.getItem('daily-pause-audio-paused-v1')"), 'manual pause preference not respected');
 assert.ok(audioScript.includes("bar.querySelector('[data-sound-shuffle]').addEventListener('click'"), 'manual shuffle action absent');
