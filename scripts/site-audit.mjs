@@ -148,6 +148,34 @@ assert.equal(new Set(reminderText).size,55,'duplicate reminder bodies');
 const reminderWindow={};
 vm.runInNewContext(read('daily-reminders.js'),{window:reminderWindow},{filename:'daily-reminders.js',timeout:5000});
 assert.equal(typeof reminderWindow.PauseDailyReminders?.select,'function');
+
+// Fresh installations must choose from the complete 55-message pool immediately,
+// rather than placing the original 31 messages ahead of newly written ones.
+const initialNewLineChoices=new Set();
+for(let seed=0;seed<120;seed++){
+  const store=new Map();
+  const chosen=reminderWindow.PauseDailyReminders.select(
+    win.dailyContent.companionLines,'2026-11-03','fresh-browser-'+seed,
+    {getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)}
+  );
+  initialNewLineChoices.add(win.dailyContent.companionLines.indexOf(chosen));
+}
+assert.ok([...initialNewLineChoices].some(index=>index>=31),
+  'fresh visitors must be able to see one of the 24 new reminders immediately');
+assert.ok([...initialNewLineChoices].some(index=>index<31),
+  'all original reminders must still participate equally');
+// A reminder already stored for the current date must stay unchanged on reload.
+const oldDaySelection=win.dailyContent.companionLines[4];
+const existingSelection=new Map([[
+  'daily-pause-reminder-cycle-v1',JSON.stringify({history:[
+    {day:'2026-10-13',reminder:oldDaySelection.reminder}
+  ]})
+]]);
+assert.equal(reminderWindow.PauseDailyReminders.select(
+  win.dailyContent.companionLines,'2026-10-13','migrated-browser',
+  {getItem:k=>existingSelection.get(k)||null,setItem:(k,v)=>existingSelection.set(k,v)}
+).reminder,oldDaySelection.reminder,'today must not change after release');
+
 const reminderStorage=new Map();
 const reminderAdapter={
   getItem:k=>reminderStorage.get(k)||null,
@@ -496,6 +524,6 @@ for (const item of win.mediaData) {
 console.log(JSON.stringify({
   status: 'pass', root, long: 33, longSections: 132, short: 37,
   curiosity: 36, sourceReferences: 117, uniqueSources: 97,
-  cards: 80, dailyReminders: 31, experiences: 15,
+  cards: 80, dailyReminders: 55, experiences: 15,
   readingEntries: 57, images: 15, scripts: required.filter(x => x.endsWith('.js')).length
 }, null, 2));

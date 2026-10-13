@@ -3,10 +3,6 @@
 (() => {
   'use strict';
   const KEY='daily-pause-reminder-cycle-v1';
-  function dayOrdinal(day){
-    const parts=String(day).split('-').map(Number);
-    return Math.floor(Date.UTC(parts[0],parts[1]-1,parts[2])/86400000);
-  }
   function hash(input){
     let n=2166136261;
     for(const ch of input){n^=ch.charCodeAt(0);n=Math.imul(n,16777619)}
@@ -27,17 +23,17 @@
     const earlier=history.find(x=>x.day===day);
     if(earlier)return lines.find(x=>x.reminder===earlier.reminder);
     let used=new Set(history.map(x=>x.reminder));
-    if(used.size>=all.size){history=[];used=new Set()}
+    const previous=history.at(-1)?.reminder||null;
+    // All 55 messages participate from the very first visit. The next cycle
+    // starts only after every reminder has appeared at least once.
+    const restarting=used.size>=all.size;
+    if(restarting){history=[];used=new Set()}
     let pool=lines.filter(x=>!used.has(x.reminder));
-    let selected;
-    if(!history.length && used.size===0){
-      // On first upgrade, retain the original 31-day line for the current date.
-      const idx=((dayOrdinal(day)%Math.min(31,lines.length))+Math.min(31,lines.length))%Math.min(31,lines.length);
-      selected=lines[idx];
-    }else{
-      const idx=hash(installSeed+'|'+day+'|reminder-cycle-v1')%pool.length;
-      selected=pool[idx];
-    }
+    // Avoid seeing yesterday's sentence again exactly at a cycle boundary.
+    if(restarting&&previous&&pool.length>1)
+      pool=pool.filter(x=>x.reminder!==previous);
+    const idx=hash(installSeed+'|'+day+'|reminder-cycle-v2')%pool.length;
+    const selected=pool[idx];
     history.push({day,reminder:selected.reminder});
     try{storage.setItem(KEY,JSON.stringify({history}))}catch(_){}
     return selected;
