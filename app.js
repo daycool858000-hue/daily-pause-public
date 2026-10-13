@@ -31,44 +31,72 @@ function dateOrdinal(key) {
 }
 const todayKey = localDateKey();
 const todayOrdinal = dateOrdinal(todayKey);
-function pickRandomCards() {
-  // Each visit receives five different kinds of care:
-  // three original notes plus two sourced reflections, with no fixed sequence.
-  const types = ['心情有人懂', '身體也要被照顧', '關係裡的溫柔', '生活的小幸福', '陪伴的一段話'];
-  const sourceTypes = types.slice();
-  for (let i=sourceTypes.length-1;i>0;i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [sourceTypes[i], sourceTypes[j]] = [sourceTypes[j], sourceTypes[i]];
-  }
-  const sourced = new Set(sourceTypes.slice(0,2));
-  const result = types.map(type => {
-    const choices = cards.filter(card => card.type === type && Boolean(card.sourceLink) === sourced.has(type));
-    if (!choices.length) throw new Error('Card category or provenance is missing: ' + type);
-    return choices[Math.floor(Math.random() * choices.length)];
-  });
-  for (let i=result.length-1;i>0;i--) {
-    const j=Math.floor(Math.random()*(i+1));
-    [result[i],result[j]]=[result[j],result[i]];
-  }
-  return result;
+// Each browser gets a locally saved random seed; device-local dates choose cards.
+// Separate browsers have independent draws, but global uniqueness is not guaranteed.
+const installKey='xinli-card-install-v5';
+function installationSeed(){
+ let seed=safeStorage.getItem(installKey);
+ if(seed)return seed;
+ seed=window.crypto?.randomUUID?.() ||
+  (Date.now().toString(36)+'-'+Math.floor(Math.random()*1e9).toString(36));
+ safeStorage.setItem(installKey,seed);
+ return seed;
 }
-const dailyCardsKey = `xinli-daily-cards-care-v4-${todayKey}`;
-const dailyProgressKey = `xinli-progress-care-v4-${todayKey}`;
-function loadDailyCards() {
-  try {
-    const storedIndexes = JSON.parse(safeStorage.getItem(dailyCardsKey) || 'null');
-    if (Array.isArray(storedIndexes) && storedIndexes.length === Math.min(5, cards.length)
-      && new Set(storedIndexes).size === storedIndexes.length
-      && storedIndexes.every(index => Number.isInteger(index) && cards[index])) {
-      return storedIndexes.map(index => cards[index]);
-    }
-  } catch (_) { /* ignore malformed local storage and create a fresh daily set */ }
-  const selected = pickRandomCards();
-  safeStorage.setItem(dailyCardsKey, JSON.stringify(selected.map(card => cards.indexOf(card))));
-  safeStorage.removeItem(dailyProgressKey);
-  return selected;
+const installSeed=installationSeed();
+function seededGenerator(input){
+ let n=2166136261;
+ for(let i=0;i<input.length;i++){n^=input.charCodeAt(i);n=Math.imul(n,16777619);}
+ return ()=>{n^=n<<13;n^=n>>>17;n^=n<<5;return (n>>>0)/4294967296};
 }
-const dailyCards = loadDailyCards();
+function pickRandomCards(){
+ const rand=seededGenerator(installSeed+'|'+todayKey+'|daily-pause-v5');
+ const categories=['心情有人懂','身體也要被照顧','關係裡的溫柔','生活的小幸福','陪伴的一段話'];
+ const order=categories.slice();
+ for(let i=order.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+ const sourced=new Set(order.slice(0,2));
+ let history=[];
+ try{
+  const stored=JSON.parse(safeStorage.getItem('xinli-card-history-v5')||'[]');
+  if(Array.isArray(stored))history=stored.filter(z=>z&&typeof z.day==='string'&&Array.isArray(z.indexes));
+ }catch(_){}
+ const oldUsed=new Set(history.filter(z=>z.day!==todayKey&&z.day<todayKey&&(todayOrdinal-dateOrdinal(z.day))<=7)
+   .flatMap(z=>z.indexes).filter(Number.isInteger));
+ const pick=categories.map(category=>{
+   const all=cards.map((card,index)=>({card,index}))
+     .filter(x=>x.card.type===category&&Boolean(x.card.sourceLink)===sourced.has(category));
+   if(!all.length)throw Error('Daily card category missing: '+category);
+   const fresh=all.filter(x=>!oldUsed.has(x.index));
+   const pool=fresh.length?fresh:all;
+   return pool[Math.floor(rand()*pool.length)].card;
+ });
+ for(let i=pick.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[pick[i],pick[j]]=[pick[j],pick[i]]}
+ return pick;
+}
+const dailyCardsKey = 'xinli-daily-cards-care-v5-'+todayKey;
+const dailyProgressKey = 'xinli-progress-care-v5-'+todayKey;
+function loadDailyCards(){
+ try{
+   const indexes=JSON.parse(safeStorage.getItem(dailyCardsKey)||'null');
+   if(Array.isArray(indexes)&&indexes.length===5&&new Set(indexes).size===5
+      &&indexes.every(i=>Number.isInteger(i)&&cards[i])){
+      const read=indexes.map(i=>cards[i]);
+      if(new Set(read.map(c=>c.type)).size===5&&read.filter(c=>c.sourceLink).length===2)
+        return read;
+   }
+ }catch(_){}
+ const selected=pickRandomCards(),indexes=selected.map(x=>cards.indexOf(x));
+ safeStorage.setItem(dailyCardsKey,JSON.stringify(indexes));
+ safeStorage.removeItem(dailyProgressKey);
+ try{
+   const key='xinli-card-history-v5';
+   const history=JSON.parse(safeStorage.getItem(key)||'[]');
+   const recent=Array.isArray(history)?history.filter(z=>z&&typeof z.day==='string'&&z.day!==todayKey&&z.day<todayKey&&(todayOrdinal-dateOrdinal(z.day))<=7):[];
+   recent.push({day:todayKey,indexes});
+   safeStorage.setItem(key,JSON.stringify(recent));
+ }catch(_){}
+ return selected;
+}
+const dailyCards=loadDailyCards();
 
 const articles = [
   { title: '壓力來的時候，先做一件能讓自己回到當下的事', category: '壓力', language: '中文', source: '今日一息｜原創短文', description: '一份不追求完美的日常練習：辨認身體訊號、縮小下一步，讓壓力不再一次佔滿整個視野。', url: '#', status: '原創內容', rights: '本站原創', art: 'leaf' },
@@ -240,8 +268,8 @@ function showCardSource(index) {
   if(typeof dialog.showModal==='function')dialog.showModal();
   else dialog.hidden=false;
 }
-function renderCards() {
-  $('#cardsGrid').innerHTML = dailyCards.map((card, index) => cardMarkup(card, index, index < state.revealed)).join('');
+function renderCards(pendingFlipIndex=-1) {
+  $('#cardsGrid').innerHTML = dailyCards.map((card, index) => cardMarkup(card, index, index < state.revealed && index !== pendingFlipIndex)).join('');
   $('#progressText').textContent = `${state.revealed} / ${dailyCards.length}`;
   $('#progressBar').style.width = `${state.revealed / dailyCards.length * 100}%`;
   const button = $('#drawButton');
@@ -260,14 +288,16 @@ function drawCard() {
   if (state.revealed >= dailyCards.length) return;
   state.revealed += 1;
   safeStorage.setItem(dailyProgressKey, String(state.revealed));
-  renderCards();
+  const newlyRevealedIndex = state.revealed - 1;
+  renderCards(newlyRevealedIndex);
   const drawPanel = $('#drawPanel');
   drawPanel.classList.remove('draw-bloom');
   void drawPanel.offsetWidth;
   drawPanel.classList.add('draw-bloom');
-  const slot = $(`.card-slot[data-card-index="${state.revealed - 1}"]`);
-  requestAnimationFrame(() => slot.classList.add('revealed'));
-  slot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  const slot = $(`.card-slot[data-card-index="${newlyRevealedIndex}"]`);
+  // First render face-down; two frames allow Safari to paint before the flip.
+  requestAnimationFrame(() => requestAnimationFrame(() => slot?.classList.add('revealed')));
+  slot?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 }
 
 function renderDailyRecommendation() {

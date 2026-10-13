@@ -2,7 +2,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "先接住難過",
-    "text": "自我慈悲提醒我們，難受時也能像對朋友那樣善待自己。今天若心情沉重，不必急著責問原因。",
+    "text": "Kristin Neff 談自我慈悲：難受時，也能像對待朋友那樣善待自己。你不用急著振作。",
     "art": "heart",
     "source": "Kristin Neff｜自我慈悲",
     "sourceLink": "https://self-compassion.org/what-is-self-compassion/",
@@ -52,7 +52,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "今晚不做自我評分",
-    "text": "Calm 談自我寬容：一天不如意，不代表整個人不好。願你看見自己的辛苦，也保留一點體諒。",
+    "text": "Calm 提醒人可以對自己寬容一點。一天遇上不順心的事，不代表你整個人都不好。",
     "art": "moon",
     "source": "Calm｜給自己一些寬容",
     "sourceLink": "https://www-cdn-prod.aws-prod.useast1.calm.com/blog/give-yourself-grace",
@@ -62,7 +62,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "心裡可以有個角落",
-    "text": "《沉思錄》談過心中的退處。外面再忙，也許仍能留給自己一段不必立刻回應的安靜。",
+    "text": "《沉思錄》提到心中的安靜角落。忙碌時能有一段不被訊息打擾的時間，已經很難得。",
     "art": "book",
     "source": "馬可・奧理略《沉思錄》4.3",
     "sourceLink": "https://www.gutenberg.org/files/55317/55317-h/55317-h.htm",
@@ -72,7 +72,7 @@ window.pauseSourcedCards = [
   {
     "type": "心情有人懂",
     "tag": "平凡不需要道歉",
-    "text": "阿德勒相關思想提醒，人的價值不必靠特別出色證明。今天平凡的你，也值得好好過日子。",
+    "text": "阿德勒相關思想談人的歸屬與價值。就算今天沒做什麼了不起的事，也不用因此小看自己。",
     "art": "leaf",
     "source": "天下文化｜《自在感的練習》與阿德勒",
     "sourceLink": "https://bookzone.cwgv.com.tw/article/34785",
@@ -152,7 +152,7 @@ window.pauseSourcedCards = [
   {
     "type": "身體也要被照顧",
     "tag": "找到適合身體的方式",
-    "text": "照顧身心沒有一種標準答案。今天特別疲倦嗎？也許先確認自己需要睡眠、食物或協助。",
+    "text": "NHS 的照顧建議有很多方向。特別累的時候，也許先吃點東西、休息，或找人幫忙。",
     "art": "heart",
     "source": "NHS｜心理健康的五個方向",
     "sourceLink": "https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/five-steps-to-mental-wellbeing/",
@@ -232,7 +232,7 @@ window.pauseSourcedCards = [
   {
     "type": "關係裡的溫柔",
     "tag": "你可以說只想被聽見",
-    "text": "想找人說話時，可以先告訴對方：「今天我只想有人聽。」這樣的需要，值得被尊重。",
+    "text": "NHS 建議需要傾訴時，可以先說自己想被聽見。想聊天的人，也可以直接說：「先陪我說說話。」",
     "art": "heart",
     "source": "NHS｜談談自己的心理感受",
     "sourceLink": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-talk-about-your-mental-health/",
@@ -312,7 +312,7 @@ window.pauseSourcedCards = [
   {
     "type": "生活的小幸福",
     "tag": "那些不起眼的小善意",
-    "text": "尼采寫過人與人之間細小的友善。一次讓路、一個微笑，也可能讓普通的一天溫暖一些。",
+    "text": "尼采留意人與人之間細小的善意。一個微笑、一句謝謝，偶爾就能讓平常的日子亮一點。",
     "art": "heart",
     "source": "尼采《人性的，太人性的》§49",
     "sourceLink": "https://www.gutenberg.org/files/38145/38145-h/38145-h.htm",
@@ -322,7 +322,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "溫柔也能轉彎",
-    "text": "「上善若水」以水比喻不爭與滋養。帶著善意前行，也可以選擇轉彎；柔軟不等於委屈。",
+    "text": "《道德經》說「上善若水」。水很柔軟，也會轉彎。對人溫柔，不代表遇到委屈只能忍著。",
     "art": "leaf",
     "source": "《道德經》王弼本",
     "sourceLink": "https://zh.wikisource.org/wiki/%E9%81%93%E5%BE%B7%E7%B6%93_(%E7%8E%8B%E5%BC%BC%E6%9C%AC)",
@@ -372,7 +372,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "不必用一刻替自己定名",
-    "text": "《心經》的空性有深厚佛教義理。借作生活聯想：某一天的失落，並不能代表你的全部。",
+    "text": "《心經》談空性，有佛教修行的脈絡。借來想想生活：今天的失落，不代表全部的自己。",
     "art": "cloud",
     "source": "《般若波羅蜜多心經》｜CBETA",
     "sourceLink": "https://cbetaonline.dila.edu.tw/T0251",
@@ -392,7 +392,7 @@ window.pauseSourcedCards = [
   {
     "type": "陪伴的一段話",
     "tag": "意義也藏在平常裡",
-    "text": "弗蘭克談生命經驗與意義。一頓喜歡的飯、一次真誠的談話，也可以成為你珍惜的記憶。",
+    "text": "弗蘭克探討生命的意義。一頓喜歡的飯、一場真誠的談話，也可能成為讓人想記住的時刻。",
     "art": "book",
     "source": "Viktor Frankl Institute｜意義治療",
     "sourceLink": "https://www.viktorfranklinstitute.org/about-logotherapy/",

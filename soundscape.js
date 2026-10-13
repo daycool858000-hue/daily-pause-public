@@ -1,175 +1,171 @@
-// Daily Pause — original, locally synthesized soundscapes.
-// No third-party recordings, instruments, tracks, trackers, external services or audio files.
-// Every ambience starts from a deliberate user gesture. One shared Web Audio context.
+// Daily Pause real field recordings. CC0/PD records from Wikimedia Commons;
+// source information is shown in the menu; no generated white noise is used.
+// Only user-initiated playback, low volume, fade in/out, and stop on navigation.
+// Handpan is an explicitly user-initiated Freesound CC0 external embed.
 (() => {
   'use strict';
-  const presets = [
-    ['stream','溪流聲'], ['forest','森林微風'], ['ocean','海浪聲'],
-    ['rain','細雨聲'], ['handpan','手碟感合成音']
-  ];
-  const sections = [
-    ['today','stream'],['read','forest'],['curiosity','rain'],
-    ['palette','handpan'],['holding','ocean']
-  ];
-  let ctx=null, active=null, currentView='today', noiseBuffer=null, stopped=false;
-  const sources=[], nodes=[];
-  let pulseId=null, step=0;
-  const buttons=new Map();
-  const selections=new Map(sections);
-  const AudioEngine=window.AudioContext||window.webkitAudioContext;
-  function noteSupported(view) {
-    const c=buttons.get(view);if(!c)return;
-    const btn=c.querySelector('[data-sound-toggle]');
-    btn.textContent=(active===view?'關閉聲音':'播放聲景')+' '+(active===view?'Ⅱ':'▷');
-    btn.setAttribute('aria-pressed',String(active===view));
-  }
-  function bufferNoise(){
-    if(noiseBuffer||!ctx)return;
-    const rate=ctx.sampleRate,length=Math.round(rate*4);
-    noiseBuffer=ctx.createBuffer(1,length,rate);
-    const a=noiseBuffer.getChannelData(0);
-    let prev=0;for(let i=0;i<length;i++){
-      const white=(Math.random()*2-1);
-      prev=.975*prev+.025*white;
-      a[i]=Math.max(-1,Math.min(1,prev*4));
+  const streams={
+    stream:{title:'森林溪流',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Forest_lawn_creek.ogg',credit:'Dsw4／公有領域｜溪流實景錄音約 7 分半',gain:.092},
+    forest:{title:'森林黃昏',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/fe/Nature_sounds_ambience_in_a_Dordogne_pond.ogg/Nature_sounds_ambience_in_a_Dordogne_pond.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Nature_sounds_ambience_in_a_Dordogne_pond.ogg',credit:'Glaneur de sons／CC BY 3.0｜池邊蛙鳴與蟲鳴',gain:.075},
+    ocean:{title:'水岸波浪',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/1/1f/Waves.ogg/Waves.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Waves.ogg',credit:'Dsw4／公有領域｜安大略湖畔實景浪聲約 4 分半',gain:.08},
+    rain:{title:'小雨聲',url:'https://upload.wikimedia.org/wikipedia/commons/transcoded/1/15/Sound_of_light_rainfall.ogg/Sound_of_light_rainfall.ogg.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Sound_of_light_rainfall.ogg',credit:'Mijesty／CC BY-SA 4.0｜真實小雨錄音，來源頁載明授權',gain:.085},
+    handpan:{title:'手碟真人演奏',page:'https://freesound.org/people/HECKFRICKER/sounds/625312/',
+      credit:'HECKFRICKER／CC0；Freesound 外部播放器',external:true}
+  };
+  const sections=[['today','stream'],['read','forest'],['curiosity','rain'],['palette','handpan'],['holding','ocean']];
+  const selects=new Map(),panels=new Map();
+  const prefs=new Map(sections);
+  let view='today',player=null,iframe=null,playing=null,animation=null,context=null;
+  const fadeMillis=950;
+  function clearAnimation(){if(animation){cancelAnimationFrame(animation);animation=null}}
+  function updateButtons(){
+    for(const [id,bar] of panels){
+      const button=bar.querySelector('[data-sound-toggle]');
+      const on=playing===id;
+      button.textContent=on?'停止播放 Ⅱ':'聽聽這裡的聲音 ▷';
+      button.setAttribute('aria-pressed',String(on));
     }
   }
-  function track(node){nodes.push(node);return node}
-  function startSource(node){sources.push(node);node.start();return node}
-  function connectNoise({freq,q=0.7,kind='lowpass',level=.13,rate=.1,depth=.3}) {
-    bufferNoise();
-    const src=track(ctx.createBufferSource());src.buffer=noiseBuffer;src.loop=true;
-    const filt=track(ctx.createBiquadFilter());filt.type=kind;filt.frequency.value=freq;filt.Q.value=q;
-    const gain=track(ctx.createGain());gain.gain.value=level;
-    const osc=track(ctx.createOscillator());osc.type='sine';osc.frequency.value=rate;
-    const mod=track(ctx.createGain());mod.gain.value=depth*level;
-    const base=track(ctx.createConstantSource());base.offset.value=level;
-    // Modulation is always nonnegative for the selected shallow depth.
-    gain.gain.value=level;
-    src.connect(filt);filt.connect(gain);gain.connect(ctx.destination);
-    osc.connect(mod);mod.connect(gain.gain);
-    startSource(src);startSource(osc);
-    // base is intentionally not started; gain retains static baseline.
-    return {src,filt,gain,osc};
-  }
-  function chirp(freq,duration=.3,volume=.010){
-    if(!ctx)return;
-    const now=ctx.currentTime;
-    const osc=ctx.createOscillator(),envelope=ctx.createGain();
-    osc.type='sine';osc.frequency.setValueAtTime(freq,now);
-    osc.frequency.exponentialRampToValueAtTime(freq*1.28,now+duration*.8);
-    envelope.gain.setValueAtTime(.0001,now);
-    envelope.gain.exponentialRampToValueAtTime(volume,now+.04);
-    envelope.gain.exponentialRampToValueAtTime(.0001,now+duration);
-    osc.connect(envelope);envelope.connect(ctx.destination);
-    osc.start(now);osc.stop(now+duration+.03);
-    osc.onended=()=>{osc.disconnect();envelope.disconnect()};
-  }
-  function handpanTone(freq,volume=.046){
-    if(!ctx)return;
-    const now=ctx.currentTime;
-    const partials=[[1,1],[2.01,.25],[3.89,.055]];
-    for(const [ratio,mult] of partials){
-      const osc=ctx.createOscillator(),gain=ctx.createGain();
-      osc.type='sine';osc.frequency.value=freq*ratio;
-      gain.gain.setValueAtTime(.0001,now);
-      gain.gain.linearRampToValueAtTime(volume*mult,now+.025);
-      gain.gain.exponentialRampToValueAtTime(.0001,now+2.5);
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.start(now);osc.stop(now+2.55);
-      osc.onended=()=>{osc.disconnect();gain.disconnect()};
-    }
-  }
-  function startMode(mode) {
-    if(mode==='handpan') {
-      const tones=[293.66,369.99,440,587.33,493.88,369.99,329.63,220,293.66,440];
-      step=0;handpanTone(tones[0],.035);
-      pulseId=window.setInterval(()=>{if(ctx&&document.visibilityState==='visible'){step=(step+1)%tones.length;handpanTone(tones[step],.034)}},1470);
-    } else if(mode==='stream'){
-      connectNoise({freq:1100,kind:'bandpass',q:.37,level:.16,rate:.13,depth:.21});
-      connectNoise({freq:320,kind:'lowpass',level:.12,rate:.27,depth:.12});
-    } else if(mode==='forest'){
-      connectNoise({freq:550,kind:'lowpass',level:.095,rate:.12,depth:.31});
-      connectNoise({freq:2300,kind:'bandpass',q:.42,level:.065,rate:.06,depth:.22});
-      let n=0;pulseId=window.setInterval(()=>{if(document.visibilityState==='visible'&&(n++%2===0))chirp(760+(n%4)*110,.3,.009)},5500);
-    } else if(mode==='ocean'){
-      connectNoise({freq:780,kind:'lowpass',level:.14,rate:.095,depth:.65});
-      connectNoise({freq:1500,kind:'bandpass',q:.42,level:.045,rate:.12,depth:.52});
-    } else if(mode==='rain'){
-      connectNoise({freq:2300,kind:'bandpass',q:.42,level:.115,rate:.36,depth:.13});
-      connectNoise({freq:4300,kind:'lowpass',level:.067,rate:.21,depth:.18});
-    }
-  }
-  function stop(){
-    if(pulseId!==null){clearInterval(pulseId);pulseId=null}
-    for(const s of sources.splice(0)){try{s.stop()}catch(_){}}
-    for(const n of nodes.splice(0)){try{n.disconnect()}catch(_){}}
-    const previous=active;active=null;
-    if(previous)noteSupported(previous);
-  }
-  async function play(view) {
-    if(!AudioEngine){return}
-    if(!ctx)ctx=new AudioEngine();
-    try{await ctx.resume()}catch(_){return}
-    if(document.hidden||currentView!==view)return;
-    stop();
-    active=view;
-    startMode(selections.get(view)||'stream');
-    noteSupported(view);
-  }
-  function bell(){
-    if(!AudioEngine)return;
-    if(!ctx)ctx=new AudioEngine();
-    ctx.resume().then(()=>{
-      if(document.hidden)return;
-      const t=ctx.currentTime;
-      for(const [f,vol,offset] of [[783.99,.017,0],[1174.66,.006,.04]]){
-        const osc=ctx.createOscillator(),g=ctx.createGain();
-        osc.type='sine';osc.frequency.value=f;
-        g.gain.setValueAtTime(.0001,t+offset);
-        g.gain.linearRampToValueAtTime(vol,t+offset+.016);
-        g.gain.exponentialRampToValueAtTime(.0001,t+offset+.45);
-        osc.connect(g);g.connect(ctx.destination);
-        osc.start(t+offset);osc.stop(t+offset+.49);
-        osc.onended=()=>{osc.disconnect();g.disconnect()};
+  function stop(instant=false){
+    clearAnimation();
+    const old=player;
+    player=null;
+    if(iframe){iframe.remove();iframe=null}
+    if(old){
+      if(instant){old.pause();old.removeAttribute('src');old.load()}
+      else {
+        const start=performance.now(),initial=old.volume;
+        const fade=t=>{
+          const progress=Math.min(1,(t-start)/fadeMillis);
+          old.volume=Math.max(0,initial*(1-progress));
+          if(progress<1)animation=requestAnimationFrame(fade);
+          else {old.pause();old.removeAttribute('src');old.load();animation=null}
+        };
+        animation=requestAnimationFrame(fade);
       }
-    }).catch(()=>{});
+    }
+    playing=null;updateButtons();
   }
-  function switchTo(view) {currentView=view;stop()}
+  function fadeUp(audio,target) {
+    const started=performance.now();
+    const animate=t=>{
+      if(player!==audio){animation=null;return}
+      const p=Math.min(1,(t-started)/1300);
+      audio.volume=target*(.5-.5*Math.cos(Math.PI*p));
+      animation=p<1?requestAnimationFrame(animate):null;
+    };
+    clearAnimation();animation=requestAnimationFrame(animate);
+  }
+  function updateCredit(bar,mode){
+    const data=streams[mode],label=bar.querySelector('[data-sound-credit]');
+    label.textContent=data.credit+' · ';
+    const a=bar.querySelector('[data-sound-credit-link]');
+    a.href=data.page;
+  }
+  function fail(bar){
+    stop(true);
+    const hint=bar.querySelector('[data-sound-hint]');
+    hint.textContent='目前無法讀取音源。請查看原始錄音或稍後再試；不會切換成電子雜訊。';
+  }
+  function play(id){
+    if(view!==id)return;
+    const bar=panels.get(id),mode=prefs.get(id),data=streams[mode];
+    stop(true);updateCredit(bar,mode);
+    const hint=bar.querySelector('[data-sound-hint]');
+    if(data.external){
+      hint.textContent='CC0 真人手碟演奏。點下方播放器的播放鍵；若播放器無法顯示，可開啟原站。';
+      const frame=document.createElement('iframe');
+      frame.title='Freesound：真人手碟演奏公開試聽（CC0）';
+      frame.src='https://freesound.org/embed/sound/iframe/625312/simple/medium/';
+      frame.loading='lazy';frame.referrerPolicy='no-referrer';
+      frame.setAttribute('allow','autoplay');
+      frame.className='pause-handpan-frame';
+      bar.appendChild(frame);iframe=frame;playing=id;updateButtons();
+      return;
+    }
+    hint.textContent='低音量播放真實環境錄音，可隨時停止。';
+    const audio=new Audio();
+    audio.preload='none';audio.loop=true;audio.volume=0;
+    audio.src=data.url;
+    // Commons MP3 transcodes are usually available; try the original OGG as fallback.
+    // This is the same recording, not an alternative synthesized noise source.
+    let originalFallback=false;
+    audio.addEventListener('error',()=>{
+      if(player!==audio)return;
+      if(!originalFallback){
+        originalFallback=true;
+        const original=data.page.slice(data.page.indexOf('File:')+5);
+        const path=decodeURIComponent(original).replaceAll(' ','_');
+        audio.src='https://commons.wikimedia.org/wiki/Special:Redirect/file/'+encodeURIComponent(path);
+        audio.play().catch(()=>{if(player===audio)fail(bar)});
+      }else fail(bar);
+    });
+    audio.addEventListener('ended',()=>{if(player===audio){audio.currentTime=0;audio.play().catch(()=>fail(bar))}});
+    player=audio;playing=id;updateButtons();
+    // A deliberate button click is required before reaching play().
+    const promise=audio.play();
+    if(promise && typeof promise.then==='function')promise.then(()=>{
+      if(player===audio)fadeUp(audio,data.gain);
+      else audio.pause();
+    }).catch(()=>{if(player===audio)fail(bar)});
+    else fadeUp(audio,data.gain);
+  }
+  function changeView(next){
+    view=sections.some(([x])=>x===next)?next:'today';
+    stop(true);
+  }
+  // Preserve the already-approved soft creature chime; never play ambient sounds for it.
+  let bellContext=null;
+  function bell() {
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext||document.hidden)return;
+    try {
+      bellContext=bellContext||new AudioContext();
+      Promise.resolve(bellContext.resume()).then(()=>{
+        const t=bellContext.currentTime;
+        for(const [freq,volume,offset] of [[783.99,.014,0],[1174.66,.005,.04]]){
+          const osc=bellContext.createOscillator(),gain=bellContext.createGain();
+          osc.type='sine';osc.frequency.value=freq;
+          gain.gain.setValueAtTime(.0001,t+offset);
+          gain.gain.linearRampToValueAtTime(volume,t+offset+.016);
+          gain.gain.exponentialRampToValueAtTime(.0001,t+offset+.45);
+          osc.connect(gain);gain.connect(bellContext.destination);
+          osc.start(t+offset);osc.stop(t+offset+.49);
+          osc.onended=()=>{osc.disconnect();gain.disconnect()};
+        }
+      }).catch(()=>{});
+    } catch(_){}
+  }
   function init(){
-    for(const [view,initial] of sections) {
-      const section=document.getElementById(view);
-      if(!section)continue;
-      const wrap=document.createElement('div');wrap.className='pause-soundbar';
-      wrap.innerHTML='<span class="pause-soundbar-label" aria-hidden="true">♫ <span>這裡的聲音</span></span>'
-       +'<label class="pause-sound-select-label">選擇聲景 <select data-sound-select aria-label="選擇此區域的背景聲"></select></label>'
-       +'<button data-sound-toggle type="button" aria-pressed="false">播放聲景 ▷</button>';
-      const select=wrap.querySelector('select');
-      for(const [id,label] of presets){
-        const opt=document.createElement('option');opt.value=id;opt.textContent=label;
-        select.appendChild(opt);
+    for(const [id,initial] of sections){
+      const section=document.getElementById(id);if(!section)continue;
+      const bar=document.createElement('div');bar.className='pause-soundbar';
+      bar.innerHTML='<span class="pause-soundbar-label">♫ 這裡的聲音</span>'
+        +'<label class="pause-sound-select-label">選擇聲景 <select data-sound-select aria-label="選擇環境聲"></select></label>'
+        +'<button type="button" data-sound-toggle aria-pressed="false">聽聽這裡的聲音 ▷</button>'
+        +'<div class="pause-sound-meta"><span data-sound-hint>不會自動播放，音量保持輕柔。</span>'
+        +'<small><span data-sound-credit></span><a data-sound-credit-link target="_blank" rel="noopener noreferrer">原始錄音與授權 ↗</a></small></div>';
+      const select=bar.querySelector('select');
+      for(const [key,data] of Object.entries(streams)){
+        const option=document.createElement('option');option.value=key;option.textContent=data.title;select.appendChild(option);
       }
-      select.value=initial;
-      select.addEventListener('change',()=>{
-        selections.set(view,select.value);
-        if(active===view)play(view);
+      select.value=initial;updateCredit(bar,initial);
+      selects.set(id,select);panels.set(id,bar);
+      select.addEventListener('change',()=>{prefs.set(id,select.value);updateCredit(bar,select.value);stop(true);
+        bar.querySelector('[data-sound-hint]').textContent='已更換聲景。點播放鍵才會發出聲音。'});
+      bar.querySelector('[data-sound-toggle]').addEventListener('click',()=>{
+        if(playing===id){stop(true);return}play(id);
       });
-      wrap.querySelector('button').addEventListener('click',()=>{
-        if(active===view)stop();else play(view);
-      });
-      section.prepend(wrap);
-      buttons.set(view,wrap);
-      if(!AudioEngine){
-        wrap.querySelector('button').disabled=true;
-        wrap.querySelector('button').textContent='此瀏覽器不支援聲音';
-        select.disabled=true;
-      }
+      section.prepend(bar);
     }
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});
-    window.addEventListener('pagehide',stop);
-    window.addEventListener('pause:view-change',event=>switchTo(event.detail?.view||'today'));
-    // The welcome screen starts on today's view, but never starts audio.
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop(true)});
+    window.addEventListener('pagehide',()=>stop(true));
+    window.addEventListener('pause:view-change',e=>changeView(e.detail?.view||'today'));
   }
-  window.PauseSound={bell,stop,switchTo,get active(){return active}};
+  window.PauseSound={bell,stop,switchTo:changeView,get active(){return playing},tracks:streams};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
