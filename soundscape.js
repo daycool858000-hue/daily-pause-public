@@ -113,7 +113,9 @@
     const ctx=unlockAmbientContext();if(!ctx)return;
     try{
       const src=ctx.createMediaElementSource(audio);
-      const gain=ctx.createGain();gain.gain.value=.65;
+      const gain=ctx.createGain();
+      gain.gain.value=0;
+      gain.gain.setTargetAtTime(.65,ctx.currentTime,.75);
       src.connect(gain);gain.connect(ctx.destination);
       audio.mobileCreekGain={src,gain,ctx};
     }catch(_){/* media-element volume .65 remains the fallback */}
