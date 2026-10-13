@@ -78,5 +78,53 @@
     "local_sha256": "9f200002f724cc594dcd760338855a6d83ba8aa572664d4a1fa5bcf65892c186",
     "duration_seconds": 132.05,
     "license": "CC0 1.0"
+  },
+  {
+    "id": "budding",
+    "title": "意識初醒",
+    "artist": "Yoiyami",
+    "page": "https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4",
+    "filename": "the_budding_of_consciousness.wav",
+    "out": "budding.mp3",
+    "kind": "music",
+    "source_audio_url": "https://opengameart.org/sites/default/files/the_budding_of_consciousness.wav",
+    "source_sha256": "c879c57f4353c16926026e05fea372be64a73356ea663475aa1f54bf5499b513",
+    "source_bytes": 43000360,
+    "local_file": "media/audio/budding.mp3",
+    "local_sha256": "5ed76c9e18d14751e29be39f2bbc1b2472039b24a7cc5c5a9803eee633e26d38",
+    "duration_seconds": 224.0,
+    "license": "CC0 1.0"
+  },
+  {
+    "id": "somnium",
+    "title": "夢境輕語",
+    "artist": "Adiutorium",
+    "page": "https://opengameart.org/content/somnium",
+    "filename": "somnium.mp3",
+    "out": "somnium.mp3",
+    "kind": "music",
+    "source_audio_url": "https://opengameart.org/sites/default/files/somnium.mp3",
+    "source_sha256": "fe6055d9eb118faafeb2ebb30e453b2b288c0c22d67331200c922fefb7d6a371",
+    "source_bytes": 8762584,
+    "local_file": "media/audio/somnium.mp3",
+    "local_sha256": "0f9246640bf53133c5b17ecb1e38bcca7d557bc1defdeadde9fd5ccd04a0d70f",
+    "duration_seconds": 219.09,
+    "license": "CC0 1.0"
+  },
+  {
+    "id": "river-lapping",
+    "title": "細流輕拍",
+    "artist": "RandomMind",
+    "page": "https://opengameart.org/content/sea-and-river-wave-sounds",
+    "filename": "VistulaShort_0.mp3",
+    "out": "river-lapping.mp3",
+    "kind": "nature",
+    "source_audio_url": "https://opengameart.org/sites/default/files/VistulaShort_0.mp3",
+    "source_sha256": "8c24607e41edd6f018ec3582a07e5a8dbc57347276339cb68440951a0fb4cfb1",
+    "source_bytes": 12004407,
+    "local_file": "media/audio/river-lapping.mp3",
+    "local_sha256": "dbbeadf66c6ee1557497764db71a5080512af1a439b5e6d22262180691a4deaf",
+    "duration_seconds": 132.05,
+    "license": "CC0 1.0"
   }
 ]
