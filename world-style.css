@@ -392,3 +392,27 @@ body.rest-theatre-open{overflow:hidden}
 .world-v2 .world-colors button[aria-pressed="true"]{
   box-shadow:0 0 0 2.5px #52796b,0 0 0 4px rgba(82,121,107,.2);
 }
+
+/* Distinct, layered and slow-moving sunlight. No single-line beam effect. */
+.rest-stage-art .r-sun-halo{animation:rSunBreath 9s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.rest-stage-art .r-sunray-fan{animation:rSunFan 12s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 8%}
+.rest-stage-art .r-sunray-veil{animation:rSunVeil 11s ease-in-out infinite alternate}
+.rest-stage-art .r-sun-floor{animation:rSunBreath 10s ease-in-out infinite alternate}
+.rest-stage-art .r-sun-dust,.rest-stage-art .r-desk-dust{animation:rSunDust 9s ease-in-out infinite alternate}
+.rest-stage-art .r-sun-shadows{animation:rSunShadow 12s ease-in-out infinite alternate}
+.rest-stage-art .r-sound-ring{animation:rCloud 8s ease-in-out infinite alternate}
+.rest-stage-art .r-phone-glint,.rest-stage-art .r-page-glow{animation:rSunBreath 7.8s ease-in-out infinite alternate}
+@keyframes rSunBreath{from{opacity:.31;transform:scale(.985)}to{opacity:.79;transform:scale(1.035)}}
+@keyframes rSunFan{from{opacity:.53;transform:rotate(-2deg) translateX(-7px)}to{opacity:.87;transform:rotate(2.2deg) translateX(9px)}}
+@keyframes rSunVeil{from{opacity:.08;transform:translateX(-9px)}to{opacity:.21;transform:translateX(11px)}}
+@keyframes rSunDust{from{opacity:.31;transform:translate(7px,8px)}to{opacity:.9;transform:translate(-11px,-13px)}}
+@keyframes rSunShadow{from{opacity:.13;transform:translateX(-9px)}to{opacity:.3;transform:translateX(10px)}}
+@media(prefers-reduced-motion:reduce){
+  .rest-stage-art .r-sun-halo,.rest-stage-art .r-sunray-fan,
+  .rest-stage-art .r-sunray-veil,.rest-stage-art .r-sun-floor,
+  .rest-stage-art .r-sun-dust,.rest-stage-art .r-sun-shadows,
+  .rest-stage-art .r-desk-dust,.rest-stage-art .r-sound-ring,
+  .rest-stage-art .r-phone-glint,.rest-stage-art .r-page-glow{
+    animation:none!important;transition:none!important;
+  }
+}

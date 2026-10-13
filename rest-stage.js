@@ -10,6 +10,9 @@ const defs='<defs>'
 +'<linearGradient id="r-skin" x2=".2" y2="1"><stop stop-color="#f5d5bd"/><stop offset=".65" stop-color="#dcb29d"/><stop offset="1" stop-color="#c79787"/></linearGradient>'
 +'<radialGradient id="r-light"><stop stop-color="#fff6d5" stop-opacity=".85"/><stop offset="1" stop-color="#fff6d5" stop-opacity="0"/></radialGradient>'
 +'<radialGradient id="r-mist"><stop stop-color="#fffaf1" stop-opacity=".75"/><stop offset="1" stop-color="#fffaf1" stop-opacity="0"/></radialGradient>'
++'<linearGradient id="r-ray-soft" x1=".2" y1="0" x2=".85" y2="1"><stop stop-color="#fff7d7" stop-opacity=".60"/><stop offset=".35" stop-color="#ffefd0" stop-opacity=".4"/><stop offset="1" stop-color="#ffe5bd" stop-opacity="0"/></linearGradient>'
++'<radialGradient id="r-sun-pool"><stop stop-color="#fff0c1" stop-opacity=".53"/><stop offset="1" stop-color="#fff0c1" stop-opacity="0"/></radialGradient>'
++'<filter id="r-ray-blur"><feGaussianBlur stdDeviation="5"/></filter>'
 +'<filter id="r-blur"><feGaussianBlur stdDeviation="9"/></filter>'
 +'<filter id="r-texture"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="3" seed="14"/><feColorMatrix type="saturate" values=".2"/><feComponentTransfer><feFuncA type="linear" slope=".10"/></feComponentTransfer></filter>'
 +'</defs>';
@@ -33,6 +36,9 @@ const flower='<g class="r-sway"><path d="M221 345Q227 248 233 179" fill="none" s
 +'<path d="M218 258Q144 196 125 232Q157 282 218 258ZM233 285Q308 225 326 253Q295 306 233 285Z" fill="url(#r-sage)"/>'
 +'<g class="r-bloom" fill="url(#r-skin)" stroke="#d6aa9a" stroke-width="1.8"><path d="M229 166Q181 143 183 107Q203 64 228 116Q250 67 276 107Q285 141 244 170Q306 147 307 186Q290 218 245 188Q253 245 215 234Q186 228 208 190Q153 206 156 175Q162 152 229 166Z"/></g>'
 +'<circle cx="230" cy="176" r="21" fill="#e6c790"/><path d="M230 172L208 155M230 172L251 157M230 172L259 182" stroke="#a38969" stroke-width="2"/></g>';
+// The original window has a single diagonal shine line. Remove it only in
+// the sunlight vignette so the new broad rays read as layered natural light.
+const sunlitWindow=windowScene.replace('<path class="r-glow" d="M160 68L329 273" stroke="#f9edd2" stroke-width="28" opacity=".21"/>','');
 const floor='<path d="M0 294Q185 282 440 295V380H0Z" fill="#dbc8b3" opacity=".65"/>';
 const body={
 window:windowScene,
@@ -52,9 +58,23 @@ chair:windowScene+floor+'<path d="M182 291L165 164Q159 133 191 118H318Q348 121 3
 +'<rect x="188" y="178" width="101" height="70" rx="24" fill="url(#r-linen)"/>'
 +'<path d="M180 286L172 342M338 288L345 345" stroke="#aa917c" stroke-width="12" stroke-linecap="round"/>',
 hills,
-sunlight:windowScene+floor+'<path class="r-glow" d="M164 72L392 328L352 366L112 135Z" fill="#fff1c7" opacity=".34"/>'
-+'<path class="r-glow" d="M111 79L307 314L265 364L72 142Z" fill="#ffead0" opacity=".23"/>'
-+'<g class="r-shadows" fill="#92aa98" opacity=".31"><path d="M28 338Q133 237 211 323Q116 302 28 338Z"/><path d="M211 358Q249 256 344 305Q277 353 211 358Z"/></g>',
+sunlight:sunlitWindow+floor
++'<ellipse class="r-sun-halo" cx="267" cy="184" rx="183" ry="167" fill="url(#r-sun-pool)"/>'
++'<g class="r-sunray-fan" fill="url(#r-ray-soft)" opacity=".74" filter="url(#r-ray-blur)">'
++'<path d="M138 78Q157 77 178 88Q189 182 144 278Q117 340 35 373Q128 189 138 78Z"/>'
++'<path d="M220 65Q253 66 268 74Q296 184 291 267Q288 334 259 381Q235 231 220 65Z"/>'
++'<path d="M301 65Q328 73 341 91Q410 195 438 286L440 379Q361 263 301 65Z"/></g>'
++'<g class="r-sunray-veil" fill="#fff5d4" opacity=".13">'
++'<path d="M137 77Q161 91 175 154Q162 261 102 345Q155 197 137 77Z"/>'
++'<path d="M302 80Q358 132 377 223Q391 283 427 334Q338 247 302 80Z"/></g>'
++'<ellipse class="r-sun-floor" cx="221" cy="349" rx="184" ry="28" fill="url(#r-sun-pool)" opacity=".63"/>'
++'<g class="r-sun-dust" fill="#fff4d2" opacity=".77">'
++'<circle cx="151" cy="167" r="2.6"/><circle cx="214" cy="203" r="2.1"/><circle cx="292" cy="148" r="2.9"/>'
++'<circle cx="352" cy="221" r="1.9"/><circle cx="179" cy="272" r="2.5"/><circle cx="322" cy="286" r="2.1"/>'
++'<circle cx="250" cy="116" r="1.7"/></g>'
++'<g class="r-sun-shadows" fill="#759b8d" opacity=".19">'
++'<path d="M27 343Q69 315 111 331Q142 339 169 320Q139 358 82 359Q47 358 27 343Z"/>'
++'<path d="M250 364Q283 333 333 347Q371 352 396 340Q374 374 320 374Q276 377 250 364Z"/></g>',
 eyes:hills+'<ellipse class="r-mist" cx="232" cy="217" rx="235" ry="91" fill="url(#r-mist)" opacity=".86"/>',
 stretch:hills+'<g class="r-sway" fill="none" stroke="#809b86" stroke-width="5" stroke-linecap="round"><path d="M212 368Q204 266 225 133T295 75"/><path d="M213 253Q154 199 124 209M229 182Q277 143 315 157"/></g>'
 +'<g class="r-sway" fill="#a5bc9f"><path d="M225 176Q176 126 167 177Q199 210 225 176ZM213 249Q147 191 134 221Q145 266 213 249ZM230 148Q280 95 315 117Q304 157 230 148Z"/></g>',
@@ -72,6 +92,23 @@ night:'<rect width="440" height="380" fill="#819c98" opacity=".79"/><circle cx="
 +'<path d="M0 254Q100 211 201 261T440 241V380H0Z" fill="#8bab9d"/>'
 +'<path d="M0 298Q130 249 240 291T440 272V380H0Z" fill="#608a82"/>'
 +grass+'<g class="r-twinkle" fill="#fff0d6"><circle cx="71" cy="99" r="2.4"/><circle cx="137" cy="137" r="2"/><circle cx="365" cy="168" r="2.7"/><circle cx="222" cy="62" r="2"/></g>'
+};
+const stageAccents={
+  window:'<g class="r-twinkle" fill="#fff3d0" opacity=".28"><circle cx="175" cy="109" r="5"/><circle cx="306" cy="227" r="3.5"/></g>',
+  hands:'<ellipse class="r-glow" cx="225" cy="218" rx="166" ry="126" fill="url(#r-mist)" opacity=".23"/>',
+  sound:'<g class="r-sound-ring" fill="none" stroke="#fff8e3" stroke-width="2.3" opacity=".51"><path d="M113 206Q215 163 333 212"/><path d="M132 237Q221 199 316 239"/></g>',
+  cup:'<ellipse class="r-glow" cx="217" cy="132" rx="102" ry="114" fill="url(#r-light)" opacity=".34"/>',
+  chair:'<ellipse class="r-glow" cx="260" cy="246" rx="144" ry="96" fill="url(#r-mist)" opacity=".27"/>',
+  hills:'<g class="r-mist" opacity=".19" fill="#fff9eb"><ellipse cx="115" cy="267" rx="135" ry="14"/><ellipse cx="343" cy="287" rx="121" ry="17"/></g>',
+  sunlight:'',
+  eyes:'',
+  stretch:'<g class="r-twinkle" fill="#fff4d6" opacity=".37"><circle cx="117" cy="159" r="3"/><circle cx="333" cy="129" r="2.5"/></g>',
+  phone:'<path class="r-phone-glint" d="M185 224Q229 215 273 232L269 242Q230 226 189 236Z" fill="#fff7dc" opacity=".39"/>',
+  flower:'<g class="r-twinkle" fill="#fff4db" opacity=".52"><circle cx="133" cy="128" r="3.2"/><circle cx="317" cy="158" r="2.9"/></g>',
+  desk:'<g class="r-desk-dust" fill="#fff7e7" opacity=".61"><circle cx="119" cy="118" r="2.4"/><circle cx="306" cy="139" r="2.9"/><circle cx="258" cy="82" r="1.7"/></g>',
+  leaf:'<g class="r-twinkle" fill="#f9eccd" opacity=".49"><circle cx="157" cy="114" r="3"/><circle cx="316" cy="172" r="2.8"/></g>',
+  paper:'<path class="r-page-glow" d="M126 63L313 60L321 94Q221 85 131 94Z" fill="#fff7e2" opacity=".24"/>',
+  night:''
 };
 function sceneKey(title){return keys.find(([k])=>String(title||'').includes(k))?.[1]||'window'}
 function init(){
@@ -94,7 +131,7 @@ function init(){
   art.innerHTML='<svg viewBox="0 0 440 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
      +defs+'<rect width="440" height="380" fill="url(#r-sky)"/>'
      +'<ellipse cx="323" cy="105" rx="175" ry="175" fill="url(#r-light)" class="r-glow"/>'
-     +(body[kind]||body.window)
+     +(body[kind]||body.window)+(stageAccents[kind]||'')
      +'<rect width="440" height="380" filter="url(#r-texture)" opacity=".43" pointer-events="none"/></svg>';
   modal.hidden=false;document.body.classList.add('rest-theatre-open');
   modal.querySelector('.rest-stage-close').focus({preventScroll:true});
