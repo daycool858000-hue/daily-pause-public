@@ -20,12 +20,12 @@ const dailyExperiences = (window.dailyContent && window.dailyContent.experiences
 
 const cards = [
   { type: '經典引文', text: '有些事在我們的掌握之中，有些事不在。', source: '愛比克泰德《手冊》1｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Manual', tag: '分辨能掌握的事', art: 'sun' },
-  { type: '覺察', text: '我現在最需要的，不一定是更多力氣，也可能是一點理解。', source: '今日一息｜原創陪伴文字', tag: '給情緒一個位置', art: 'leaf' },
-  { type: '呼吸', text: '留意自然的呼吸，想試著慢一點也可以；若覺得不舒服就停止，不必勉強控制節奏。', source: '今日一息｜日常練習，非醫療建議', tag: '一分鐘練習', art: 'cloud' },
-  { type: '身體', text: '讓下巴鬆開，肩膀往下。身體知道的事，有時比腦袋更早。', source: '今日一息｜原創身體覺察文字', tag: '回到身體', art: 'flower' },
+  { type: '觀察', text: '窗外的燈亮了，也許有人剛回到家；我們能看見燈，卻看不見他的整天。', source: '今日一息｜AI 協助撰寫原創文字', tag: '看見與未知', art: 'leaf' },
+  { type: '生活', text: '熱水壺停下來的聲音，讓廚房忽然安靜。這是今天的一個小小轉場。', source: '今日一息｜AI 協助撰寫原創文字', tag: '廚房聲音', art: 'cloud' },
+  { type: '閱讀', text: '在書頁邊緣寫下一個問號，就能留下當時沒想通的地方。', source: '今日一息｜AI 協助撰寫原創文字', tag: '閱讀的痕跡', art: 'flower' },
   { type: '經典引文', text: '向內探看；善的泉源就在內心，只要你願意挖掘，它總會湧出。', source: '馬可·奧理略《沉思錄》7.59｜本站依古典思想自行概述，非逐字譯文；連結為參考譯本', sourceLink: 'https://en.wikisource.org/wiki/The_Meditations_of_the_Emperor_Marcus_Antoninus/Book_7', tag: '往內留一點空間', art: 'star' }
 ];
-cards.push(...(window.extraCards || []));
+cards.push(...(window.freshCards || window.extraCards || []));
 function localDateKey(date = new Date()) {
   const pad = value => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -167,8 +167,7 @@ function cardStorageKey(card) {
 }
 
 function isCardSaved(card, index) {
-  return safeStorage.getItem(cardStorageKey(card)) === 'yes'
-    || safeStorage.getItem(`xinli-saved-card-${index}`) === 'yes';
+  return safeStorage.getItem(cardStorageKey(card)) === 'yes';
 }
 
 function showWelcome() {
@@ -249,7 +248,7 @@ function renderDailyRecommendation() {
   ];
   if (!pool.length) return;
   const picked = pool[Math.floor(Math.random() * pool.length)];
-  const image = window.PauseEditorialArt?.markup(picked) || '';
+  const image = window.PausePhotos?.coverMarkup(picked) || '';
   host.innerHTML = `<div class="recommendation-art">${image}</div><div class="recommendation-copy"><p class="section-kicker">TODAY'S READING ／ 隨機的一篇</p><h2></h2><p class="recommendation-description"></p><button class="recommendation-open" type="button">今天先讀這篇 ↗</button></div>`;
   host.querySelector('h2').textContent = picked.title;
   host.querySelector('.recommendation-description').textContent = picked.description;
@@ -270,7 +269,7 @@ function renderArticles() {
     return matchesFilter && (!q || haystack.includes(q));
   });
   $('#articleGrid').innerHTML = visible.map(article => `<article class="article-card">
-    ${window.PauseEditorialArt?.markup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
+    ${window.PausePhotos?.coverMarkup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
     <div class="article-meta"><span>${article.category}</span><span>${article.language}</span></div>
     <h2>${article.title}</h2>
     <p>${article.description}</p>
@@ -281,7 +280,7 @@ function renderArticles() {
 
 function renderLongArticles() {
   $('#longArticleGrid').innerHTML = longArticles.map(article => `<article class="long-article-card">
-    ${window.PauseEditorialArt?.markup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
+    ${window.PausePhotos?.coverMarkup(article) || `<span class="article-art article-art-${article.art}" aria-hidden="true"></span>`}
     <p class="long-article-label">${article.category} · ${article.language}</p>
     <h3>${article.title}</h3>
     <p>${article.description}</p>
@@ -314,7 +313,7 @@ function openArticle(title) {
   $('#articleReaderArt').className = `article-reader-art article-art-${article.art}`;
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 站內短文`;
   $('#articleReaderTitle').textContent = article.title;
-  $('#articleReaderBody').innerHTML = (window.PauseEditorialArt?.markup(article, true) || '') + (articleBodies[title] || [article.description]).map(paragraph => `<p>${paragraph}</p>`).join('');
+  $('#articleReaderBody').innerHTML = (window.PausePhotos?.readerMarkup(article) || mediaMarkup()) + (articleBodies[title] || [article.description]).map(paragraph => `<p>${paragraph}</p>`).join('');
   const sourceElement = $('#articleReaderSource');
   sourceElement.textContent = '本文由「今日一息」重新撰寫；主題參考：';
   if (article.url && /^https:\/\//.test(article.url)) {
@@ -329,6 +328,7 @@ function openArticle(title) {
   }
   sourceElement.appendChild(document.createTextNode(`。${article.rights}。本站內容為日常閱讀，非醫療診斷或治療建議。`));
   $('#articleReader').hidden = false;
+  window.PausePhotos?.start(article);
   document.body.classList.add('modal-open');
   setTimeout(() => $('#articleReaderClose').focus(), 40);
 }
@@ -339,14 +339,16 @@ function openLongArticle(title) {
   $('#articleReaderArt').className = `article-reader-art article-art-${article.art}`;
   $('#articleReaderMeta').textContent = `${article.category} · ${article.language} · 長篇原創整理`;
   $('#articleReaderTitle').textContent = article.title;
-  $('#articleReaderBody').innerHTML = (window.PauseEditorialArt?.markup(article, true) || '') + article.sections.map(section => `<section class="long-reader-section"><h3>${section.heading}</h3><p>${section.text}</p></section>`).join('');
+  $('#articleReaderBody').innerHTML = (window.PausePhotos?.readerMarkup(article) || mediaMarkup()) + article.sections.map(section => `<section class="long-reader-section"><h3>${section.heading}</h3><p>${section.text}</p></section>`).join('');
   $('#articleReaderSource').innerHTML = `<strong>${article.note}</strong><br />內容由「今日一息」自行撰寫與整理，未複製下列來源全文。${article.sources.length ? `資料來源：${article.sources.map(source => `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>（${source.rights}）`).join('；')}` : '此篇為生活觀察與文學性敘述，不以研究證據主張心理療效。'}`;
   $('#articleReader').hidden = false;
+  window.PausePhotos?.start(article);
   document.body.classList.add('modal-open');
   setTimeout(() => $('#articleReaderClose').focus(), 40);
 }
 
 function closeArticle() {
+  window.PausePhotos?.stop();
   $('#articleReader').hidden = true;
   document.body.classList.remove('modal-open');
 }
@@ -464,6 +466,7 @@ function switchView(view) {
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
   window.dispatchEvent(new Event('palette-view-change'));
+  window.dispatchEvent(new CustomEvent('pause:companion',{detail:{text:view==='read'?'隨手翻開一篇也好。':view==='curiosity'?'一個疑問可以先留著。':view==='palette'?'讓筆觸慢慢留在畫裡。':view==='holding'?'這裡不需要向任何人交代。':'這裡可以停一下。',kind:view==='read'?'paper':view==='palette'?'leaf':view==='holding'?'moon':'light'}}));
   if (view === 'palette') setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
 }
 
@@ -531,8 +534,9 @@ $('#exploreContent').addEventListener('click', (event) => {
   if (branch) renderBranchResult(branch.dataset.branch);
   if (topic) renderTopicResult(topic.dataset.topic);
   if (rest) {
-    $('#exploreContent').classList.toggle('rest-breathe');
-    $('#restNote').textContent = '光圈正在慢慢呼吸；你可以一起，也可以只是看著它。';
+    window.PauseRestStage?.open(visitExperience?.rest);
+    window.dispatchEvent(new CustomEvent('pause:companion-close'));
+    $('#restNote').textContent = '每個休息題目都有不同的畫面，想停就隨時關閉。';
   }
 });
 $('#articleReaderClose').addEventListener('click', closeArticle);
@@ -575,6 +579,7 @@ $('#moodChoices').addEventListener('click', (event) => {
 
 $('#dailyReminder').textContent = dailyLine.reminder;
 $('#todayDate').textContent = new Intl.DateTimeFormat('zh-Hant-TW', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date());
+window.PausePhotos?.register([...articles,...longArticles]);
 renderCards();
 renderFilters();
 renderArticles();

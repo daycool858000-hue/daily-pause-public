@@ -7,8 +7,8 @@
     <meta name="theme-color" content="#f6f1e8" />
     <title>今日一息｜每日療癒小卡</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%233f7770'/%3E%3Cpath d='M16 34c9-15 20-15 32 0-9 15-20 15-32 0Z' fill='none' stroke='%23f6f1e8' stroke-width='3'/%3E%3Ccircle cx='32' cy='34' r='4' fill='%23f6f1e8'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./styles.css?v=20261013-2" />
-    <link rel="stylesheet" href="./world-style.css?v=20261013-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261013-3" />
+    <link rel="stylesheet" href="./world-style.css?v=20261013-2" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -125,7 +125,7 @@
         </div>
         <div class="library-switcher" role="tablist" aria-label="文章長度選擇">
           <button class="library-tab active" type="button" data-library-mode="short" role="tab" aria-selected="true"><span>01</span>短文與語錄 <em>57 篇</em></button>
-          <button class="library-tab" type="button" data-library-mode="long" role="tab" aria-selected="false"><span>02</span>長篇文章 <em>30 篇</em></button>
+          <button class="library-tab" type="button" data-library-mode="long" role="tab" aria-selected="false"><span>02</span>長篇文章 <em>33 篇</em></button>
         </div>
         <figure class="media-deck" id="mediaDeck">
           <img id="mediaImage" src="./media/forest-public-domain.jpg" alt="" />
@@ -178,12 +178,18 @@
             <div class="world-stage-col">
               <div class="world-stage" id="worldStage">
                 <canvas id="worldCanvas" width="960" height="630" aria-label="自然場景與生活物件的互動畫布；可單指畫畫或移動物件"></canvas>
+                  <div class="world-quick-tools" aria-label="隨手畫布操作">
+                    <button id="worldToolsToggle" type="button" aria-controls="worldControlPanel" aria-expanded="false">打開素材</button>
+                    <button id="worldQuickUndo" type="button" disabled aria-label="復原上一筆">↶</button>
+                    <button id="worldQuickRedo" type="button" disabled aria-label="重做上一筆">↷</button>
+                    <button id="worldQuickClear" type="button">清空</button>
+                    <button id="worldQuickSave" type="button">保存</button>
+                  </div>
               </div>
               <div class="world-caption"><p id="worldSceneLabel">微光停在房間裡。</p><button id="worldPause" type="button">暫停流動</button></div>
-              <div id="worldCompanion" class="world-companion" aria-live="polite"><span class="world-light" aria-hidden="true"></span><p id="worldCompanionText">我在這裡。不必急著做什麼。</p><button id="worldCompanionTap" type="button" aria-label="再聽一句陪伴">聽一句</button></div>
-              <div class="world-caption"><p>這是一個可關閉的簡短陪伴，不會分析你或記錄你的情緒。</p><button id="worldCompanionToggle" type="button" aria-pressed="true">關閉陪伴回應</button></div>
+              <p class="world-inline-note">右下角的小光點會偶爾回應，你可以隨時關閉。畫布工具收在「打開素材」裡，不必為了清空或復原往下找。</p>
             </div>
-            <aside class="world-control-panel" aria-label="情緒畫室工具">
+            <aside class="world-control-panel" id="worldControlPanel" aria-label="情緒畫室工具"><button id="worldToolsClose" class="world-tools-close" type="button" hidden>收起素材 ×</button>
               <h2>把喜歡的放進來</h2>
               <p>每一種元素都能並存；選擇其他元素，不會將已畫出的樹、雲或海浪取代。</p>
               <div class="world-tabs" role="tablist" aria-label="畫室工具分類">
@@ -254,6 +260,29 @@
       </section>
     </main>
 
+    <div id="globalCompanion" class="global-companion" aria-label="全站可關閉的陪伴動畫">
+      <div class="companion-bubble" hidden role="status">
+        <button type="button" class="companion-close" aria-label="關閉這句回應">×</button>
+        <span class="companion-scene" data-scene="light" aria-hidden="true"></span>
+        <p class="companion-line">這裡可以停一下。</p>
+        <button type="button" class="companion-disable">關閉陪伴</button>
+      </div>
+      <button type="button" class="companion-orb" aria-label="看一段小小的陪伴動畫" title="小小陪伴"><span aria-hidden="true"></span></button>
+    </div>
+
+    <div id="restStage" class="rest-stage-backdrop" role="dialog" aria-modal="true" aria-labelledby="restStageTitle" hidden>
+      <div class="rest-stage-room">
+        <button type="button" class="rest-stage-close" aria-label="關閉休息畫面">×</button>
+        <p class="rest-stage-kicker">A QUIET MOMENT</p>
+        <div class="rest-stage-art" aria-hidden="true"></div>
+        <div class="rest-stage-copy">
+          <h2 id="restStageTitle" class="rest-stage-heading">讓這一刻慢一點</h2>
+          <p class="rest-stage-text"></p><p class="rest-stage-note"></p>
+          <button type="button" class="rest-stage-finish">回到網站</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="site-footer">
       <span>今日一息 · 給自己一點空間</span>
       <span>© 2026 ／ 內容持續整理中</span>
@@ -285,14 +314,17 @@
     <script src="./long-articles.js?v=20261012-7" defer></script>
     <script src="./short-articles.js?v=20261010-4" defer></script>
     <script src="./cards-data.js?v=20261013-2" defer></script>
+    <script src="./fresh-cards.js?v=20261013-1" defer></script>
     <script src="./curiosity.js?v=20261012-5" defer></script>
     <script src="./daily-content.js?v=20261012-2" defer></script>
-    <script src="./reading-20261013.js?v=20261013-1" defer></script>
+    <script src="./reading-20261013.js?v=20261013-2" defer></script>
     <script src="./palette-history.js?v=20261013-1" defer></script>
     <script src="./world-art.js?v=20261013-1" defer></script>
-    <script src="./palette-world.js?v=20261013-1" defer></script>
-    <script src="./editorial-art.js?v=20261013-1" defer></script>
-    <script src="./app.js?v=20261013-2" defer></script>
+    <script src="./palette-world.js?v=20261013-2" defer></script>
+    <script src="./photo-rotation.js?v=20261013-1" defer></script>
+    <script src="./companion-site.js?v=20261013-1" defer></script>
+    <script src="./rest-stage.js?v=20261013-1" defer></script>
+    <script src="./app.js?v=20261013-3" defer></script>
     <script src="./quiet-spaces.js?v=20261012-8" defer></script>
   </body>
 </html>

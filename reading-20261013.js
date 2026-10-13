@@ -1,7 +1,7 @@
 // New original editorial writing. No third-party reproduced texts; these items are
 // outside the 88-piece historical 2026-10-12 evidence review.
 (() => {
-const short=(title,category,description,art,body)=>({title,category,language:'中文',source:'今日一息｜原創短文',description,url:'#',status:'原創內容',rights:'本站原創生活書寫；不構成診斷或治療',art,body});
+const short=(title,category,description,art,body)=>({title,category,language:'中文',source:'今日一息｜AI 協助生成之原創生活短文',description,url:'#',status:'原創內容',rights:'由 AI 協助撰述的本站原創散文，未引用他人全文；內容不構成診斷或治療',art,body});
 window.additionalShortReads=[
 short('窗簾被風吹動的五分鐘','日常','有時候，一個房間也能裝進一段很長的時間。','leaf',['傍晚把窗戶開一條縫，簾子向內彎，又緩緩退回去。沒有新聞、沒有提醒，只剩下布料與空氣在一起工作。','你可能仍然有很多事要處理。現在先看它來回一次，再決定要不要起身。']),
 short('一張沒寄出去的明信片','關係','有些話寫下來，已經是一次很真實的整理。','book',['旅行途中買了一張明信片，遲遲想不出應該寄給誰。那些想說的近況、歉意或問候，在紙上各自排成一行。','寄出去是選擇，留在抽屜裡也是。文字讓你看見自己的心意，卻不要求對方立刻替它找答案。']),
@@ -18,7 +18,7 @@ short('夜晚便利商店的光','夜晚','一座城市在深夜仍保有很多�
 ];
 window.additionalShortBodies=Object.fromEntries(window.additionalShortReads.map(a=>[a.title,a.body]));
 const section=(heading,text)=>({heading,text});
-const long=(title,category,description,art,sections)=>({title,category,language:'繁體中文',description,art,sections,sources:[],note:'今日一息｜原創生活散文；非醫療或心理治療建議'});
+const long=(title,category,description,art,sections)=>({title,category,language:'繁體中文',description,art,sections,sources:[],note:'今日一息｜AI 協助撰寫之原創生活散文；本篇沒有引用研究資料，不構成醫療或心理治療建議'});
 window.additionalLongReads=[
 long('一個房間，如何慢慢成為自己的地方','生活與空間','從光線、聲音、物件與生活習慣出發，認識空間裡那些可被自己決定的小事情。','home',[
 section('從哪個角落開始','房間不一定要很大，也不用先買新家具。找一個願意經常坐下的位置，觀察那裡的光線何時最舒服、晚上會有什麼聲音。空間的改變可以從知道自己喜歡什麼開始。'),
@@ -39,4 +39,43 @@ section('為什麼別人的答案那麼快','人們面對不確定，常希望�
 section('允許下一次改變看法','新的證據可以推翻舊的猜測，經驗也會改變價值排序。願意調整判斷，不意味著先前每一步都白費，而是承認理解會隨時間增加。')
 ])
 ];
+
+window.additionalLongReads.push(
+ {
+  title:'愛比克泰德《手冊》：判斷屬於誰，結果又屬於誰？', category:'哲學與人物',language:'繁體中文',art:'book',
+  description:'從古代斯多葛哲學的《手冊》第一節，理解如何分辨自己的選擇與外界結果，並保留對具體環境的責任。',
+  note:'今日一息｜AI 協助整理、撰述及中文意譯；參照古典文獻，不是逐字中譯或心理治療建議',
+  sources:[{label:'Epictetus｜Encheiridion I（Wikisource 歷史英譯）',url:'https://en.wikisource.org/wiki/The_Discourses_of_Epictetus/The_Encheiridion%2C_or_Manual',rights:'英語歷史譯本；本站僅引用主題概念與章節位置，中文自行重述'}],
+  sections:[
+   {heading:'一個開頭便提出的問題',text:'《手冊》第一節便討論：哪些事取決於我們，哪些並不取決於我們。古典文本把判斷、選擇等內在活動，和聲望、財產等外在結果分開。這個區別有它的時代脈絡，不能直接當成現代世界的一張萬用責任清單。'},
+   {heading:'事情可以努力，結果仍有變數',text:'想完成工作，你可以把資料查清楚、把話說明白；對方最後是否答應，仍受到他自己的選擇與現實條件影響。分辨能做的部分，有助於把精力放到可實際行動的事情上，也不必假裝外在環境毫無影響。'},
+   {heading:'別把它用成責怪人的工具',text:'古典斯多葛哲學討論的是倫理上的判斷與行動，並不表示疾病、貧困或制度不公完全由個人心態造成。當人面對實際危險與困難，改善環境、尋求資源與他人支持，同樣是合理的行動。'},
+   {heading:'讀完，留下一個具體問題',text:'眼前有哪件事正在進行？你能決定的下一步是什麼，哪些資訊或資源仍然缺少？這個問題不急著給出漂亮答案，它只是把模糊的煩惱拆成比較能理解的部分。'}
+  ]
+ },
+ {
+  title:'塞內卡《論生命之短暫》：忙碌和使用時間是一回事嗎？',category:'哲學與時間',language:'繁體中文',art:'sun',
+  description:'閱讀塞內卡關於時間的經典議論，分辨忙碌、被動消耗與自己願意投入的生活，不把經典誤用成效率口號。',
+  note:'今日一息｜AI 協助整理、撰述與意譯；古典原典另行提供，不是塞內卡逐字中文引文',
+  sources:[{label:'Seneca｜On the Shortness of Life, Chapter I（Wikisource）',url:'https://en.wikisource.org/wiki/On_the_shortness_of_life/Chapter_I',rights:'古典作品歷史英譯版本；本站自行中文重述，未翻印全文'}],
+  sections:[
+   {heading:'時間不夠，和時間被怎樣使用',text:'塞內卡在《論生命之短暫》開頭談到，人們常抱怨壽命短暫，卻未必察覺時間如何流逝與被使用。他是在古羅馬哲學與社會生活的背景裡提出這個問題，與現代效率管理課程並不是同一件事。'},
+   {heading:'行程滿滿，不代表每段時間都被珍惜',text:'有些忙碌來自責任，有些則來自難以拒絕的安排。或許值得問：哪一件事是自己選擇投入，哪一件事只是習慣性地答應？這裡沒有標準比例，也無須用產出替每分鐘打分數。'},
+   {heading:'休息同樣可能是認真使用時間',text:'陪孩子讀書、和朋友散步、在家煮一頓飯，未必會留下可量化的成果，卻可能正是某個人重視的生活。古典思想可以引發提問，不能因此推論休息一定要服務於更有效率的工作。'},
+   {heading:'今天有沒有一段時間願意重新安排',text:'挑一段近期讓你感到疲倦的安排，想想它能否縮短、移動或拒絕。若沒有調整空間，也可以先承認限制存在，不必把所有責任都推向個人的時間管理能力。'}
+  ]
+ },
+ {
+  title:'《法句經》第五偈：不以怨止怨，究竟是在談什麼？',category:'佛學與文化',language:'繁體中文',art:'lotus',
+  description:'從《法句經》早期偈頌的語境理解怨懟與不怨，尊重佛教修行的宗教背景，並分清慈悲與放棄界線。',
+  note:'今日一息｜AI 協助撰述與中文概述，參照佛教原典英譯；非逐字經文、非宗教修行指導或心理治療',
+  sources:[{label:'Dhammapada 1–20｜SuttaCentral（Bhikkhu Sujato 英譯）',url:'https://suttacentral.net/dhp1-20/en/sujato',rights:'外部佛教經文譯本參照；本站為主題概述與文化解說，未轉載譯文'}],
+  sections:[
+   {heading:'先回到偈頌的脈絡',text:'《法句經》第五偈談及怨恨難以藉著怨恨消除，在佛教倫理與修行脈絡中鼓勵止息敵意。不同傳統與譯本對相關字詞有不同呈現，若要引用原句，宜標明偈數與譯者，而非只在網路上轉貼一句不知出處的名言。'},
+   {heading:'不以怨止怨，有沒有等於無條件忍耐？',text:'人可能因被冒犯而生氣，也可以透過建立界線、要求合理處理、尋求制度協助來保護自己。對偈頌的倫理思考，不宜簡化成要求受傷者維持微笑、接受不合理對待。'},
+   {heading:'宗教文本與日常想法的距離',text:'佛教經文在信仰群體中有長久的修學、註釋與儀式傳統。本站提供一般讀者可理解的歷史思想入口，並不以生活感想取代佛教教義。若想深入，可以接著閱讀完整章節與不同譯本。'},
+   {heading:'留下哪一個問題',text:'當怨懟一直把注意力帶回同一件事時，我們可以一方面承認自己的感受，一方面思考怎麼保護界線、怎麼處理實際問題，以及什麼時候不再需要讓那件事占據全部時間。'}
+  ]
+ }
+);
 })();

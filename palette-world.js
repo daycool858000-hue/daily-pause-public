@@ -51,15 +51,11 @@
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'leaf',size:1,velocity:.5,paused:false,selected:null};
-    let activeTab='element',pointer=null,frames=null,lastMoment=0,companionOn=true;
+    let activeTab='element',pointer=null,frames=null,lastMoment=0;
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
-    const stampMessage=(message,force=false)=>{
-      if(!companionOn&&!force)return;
-      $('worldCompanionText').textContent=message;
-      $('worldCompanion').dataset.active='true';
-    };
+    const stampMessage=(message)=>window.dispatchEvent(new CustomEvent('pause:companion',{detail:{text:message,kind:'light'}}));
     const history=window.createPaletteHistory({
       read:()=>JSON.parse(JSON.stringify(model)),
       write:old=>{
@@ -67,7 +63,7 @@
         updateSelections();paint(performance.now(),true);
         stampMessage('作品回到剛剛的一步。');
       },
-      onChange:state=>{ $('worldUndo').disabled=!state.canUndo; $('worldRedo').disabled=!state.canRedo; },
+      onChange:state=>{ for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!state.canUndo; for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!state.canRedo; },
       limit:20
     });
     const change=fn=>{history.record();fn();updateSelections();paint(performance.now(),true);};
@@ -145,6 +141,7 @@
       $('worldSceneLabel').textContent=moodFor()[2];
       $('worldPause').textContent=model.paused?'恢復流動':'暫停流動';
       $('worldBrushSize').value=String(model.size);
+      $('worldToolsToggle').setAttribute('aria-expanded',String(!$('worldControlPanel').classList.contains('is-closed')));
     }
     function screenPosition(e){
       const rect=canvas.getBoundingClientRect();
@@ -235,35 +232,47 @@
     $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';activeTab='element';updateSelections()});
     $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';activeTab='element';updateSelections()});
     $('worldUndo').addEventListener('click',()=>history.undo());
+    $('worldQuickUndo').addEventListener('click',()=>history.undo());
     $('worldRedo').addEventListener('click',()=>history.redo());
-    $('worldClear').addEventListener('click',()=>{
+    $('worldQuickRedo').addEventListener('click',()=>history.redo());
+    const clearWorld=()=>{
       change(()=>{model.marks=[];model.props=[];model.selected=null});
       stampMessage('空白也可以是一幅作品。');
-    });
+    };
+    $('worldClear').addEventListener('click',clearWorld);
+    $('worldQuickClear').addEventListener('click',clearWorld);
     $('worldPause').addEventListener('click',()=>{
       model.paused=!model.paused;updateSelections();
       if(model.paused){stop();paint(performance.now(),true)}else schedule();
     });
-    $('worldDownload').addEventListener('click',()=>{
+    const downloadWorld=()=>{
       paint(performance.now(),true);
       try{
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
         stampMessage('已送交瀏覽器下載，記得確認是否保存成功。');
-      }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。',true)}
-    });
-    $('worldCompanionToggle').addEventListener('click',()=>{
-      companionOn=!companionOn;$('worldCompanion').hidden=!companionOn;
-      $('worldCompanionToggle').setAttribute('aria-pressed',String(companionOn));
-      $('worldCompanionToggle').textContent=companionOn?'關閉陪伴回應':'開啟陪伴回應';
-    });
-    $('worldCompanionTap').addEventListener('click',()=>{
-      const last=$('worldCompanionText').textContent;
-      const choices=notes.filter(x=>x!==last);
-      stampMessage(choices[Math.floor(Math.random()*choices.length)]);
-    });
+      }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
+    };
+    $('worldDownload').addEventListener('click',downloadWorld);
+    $('worldQuickSave').addEventListener('click',downloadWorld);
+    // Palette companion now uses the same discreet, animated icon as every site section.
+    const panel=$('worldControlPanel');
+    const togglePanel=open=>{
+      panel.classList.toggle('is-closed',!open);
+      document.body.classList.toggle('world-tools-open',open&&window.matchMedia('(max-width: 920px)').matches);
+      $('worldToolsToggle').setAttribute('aria-expanded',String(open));
+      $('worldToolsToggle').textContent=open?'收起素材':'打開素材';
+      $('worldToolsClose').hidden=!open;
+      if(open && window.matchMedia('(max-width: 920px)').matches){
+        $('worldStage').scrollIntoView({block:'start',behavior:'smooth'});
+      }
+    };
+    $('worldToolsToggle').addEventListener('click',()=>togglePanel(panel.classList.contains('is-closed')));
+    $('worldToolsClose').addEventListener('click',()=>togglePanel(false));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.classList.contains('is-closed'))togglePanel(false)});
+    togglePanel(!window.matchMedia('(max-width: 920px)').matches);
     const onVisible=()=>{
-      if(document.hidden||$('palette').hidden){stop();return}
+      if(document.hidden||$('palette').hidden){stop();if($('palette').hidden)togglePanel(false);return}
       sizeCanvas();schedule();
     };
     document.addEventListener('visibilitychange',onVisible);
