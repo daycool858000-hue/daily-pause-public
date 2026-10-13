@@ -1,4 +1,4 @@
-name: Import four approved CC0 tracks and gentle rain
+name: Import approved CC0 expansion and gentle river
 
 on:
   push:
@@ -35,29 +35,19 @@ jobs:
           from urllib.request import Request, urlopen
           tracks=[
             {
-              "id":"first-light","title":"晨光的微粒","artist":"Yoiyami",
-              "page":"https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track",
-              "filename":"first_light_particles_0.wav","out":"first-light.mp3","kind":"music",
+              "id":"budding","title":"意識初醒","artist":"Yoiyami",
+              "page":"https://opengameart.org/content/the-budding-of-consciousness-%E2%80%93-cc0-ambient-minimalist-theme-yoiyami-blue-series-%E2%80%93-no4",
+              "filename":"the_budding_of_consciousness.wav","out":"budding.mp3","kind":"music",
             },
             {
-              "id":"vaporware","title":"柔光鋼琴","artist":"The Cynic Project",
-              "page":"https://opengameart.org/content/calm-piano-1-vaporware",
-              "filename":"003_Vaporware_2.mp3","out":"vaporware.mp3","kind":"music",
+              "id":"somnium","title":"夢境輕語","artist":"Adiutorium",
+              "page":"https://opengameart.org/content/somnium",
+              "filename":"somnium.mp3","out":"somnium.mp3","kind":"music",
             },
             {
-              "id":"forget-me-not","title":"別忘了這一刻","artist":"Kistol",
-              "page":"https://opengameart.org/content/forget-me-not",
-              "filename":"forget_me_not_in_f_major_0.ogg","out":"forget-me-not.mp3","kind":"music",
-            },
-            {
-              "id":"lifewave","title":"安靜的光","artist":"The Cynic Project",
-              "page":"https://opengameart.org/content/calm-ambient-3-lifewave-2k",
-              "filename":"006_lifeWave2k_0.mp3","out":"lifewave.mp3","kind":"music",
-            },
-            {
-              "id":"window-rain","title":"窗邊細雨","artist":"alxl",
-              "page":"https://opengameart.org/content/rain-on-window-loop",
-              "filename":"rain_on_window_loop.wav","out":"window-rain.mp3","kind":"nature",
+              "id":"river-lapping","title":"細流輕拍","artist":"RandomMind",
+              "page":"https://opengameart.org/content/sea-and-river-wave-sounds",
+              "filename":"VistulaShort.mp3","out":"river-lapping.mp3","kind":"nature",
             },
           ]
           class Links(HTMLParser):
@@ -103,7 +93,7 @@ jobs:
                 arguments+=['-stream_loop','-1']
               arguments+=['-i',str(original)]
               if t["kind"]=="nature":
-                arguments+=['-t','132','-af','highpass=f=100,lowpass=f=6000,loudnorm=I=-29:TP=-8:LRA=7,afade=t=in:st=0:d=1.5,afade=t=out:st=129:d=3']
+                arguments+=['-t','132','-af','highpass=f=90,lowpass=f=5300,loudnorm=I=-32:TP=-9:LRA=7,afade=t=in:st=0:d=1.5,afade=t=out:st=129:d=3']
               else:
                 arguments+=['-af','loudnorm=I=-26:TP=-6:LRA=10,afade=t=in:st=0:d=1.2']
               arguments+=['-vn','-ac','2','-ar','44100','-codec:a','libmp3lame','-b:a','112k',str(target)]
@@ -120,9 +110,13 @@ jobs:
               t["duration_seconds"]=round(duration,2)
               t["license"]="CC0 1.0"
               print(t["out"],duration,'sec',target.stat().st_size,'bytes',flush=True)
-          (base/'SOURCES.json').write_text(json.dumps(tracks,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          provenance=base/'SOURCES.json'
+          existing=json.loads(provenance.read_text('utf-8')) if provenance.exists() else []
+          originals={item['id']:item for item in existing}
+          for item in tracks: originals[item['id']]=item
+          provenance.write_text(json.dumps(list(originals.values()),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           PY
-      - name: Commit originals evidence and five MP3 files only
+      - name: Commit source evidence and only the approved MP3 additions
         shell: bash
         run: |
           set -euo pipefail
