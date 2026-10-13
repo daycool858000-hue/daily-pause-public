@@ -59,7 +59,7 @@ jobs:
               except (URLError, HTTPError, TimeoutError, OSError) as error:
                 row["error"] = str(error)
                 if attempt < 2: sleep(2)
-            print(f"{name}: status={row.get('status')} mp3={row.get('has_mp3_header')} CORS={row.get('cors','<none>')} ok={row['ok']}")
+            print(f"{name}: status={row.get('status')} mp3={row.get('has_mp3_header')} CORS={row.get('cors','<none>')} ok={row['ok']} error={row.get('error','<none>')}")
             results.append(row)
           report = {"scope":"five new tracks + two nature layers", "results":results}
           Path("audio-source-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2))
