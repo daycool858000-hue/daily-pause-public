@@ -1,16 +1,38 @@
 // Daily Pause - discreet background listening, 2026-10-13.
-// No iframe, synthesized rain or stand-alone music service. All recordings are
-// streamed from Wikimedia Commons MP3 transcodes. Attribution is linked in the UI.
+// No iframe, synthesized rain or stand-alone music service. Approved CC0 audio is
+// served locally, with the accepted forest ambience streamed from Wikimedia Commons.
 // Soft autoplay is best-effort: Safari/iOS/Chrome can block until user interaction.
 (() => {
   'use strict';
   // The 13 music tracks were suspended at the site owner's request; see MUSIC_RIGHTS_REVIEW_20261013.md.
+  // Four personally approved CC0 pieces + gentle-rain replacement, all hosted within this repo.
+  // License proof and conversion checksums: media/audio/SOURCES.json.
   const tracks = [
     {
-      id:'creek',title:'森林溪流',kind:'nature',
-      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/9/9e/Forest_lawn_creek.ogg/Forest_lawn_creek.ogg.mp3',
-      page:'https://commons.wikimedia.org/wiki/File:Forest_lawn_creek.ogg',
-      license:'Public domain',artist:'Dsw4',work:'Forest lawn creek',level:.06
+      id:'first-light',title:'晨光的微粒',kind:'music',
+      src:'./media/audio/first-light.mp3',
+      page:'https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track',
+      license:'CC0 1.0',artist:'Yoiyami',work:'晨光的微粒',level:0.082
+    },    {
+      id:'vaporware',title:'柔光鋼琴',kind:'music',
+      src:'./media/audio/vaporware.mp3',
+      page:'https://opengameart.org/content/calm-piano-1-vaporware',
+      license:'CC0 1.0',artist:'The Cynic Project',work:'柔光鋼琴',level:0.082
+    },    {
+      id:'forget-me-not',title:'別忘了這一刻',kind:'music',
+      src:'./media/audio/forget-me-not.mp3',
+      page:'https://opengameart.org/content/forget-me-not',
+      license:'CC0 1.0',artist:'Kistol',work:'別忘了這一刻',level:0.079
+    },    {
+      id:'lifewave',title:'安靜的光',kind:'music',
+      src:'./media/audio/lifewave.mp3',
+      page:'https://opengameart.org/content/calm-ambient-3-lifewave-2k',
+      license:'CC0 1.0',artist:'The Cynic Project',work:'安靜的光',level:0.080
+    },    {
+      id:'window-rain',title:'窗邊細雨',kind:'nature',
+      src:'./media/audio/window-rain.mp3',
+      page:'https://opengameart.org/content/rain-on-window-loop',
+      license:'CC0 1.0',artist:'alxl',work:'窗邊細雨',level:0.070
     },
     {
       id:'forest',title:'森林黃昏',kind:'nature',
@@ -20,7 +42,7 @@
     }
   ];
   const areas=['today','read','curiosity','palette','holding'];
-  // Keep the accepted desktop mix. On phones, soften only Forest Creek by 35% and skip There Is A Place.
+  // Keep existing desktop output behavior. Audio files are now pre-normalized for softer iOS playback.
   // Desktop fine-pointer devices previously had volume levels as low as 0.052.
   const desktopAudio=window.matchMedia?.('(pointer: fine)')?.matches
     && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
@@ -28,7 +50,7 @@
     (window.matchMedia?.('(pointer: coarse) and (max-width: 700px)')?.matches ?? false);
   function audibleLevel(track) {
     if(desktopAudio)return Math.min(track.kind==='nature' ? .32 : .34, track.level*(track.kind==='nature' ? 4 : 3.4));
-    return phoneAudio && track.id==='creek' ? track.level*.65 : track.level;
+    return track.level;
   }
   let ambientContext=null;
   function unlockAmbientContext(){
@@ -68,9 +90,7 @@
     try{layer.audio.pause();layer.audio.removeAttribute('src');layer.audio.load()}catch(_){}
     try{layer.source.disconnect();layer.soften.disconnect();layer.gain.disconnect()}catch(_){}
   }
-  // Keep Forest Creek on the native player: routing cross-origin media into
-  // Web Audio can silence the track on mobile Safari. The supported browsers'
-  // 0.65 volume setting remains, without compromising sound playback.
+  // Keep primary tracks on native audio playback for Safari compatibility.
   const bars=new Map();
   let activeArea='today',active=null,waiting=false,stoppedByVisitor=false;
   let queue=[],raf=null,advanceTimer=null,sequence=0,fadeOutSet=new Set();
@@ -94,8 +114,7 @@
     return copy;
   }
   function nextTrack(skipId){
-    // Never pick "森林裡的歸處" for phone listeners; it remains available on desktop.
-    const eligible=tracks.filter(t=>!phoneAudio||t.id!=='thereNature').map(t=>t.id);
+    const eligible=tracks.map(t=>t.id);
     queue=queue.filter(id=>eligible.includes(id));
     if(!queue.length)queue=shuffled(eligible);
     if(queue.length>1 && queue[0]===skipId)queue.push(queue.shift());
