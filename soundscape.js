@@ -55,6 +55,31 @@
       src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d7/Scott_Buckley_-_Midsommar.oga/Scott_Buckley_-_Midsommar.oga.mp3',
       page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Midsommar.oga',
       license:'CC BY 4.0',artist:'Scott Buckley',work:'Midsommar',level:.058,nature:'forest'
+    },{
+      id:'ephemera',title:'海風裡的大提琴',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7d/Scott_Buckley_-_Ephemera.oga/Scott_Buckley_-_Ephemera.oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/ephemera/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Ephemera',level:.058
+    },{
+      id:'solace',title:'安靜的慰藉',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/8/89/Scott_Buckley_-_Solace.oga/Scott_Buckley_-_Solace.oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/solace/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Solace',level:.060,nature:'forest'
+    },{
+      id:'snowfall',title:'雪落時的琴聲',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/5/54/Scott_Buckley_-_Snowfall.oga/Scott_Buckley_-_Snowfall.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Snowfall.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Snowfall',level:.061,nature:'forest'
+    },{
+      id:'oblivion',title:'慢慢流動的時光',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f7/Scott_Buckley_-_Beautiful_Oblivion.oga/Scott_Buckley_-_Beautiful_Oblivion.oga.mp3',
+      page:'https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Beautiful_Oblivion.oga',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Beautiful Oblivion',level:.055,nature:'forest'
+    },{
+      id:'daylight',title:'微光裡的散步',kind:'music',
+      src:'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e5/Scott_Buckley_-_Chasing_Daylight.oga/Scott_Buckley_-_Chasing_Daylight.oga.mp3',
+      page:'https://www.scottbuckley.com.au/library/chasing-daylight/',
+      license:'CC BY 4.0',artist:'Scott Buckley',work:'Chasing Daylight',level:.056,nature:'creek'
     }
   ];
   const areas=['today','read','curiosity','palette','holding'];
@@ -106,25 +131,9 @@
     try{layer.audio.pause();layer.audio.removeAttribute('src');layer.audio.load()}catch(_){}
     try{layer.source.disconnect();layer.soften.disconnect();layer.gain.disconnect()}catch(_){}
   }
-  function softenIphoneCreek(audio,track) {
-    // iPhone Safari may ignore HTMLMediaElement.volume; use a Web Audio gain.
-    // Android and desktops retain their previous volume behavior.
-    if(track.id!=='creek'||!/iPhone|iPod/i.test(navigator.userAgent||''))return;
-    const ctx=unlockAmbientContext();if(!ctx)return;
-    try{
-      const src=ctx.createMediaElementSource(audio);
-      const gain=ctx.createGain();
-      gain.gain.value=0;
-      gain.gain.setTargetAtTime(.65,ctx.currentTime,.75);
-      src.connect(gain);gain.connect(ctx.destination);
-      audio.mobileCreekGain={src,gain,ctx};
-    }catch(_){/* media-element volume .65 remains the fallback */}
-  }
-  function releaseCreekGain(audio){
-    const layer=audio?.mobileCreekGain;if(!layer)return;
-    delete audio.mobileCreekGain;
-    try{layer.src.disconnect();layer.gain.disconnect()}catch(_){}
-  }
+  // Keep Forest Creek on the native player: routing cross-origin media into
+  // Web Audio can silence the track on mobile Safari. The supported browsers'
+  // 0.65 volume setting remains, without compromising sound playback.
   const bars=new Map();
   let activeArea='today',active=null,waiting=false,stoppedByVisitor=false;
   let queue=[],raf=null,advanceTimer=null,sequence=0,fadeOutSet=new Set();
@@ -182,7 +191,6 @@
   function cancelFade(){if(raf!==null)cancelAnimationFrame(raf);raf=null}
   function release(audio){
     releaseNature(audio);
-    releaseCreekGain(audio);
     try{audio.pause();audio.removeAttribute('src');audio.load()}catch(_){}
   }
   function fadeOut(audio,ms=550){
@@ -199,7 +207,7 @@
   }
   function fadeIn(entry){
     cancelFade();
-    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=entry.audio.mobileCreekGain ? entry.track.level : audibleLevel(entry.track);
+    const from=performance.now(),length=reduceMotion?700:1900,el=entry.audio,volume=audibleLevel(entry.track);
     const f=t=>{
       if(active!==entry){raf=null;return}
       const x=Math.min(1,(t-from)/length);
@@ -235,10 +243,8 @@
     audio.preload='auto';
     audio.volume=0;
     audio.loop=false;
-    if(phoneAudio&&chosen.id==='creek')audio.crossOrigin='anonymous';
     audio.src=chosen.src;
     audio.playsInline=true;
-    softenIphoneCreek(audio,chosen);
     const entry={audio,track:chosen,id:++sequence,gesture:userGesture};
     active=entry;
     waiting=false;

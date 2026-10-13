@@ -173,8 +173,9 @@ assert.ok(audioScript.includes('Scott_Buckley_-_The_Long_Way_Home.oga'), 'lullab
 assert.ok(audioScript.includes('Scott_Buckley_-_She_Moved_Mountains.oga'), 'gentle ambient piano track absent');
 for(const filename of ['Scott_Buckley_-_Reverie.oga','Scott_Buckley_-_Elementary.ogg','Scott_Buckley_-_There_Is_A_Place.oga','Scott_Buckley_-_Jul.oga','Scott_Buckley_-_Midsommar.oga'])
  assert.ok(audioScript.includes(filename),'missing new natural ambient piano: '+filename);
-assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,10,'existing five + new five audio tracks must be present');
-assert.equal((audioScript.match(/nature:'(?:forest|creek)'/g)||[]).length,5,'new five tracks should blend licensed nature audio');
+assert.equal((audioScript.match(/id:'[^']+',title:/g)||[]).length,15,'original ten + five carefully sourced audio tracks');
+for(const f of ['Scott_Buckley_-_Ephemera.oga','Scott_Buckley_-_Solace.oga','Scott_Buckley_-_Snowfall.oga','Scott_Buckley_-_Beautiful_Oblivion.oga','Scott_Buckley_-_Chasing_Daylight.oga'])assert.ok(audioScript.includes(f),'new CC BY audio missing: '+f);
+assert.equal((audioScript.match(/nature:'(?:forest|creek)'/g)||[]).length,9,'nine layered ambient tracks with separately licensed nature recordings');
 assert.ok(audioScript.includes('desktopAudio') && audioScript.includes('audibleLevel(entry.track)'), 'desktop volume correction missing');
 assert.ok(audioScript.includes("track.kind==='nature' ? 4 : 3.4") && audioScript.includes(" : track.level;"), 'iPhone/mobile sound levels must be kept');
 assert.ok(audioScript.includes('createBiquadFilter') && audioScript.includes("soften.type='lowpass'"), 'natural ambient overlay should be smoothed');
@@ -232,6 +233,9 @@ assert.ok(restScript.includes('r-texture') && restScript.includes('r-sky'),'rest
 assert.ok(read('world-style.css').includes('@keyframes rGardenBreath') && read('world-style.css').includes('@keyframes rCurtain'),'continuous quiet scene animations missing');
 const surprise=read('surprise-visit.js');
 assert.ok(surprise.includes('setTimeout(show,5000)'),'second greeting must wait 5 seconds after entry');
+assert.ok(!surprise.includes("if(e.target===panel)hide()"),'backdrop clicks must never close the encouragement letter');
+assert.ok(read('surprise-style.css').includes('animation:surpriseWords .48s .72s'),'message should appear promptly');
+assert.ok(read('app.js').includes("if (tab.dataset.experience === 'rest')"), 'rest entrance must immediately open its scene without another click');
 assert.ok(surprise.includes('MutationObserver') && surprise.includes('attributeFilter:[\'hidden\']'),'second animation starts after the original welcome closes');
 assert.ok(surprise.includes('哩賀') && surprise.includes('你是世界上非常重要的人'),'all user-provided encouragement must be preserved');
 assert.ok(surprise.includes('surprise-cat') && surprise.includes('surprise-bear') && surprise.includes('surprise-hero-heart'),'heart/cat/bear surprise variations missing');
@@ -240,7 +244,9 @@ assert.ok(surprise.includes("document.querySelector('#today.active')"),'do not i
 assert.ok(read('surprise-style.css').includes('@media(prefers-reduced-motion:reduce)'),'surprise should respect reduced motion');
 assert.ok(audioScript.includes('phoneAudio') && audioScript.includes("track.id==='creek' ? track.level*.65"),'35% forest creek mobile reduction missing');
 assert.ok(audioScript.includes("t.id!=='thereNature'"),'mobile playlist must omit There Is A Place');
-assert.ok(audioScript.includes("softenIphoneCreek"),'iPhone Web Audio fallback for lowering creek volume absent');
+assert.ok(!audioScript.includes('softenIphoneCreek') && !audioScript.includes('audio.mobileCreekGain'), 'Safari creek must not route through an untrusted cross-origin Web Audio path');
+assert.ok(audioScript.includes("track.id==='creek' ? track.level*.65"),'mobile volume should stay lower when the browser permits');
+assert.ok(html.includes('sb_ephemera')===false && html.includes('Ephemera') && html.includes('Chasing Daylight'), 'credits must include five new original works');
 assert.equal(win.freshCards.filter(c=>c.type==='陪伴的一段話').length,16,'gentle reflection category missing');
 assert.ok(win.freshCards.filter(c=>c.sourceLink).every(c=>/延伸|概述|聯想|改寫|重述|轉述/.test(c.provenance)), 'sourced writing must distinguish its life interpretation from the original idea');
 

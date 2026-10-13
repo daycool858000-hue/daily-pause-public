@@ -93,7 +93,7 @@ function init(){
  if(!welcome.hidden)seen=true;
  panel.querySelector('.surprise-close').addEventListener('click',hide);
  panel.querySelector('.surprise-dismiss').addEventListener('click',hide);
- panel.addEventListener('click',e=>{if(e.target===panel)hide()});
+ // Clicking outside the letter is inert; only the visible close and accept buttons dismiss it.
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)hide()});
  window.addEventListener('pagehide',()=>{clearTimeout(timeout);observer.disconnect()});
  window.PauseSurprise={hide,get hasShown(){return done}};

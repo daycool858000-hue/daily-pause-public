@@ -363,3 +363,17 @@ body.rest-theatre-open{overflow:hidden}
   animation:none!important;transition:none!important
  }
 }
+
+/* Make the new fifteen painted scenes visibly move on SVG-based mobile browsers. */
+.rest-stage-art .r-sway,.rest-stage-art .r-curtain,.rest-stage-art .r-cloud,
+.rest-stage-art .r-glow,.rest-stage-art .r-mist,.rest-stage-art .r-steam,
+.rest-stage-art .r-hands,.rest-stage-art .r-bloom,.rest-stage-art .r-shadows,
+.rest-stage-art .r-twinkle,.rest-stage-art .r-breeze{
+  transform-box:fill-box;transform-origin:center;
+}
+.rest-stage-art svg{animation:restPaintArrive .52s cubic-bezier(.19,.8,.3,1) both}
+@keyframes restPaintArrive{
+  from{opacity:.2;transform:scale(.94) translateY(12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){.rest-stage-art svg{animation:none!important}}

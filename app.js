@@ -587,7 +587,13 @@ $('#nextMedia').addEventListener('click', () => renderMedia());
 $('#mediaGallery').addEventListener('click', event => { const button = event.target.closest('[data-media-index]'); if (button) renderMedia(mediaItems[Number(button.dataset.mediaIndex)]); });
 $('.experience-tabs').addEventListener('click', (event) => {
   const tab = event.target.closest('[data-experience]');
-  if (tab) renderExperience(tab.dataset.experience);
+  if (!tab) return;
+  renderExperience(tab.dataset.experience);
+  // Clicking the '休息一下' entrance itself opens the illustrated animation.
+  // Keep the inner rest-action button as an alternative way to reopen it.
+  if (tab.dataset.experience === 'rest') {
+    window.PauseRestStage?.open(visitExperience?.rest);
+  }
 });
 $('#exploreContent').addEventListener('click', (event) => {
   const branch = event.target.closest('[data-branch]');
