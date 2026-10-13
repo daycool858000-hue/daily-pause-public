@@ -226,7 +226,8 @@ assert.ok(!companionText.includes("window.addEventListener('pause:companion',"),
 assert.ok(read('companion-site.js').includes('sprite-butterfly') && read('companion-site.js').includes('sprite-firefly'), 'roaming species absent');
 const restScript=read('rest-stage.js');
 assert.ok(restScript.includes('(body[kind]||body.window)'), 'render each of 15 painted, independent rest scenes');
-assert.equal((restScript.match(/^\s*(?:window|hands|sound|cup|chair|hills|sunlight|eyes|stretch|phone|flower|desk|leaf|paper|night):/gm)||[]).length,15,'15 distinct natural scene vignettes required');
+const restBody=restScript.slice(restScript.indexOf('const body={'), restScript.indexOf('function sceneKey', restScript.indexOf('const body={')));
+assert.equal((restBody.match(/^\s*(?:window|hands|sound|cup|chair|hills|sunlight|eyes|stretch|phone|flower|desk|leaf|paper|night)(?::|,)/gm)||[]).length,15,'15 distinct natural scene vignettes required');
 assert.ok(restScript.includes('r-texture') && restScript.includes('r-sky'),'rest scene should use soft texture and light');
 assert.ok(read('world-style.css').includes('@keyframes rGardenBreath') && read('world-style.css').includes('@keyframes rCurtain'),'continuous quiet scene animations missing');
 const surprise=read('surprise-visit.js');
