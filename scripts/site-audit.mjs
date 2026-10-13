@@ -31,7 +31,7 @@ assert.ok(html.includes('styles.css'), 'CSS link absent');
 assert.ok(html.includes('./sound-style.css?v='), 'sound UI CSS absent');
 assert.ok(html.includes('./surprise-style.css?v='),'second greeting animation CSS absent');
 assert.ok(html.indexOf('surprise-visit.js') < html.indexOf('./app.js'),'surprise script should observe the original welcome');
-assert.ok(html.includes('./rest-stage.js?v=20261013-3'),'new rest-scene renderer not linked');
+assert.ok(html.includes('./rest-stage.js?v=20261013-4'),'new rest-scene renderer not linked');
 assert.ok(html.includes('id="cardSourceDialog"') && html.includes('id="cardSourceDialogClose"'), 'accessible credit dialog absent');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('companion-site.js'), 'soundscape must load before companion');
 assert.ok(html.indexOf('soundscape.js') < html.indexOf('./app.js'), 'soundscape must load before navigation controls');
@@ -226,6 +226,46 @@ assert.ok(lines.every(x=>x.length>=12),'creature speech cannot be just a slogan'
 assert.ok(!companionText.includes("window.addEventListener('pause:companion',"),'creature cannot interrupt navigation');
 assert.ok(read('companion-site.js').includes('sprite-butterfly') && read('companion-site.js').includes('sprite-firefly'), 'roaming species absent');
 const restScript=read('rest-stage.js');
+
+// Exercise all 15 live rest-entry render paths, not merely the presence of SVG strings.
+// This simulated DOM catches missing variables and scene-key mapping errors.
+const restArt = {dataset:{},innerHTML:'',replaceChildren(){this.innerHTML=''}};
+const restNodes = {
+  '.rest-stage-art':restArt,
+  '.rest-stage-heading':{textContent:''},
+  '.rest-stage-text':{textContent:''},
+  '.rest-stage-note':{textContent:''},
+  '.rest-stage-close':{addEventListener(){},focus(){}},
+  '.rest-stage-finish':{addEventListener(){}}
+};
+const restModal = {
+  hidden:true,
+  querySelector(selector){assert.ok(restNodes[selector], 'missing mocked rest node '+selector);return restNodes[selector]},
+  addEventListener(){}
+};
+const restDocument = {
+  readyState:'complete',
+  activeElement:null,
+  body:{classList:{add(){},remove(){}}},
+  getElementById(id){return id==='restStage'?restModal:null},
+  addEventListener(){}
+};
+const restWindow = {dispatchEvent(){}};
+vm.runInNewContext(restScript, {window:restWindow,document:restDocument,CustomEvent:class {}},
+  {filename:'rest-stage.js:runtime-audit',timeout:5000});
+assert.equal(typeof restWindow.PauseRestStage?.open,'function');
+const checkedRestScenes = new Set();
+for (const experience of win.dailyContent.experiences) {
+  restWindow.PauseRestStage.open(experience.rest);
+  assert.equal(restModal.hidden,false,'rest scene did not open for '+experience.rest.title);
+  assert.match(restArt.innerHTML,/<svg\\b/,'rest SVG was not rendered for '+experience.rest.title);
+  assert.ok(restArt.dataset.type,'rest scene type missing for '+experience.rest.title);
+  checkedRestScenes.add(restArt.dataset.type);
+  restWindow.PauseRestStage.close();
+  assert.equal(restModal.hidden,true,'rest scene did not close for '+experience.rest.title);
+}
+assert.equal(checkedRestScenes.size,15,'all 15 experiences should select different rest scenes');
+
 assert.ok(restScript.includes('(body[kind]||body.window)'), 'render each of 15 painted, independent rest scenes');
 const restBody=restScript.slice(restScript.indexOf('const body={'), restScript.indexOf('function sceneKey', restScript.indexOf('const body={')));
 assert.equal((restBody.match(/^\s*(?:window|hands|sound|cup|chair|hills|sunlight|eyes|stretch|phone|flower|desk|leaf|paper|night)(?::|,)/gm)||[]).length,15,'15 distinct natural scene vignettes required');

@@ -73,7 +73,7 @@ night:'<rect width="440" height="380" fill="#819c98" opacity=".79"/><circle cx="
 +'<path d="M0 298Q130 249 240 291T440 272V380H0Z" fill="#608a82"/>'
 +grass+'<g class="r-twinkle" fill="#fff0d6"><circle cx="71" cy="99" r="2.4"/><circle cx="137" cy="137" r="2"/><circle cx="365" cy="168" r="2.7"/><circle cx="222" cy="62" r="2"/></g>'
 };
-function sceneKey(title){return lookup.find(([k])=>String(title||'').includes(k))?.[1]||'window'}
+function sceneKey(title){return keys.find(([k])=>String(title||'').includes(k))?.[1]||'window'}
 function init(){
  const modal=document.getElementById('restStage');if(!modal)return;
  const art=modal.querySelector('.rest-stage-art'),heading=modal.querySelector('.rest-stage-heading');
