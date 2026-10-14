@@ -394,6 +394,20 @@
     // Preserve panel; re-render resident growth without scrolling elsewhere.
     const selected=item.id;renderCollection();by('gardenCarePanel').dataset.selected=selected;
     by('gardenCarePanel').hidden=false;
+    const currentStage=by('gardenResidentsStage');
+    if(words&&currentStage){
+      // Ephemeral visual only. Never store input text in JSON, URLs or external services.
+      currentStage.querySelector('.garden-word-trail')?.remove();
+      const spark=document.createElement('span');
+      spark.className='garden-word-trail';
+      spark.textContent=words.slice(0,35);
+      spark.dataset.action=action;
+      const p=position(item);
+      spark.style.left=p.x+'%';
+      spark.style.top=clamp(p.y-18,18,75)+'%';
+      currentStage.appendChild(spark);
+      setTimeout(()=>spark.remove(),reduceMotion?3000:1900);
+    }
     const marker=by('gardenResidentsStage')?.querySelector('[data-stage-resident="'+item.id+'"]');
     if(marker){
       marker.dataset.activity=action;
