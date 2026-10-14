@@ -19,6 +19,7 @@
   });
   const storageKey='daily-pause-garden-v1';
   const sprites=window.PauseGardenSprites;
+  const decor=window.PauseGardenDecor;
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
   const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
   const hash=id=>{let n=2166136261;for(const c of id){n=Math.imul(n^c.charCodeAt(0),16777619)}return n>>>0};
@@ -108,7 +109,7 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
   const lightingChoices=[['morning','晨光'],['day','白天'],['dusk','黃昏'],['night','夜晚']];
   const allowedLighting=new Set(lightingChoices.map(x=>x[0]));
-  const newState=()=>({version:1,world:'flowers',items:[],lighting:{}});
+  const newState=()=>({version:1,world:'flowers',items:[],lighting:{},decorations:[]});
   function renderLighting(){
     const selected=state.lighting[state.world]||'day';
     const root=by('gardenLightChoices');
@@ -144,6 +145,17 @@
         item.lastAction.slice(0,30):'',
       name:typeof item.name==='string'?item.name.slice(0,20):'',
       ...position(item)}));
+    if(input?.decorations!==undefined){
+      if(!Array.isArray(input.decorations)||input.decorations.length>65)throw Error('invalid decorations');
+      clean.decorations=input.decorations.filter(item=>
+        item&&typeof item==='object'&&
+        worlds.some(w=>w.id===item.world) &&
+        decor?.worlds[item.world]?.includes(item.type) &&
+        typeof item.id==='string' && /^[a-z0-9-]{1,48}$/i.test(item.id) &&
+        Number.isFinite(item.x) && item.x>=8 && item.x<=92 &&
+        Number.isFinite(item.y) && item.y>=45 && item.y<=90
+      ).map(item=>({id:item.id,world:item.world,type:item.type,x:item.x,y:item.y}));
+    }
     return clean;
   }
   let state,loadError=false,recoverableRaw=null,storeAvailable=true;
@@ -157,7 +169,10 @@
          !worlds.some(w=>w.id===parsed.world)||
          !Array.isArray(parsed.items)||parsed.items.length>160||
          checked.items.length!==parsed.items.length||
-         new Set(checked.items.map(x=>x.id)).size!==checked.items.length){
+         new Set(checked.items.map(x=>x.id)).size!==checked.items.length||
+         (parsed.decorations!==undefined && 
+           (!Array.isArray(parsed.decorations) || checked.decorations.length!==parsed.decorations.length))||
+         new Set(checked.decorations.map(x=>x.id)).size!==checked.decorations.length){
         throw Error('Invalid saved garden');
       }
       state=checked;
@@ -207,6 +222,7 @@
   }
   function currentWorld(){return worlds.find(w=>w.id===state.world)||worlds[0]}
   function itemsHere(){return state.items.filter(x=>x.world===state.world)}
+  function decorsHere(){return state.decorations.filter(x=>x.world===state.world)}
   const day=86400000;
   function growth(item){
     if(item.kind!=='plant')return '';
@@ -234,6 +250,13 @@
         '" data-stage-resident="'+item.id+'" style="left:'+p.x+'%;top:'+p.y+'%" aria-label="'+label+
         '" title="'+esc(item.species)+'">'+svg+'</button>';
     }).join('');
+    area.innerHTML+=decorsHere().slice(0,24).map(item=>{
+      const point=position(item);
+      const art=decor?.markup(item)||'';
+      const name=decor?.defs[item.type]?.[0]||'擺設';
+      return '<button type="button" class="garden-stage-resident garden-stage-decor" data-stage-decor="'+item.id+
+        '" style="left:'+point.x+'%;top:'+point.y+'%" aria-label="移動或整理'+name+'" title="'+name+'">'+art+'</button>';
+    }).join('');
     by('gardenStageHint').textContent=items.length>30
       ?'場景先顯示 30 位夥伴，其餘可在下方清單找到。點一下照顧，按住拖曳可移動。'
       :'點一下照顧小生命，按住拖曳可以替牠們換個位置。';
@@ -259,7 +282,11 @@
     if(sceneNotice)sceneNotice.textContent=w.visual==='pending'
       ?'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，已能分辨場景；你要求的專屬寫實景觀仍待完成。'
       :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
-    by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
+    by('gardenWorldCount').textContent=items.length+' 位小生命在這裡，'+decorsHere().length+' 件擺設';
+    const decorSelect=by('gardenDecorTypes');
+    if(decorSelect)decorSelect.innerHTML=(decor?.worlds[state.world]||[]).map(id=>
+      '<option value="'+id+'">'+esc(decor.defs[id][0])+'</option>').join('');
+    by('gardenDecorCount').textContent='目前有 '+decorsHere().length+' 件小擺設';
     renderLighting();
     renderHotspots();
     const exploreNotice=by('gardenExploreMessage');
@@ -282,6 +309,7 @@
     by('gardenWorldRoom').hidden=false;
     by('gardenChoicesPage').hidden=true;
     by('gardenCarePanel').hidden=true;
+    by('gardenDecorSelection').hidden=true;
   }
   function add(kind){
     const world=currentWorld();
