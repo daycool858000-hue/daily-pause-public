@@ -422,6 +422,100 @@
       model.paused=!model.paused;updateSelections();
       if(model.paused){stop();paint(performance.now(),true)}else schedule();
     });
+    // Portable editable backup: manually exported, never persisted or uploaded.
+    // PNG remains a separate final image, while JSON retains all 24 editable layers.
+    const backupStatus=$('worldBackupStatus');
+    const sayBackup=text=>{if(backupStatus)backupStatus.textContent=text};
+    const validColor=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
+    const finite=(x,min,max)=>Number.isFinite(x)&&x>=min&&x<=max;
+    const moodNames=new Set(moods.map(x=>x[0]));
+    const sceneNames=new Set(scenes.map(x=>x[0]));
+    const elementNames=new Set(elements.map(x=>x[0]));
+    const propNames=new Set(props.map(x=>x[0]));
+    const strokeNames=new Set(brushTools.filter(x=>x[0]!=='eraser').map(x=>x[0]));
+    function cleanCanvas(raw){
+      if(!raw||typeof raw!=='object'||!sceneNames.has(raw.scene)||
+        !Array.isArray(raw.marks)||raw.marks.length>260||
+        !Array.isArray(raw.props)||raw.props.length>45||
+        !validColor(raw.color)||!finite(raw.size,.5,2.4))throw Error('invalid canvas');
+      const marks=raw.marks.map(mark=>{
+        if(!mark||typeof mark!=='object'||!validColor(mark.color))throw Error('invalid mark');
+        if(mark.kind==='stroke'){
+          if(!strokeNames.has(mark.type)||!finite(mark.size,.5,2.4)||
+            !Array.isArray(mark.coords)||mark.coords.length===0||mark.coords.length>3000||
+            !mark.coords.every(p=>Array.isArray(p)&&p.length===2&&
+              finite(p[0],-200,W+200)&&finite(p[1],-200,H+200)))throw Error('invalid stroke');
+          return {kind:'stroke',type:mark.type,color:mark.color,size:mark.size,
+            coords:mark.coords.map(p=>[p[0],p[1]])};
+        }
+        if(mark.kind==='element'){
+          if(!elementNames.has(mark.type)||!finite(mark.x,-200,W+200)||
+            !finite(mark.y,-200,H+200)||!finite(mark.size,1,150)||
+            !finite(mark.seed,0,10)||!finite(mark.speed,.1,2))throw Error('invalid element');
+          return {kind:'element',type:mark.type,x:mark.x,y:mark.y,size:mark.size,
+            color:mark.color,seed:mark.seed,speed:mark.speed};
+        }
+        throw Error('unsupported mark');
+      });
+      const cleanProps=raw.props.map(p=>{
+        if(!p||typeof p!=='object'||!propNames.has(p.type)||
+          typeof p.id!=='string'||p.id.length>90||p.id.length===0||
+          !finite(p.x,-1000,W+1000)||!finite(p.y,-1000,H+1000)||
+          !finite(p.scale,.1,3)||!finite(p.angle,-100,100)||
+          !finite(p.z,-100000,100000))throw Error('invalid object');
+        return {id:p.id,type:p.type,x:p.x,y:p.y,scale:p.scale,angle:p.angle,z:p.z};
+      });
+      if(new Set(cleanProps.map(p=>p.id)).size!==cleanProps.length)throw Error('duplicate objects');
+      return {scene:raw.scene,marks,props:cleanProps,color:raw.color,size:raw.size};
+    }
+    function exportEditable(){
+      try{
+        const all=new Map(workspaces);
+        all.set(model.mood,snapshot());
+        const canvases=moods.map(([name])=>
+          ({mood:name,...cleanCanvas(all.get(name)||{
+            scene:moods.find(x=>x[0]===name)[1],marks:[],props:[],
+            color:moods.find(x=>x[0]===name)[4],size:1
+          })}));
+        const doc={format:'today-pause-editable-palette',version:1,
+          exportedAt:new Date().toISOString(),activeMood:model.mood,canvases};
+        const blob=new Blob([JSON.stringify(doc)],{type:'application/json'});
+        const url=URL.createObjectURL(blob),a=document.createElement('a');
+        a.href=url;a.download='今日一息-24種情緒可編輯畫布.json';
+        a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+        sayBackup('已準備下載 24 張可編輯畫布備份；請確認檔案已儲存。');
+      }catch(_){sayBackup('備份沒有成功。請先保留頁面，不要重新整理。')}
+    }
+    function importEditable(file){
+      if(!file||file.size>2*1024*1024){
+        sayBackup('檔案超過 2 MB，未讀取也未更動現有畫布。');return;
+      }
+      file.text().then(raw=>{
+        const doc=JSON.parse(raw);
+        if(doc?.format!=='today-pause-editable-palette'||doc.version!==1||
+          !Array.isArray(doc.canvases)||doc.canvases.length!==24||
+          !moodNames.has(doc.activeMood))throw Error('wrong file');
+        const imported=new Map();
+        for(const item of doc.canvases){
+          if(!item||!moodNames.has(item.mood)||imported.has(item.mood))throw Error('duplicate mood');
+          imported.set(item.mood,cleanCanvas(item));
+        }
+        if(!window.confirm('匯入會取代這次開啟期間的 24 張畫布。請先匯出目前作品備份。確定匯入嗎？'))return;
+        workspaces.clear();histories.clear();
+        for(const [key,value] of imported)workspaces.set(key,value);
+        const selected=workspaces.get(doc.activeMood);
+        Object.assign(model,selected,{mood:doc.activeMood,selected:null});
+        history=createHistory();histories.set(doc.activeMood,history);
+        updateSelections();paint(performance.now(),true);schedule();
+        sayBackup('匯入成功：24 張情緒畫布已恢復，可繼續編輯。');
+      }).catch(()=>sayBackup('檔案內容不符或無法讀取；現有畫布保持不變。'));
+    }
+    $('worldExportEditable')?.addEventListener('click',exportEditable);
+    $('worldImportEditable')?.addEventListener('click',()=>$('worldImportFile')?.click());
+    $('worldImportFile')?.addEventListener('change',e=>{
+      const file=e.target.files?.[0];if(file)importEditable(file);
+      e.target.value='';
+    });
     const downloadWorld=()=>{
       paint(performance.now(),true);
       try{
