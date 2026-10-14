@@ -168,10 +168,10 @@ const realisticMoodScenes=Object.freeze({
   '想念':'./media/generated/scene-01.webp',
   '希望':'./media/generated/scene-10.webp',
   '期待':'./media/generated/scene-12.webp',
-  '好奇':'./media/generated/scene-11.webp',
-  '安心':'./media/generated/scene-08.webp',
-  '溫柔':'./media/generated/scene-06.webp',
-  '想重新開始':'./media/generated/scene-04.webp',
+  // Indoor moods stay on their matching room/library compositions until
+  // independently usable indoor image assets have been reviewed.
+  // Do not present garden photographs or flower close-ups as living rooms.
+  // '好奇' similarly awaits its fern-path scene rather than a greenhouse photo.
   '想看海':'./media/generated/scene-02.webp',
   '想接近自然':'./media/generated/scene-03.webp'
 });
