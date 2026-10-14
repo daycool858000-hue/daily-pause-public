@@ -44,7 +44,7 @@
     {id:'somnium',title:'夢境輕語',kind:'music',src:'./media/audio/somnium.mp3',page:'https://opengameart.org/content/somnium',license:'CC0 1.0',artist:'Adiutorium',work:'夢境輕語',level:0.078},
     {id:'river-lapping',title:'細流輕拍',kind:'nature',src:'./media/audio/river-lapping.mp3',page:'https://opengameart.org/content/sea-and-river-wave-sounds',license:'CC0 1.0',artist:'RandomMind',work:'細流輕拍',level:0.055}
   ];
-  const areas=['today','read','curiosity','palette','holding'];
+  const areas=['today','read','curiosity','palette','garden','holding'];
   // Keep existing desktop output behavior. Audio files are now pre-normalized for softer iOS playback.
   // Desktop fine-pointer devices previously had volume levels as low as 0.052.
   const desktopAudio=window.matchMedia?.('(pointer: fine)')?.matches
