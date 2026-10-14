@@ -7,6 +7,20 @@
   if(!root)return;
   const by=id=>document.getElementById(id);
   const storageKey='daily-pause-garden-v1';
+  const sprites=window.PauseGardenSprites;
+  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
+  const hash=id=>{let n=2166136261;for(const c of id){n=Math.imul(n^c.charCodeAt(0),16777619)}return n>>>0};
+  function defaultPosition(item){
+    const h=hash(item.id),index=h%24;
+    return {x:clamp(12+(index%6)*14+((h>>>8)%5)-2,8,92),
+      y:clamp(58+Math.floor(index/6)*10+((h>>>12)%5)-2,48,90)};
+  }
+  function position(item){
+    const d=defaultPosition(item);
+    return {x:Number.isFinite(item.x)?clamp(item.x,8,92):d.x,
+      y:Number.isFinite(item.y)?clamp(item.y,45,90):d.y};
+  }
   const worlds=[
     {id:'flowers',name:'花園',sub:'為自己種一片花與樹',image:'./media/generated/scene-04.webp',
       plants:['玫瑰','向日葵','繡球花','薰衣草','蘋果樹'],pets:['貓','狗','兔子','天竺鼠']},
@@ -43,7 +57,8 @@
       Number.isInteger(item.care)&&item.care>=0&&item.care<100000
     ).map(item=>({id:item.id,world:item.world,kind:item.kind,species:item.species,
       createdAt:item.createdAt,care:item.care,lastAction:typeof item.lastAction==='string' ?
-        item.lastAction.slice(0,30):''}));
+        item.lastAction.slice(0,30):'',
+      ...position(item)}));
     return clean;
   }
   let state;
@@ -66,12 +81,33 @@
       '<img src="'+w.image+'" alt="" loading="lazy"><span><strong>'+w.name+'</strong><small>'+w.sub+'</small></span></button>'
     ).join('');
   }
+  function renderResidentsStage(){
+    const area=by('gardenResidentsStage');if(!area)return;
+    const items=itemsHere();
+    area.innerHTML=items.slice(0,30).map(item=>{
+      const p=position(item),stage=growthLevel(item);
+      const label=esc(item.species)+'，'+(item.kind==='pet'?'點擊照顧':growth(item)+'，點擊照顧');
+      const svg=sprites?.markup(item,stage)||'<span aria-hidden="true">'+(ICONS[item.species]||'🌱')+'</span>';
+      return '<button type="button" class="garden-stage-resident garden-stage-'+item.kind+
+        '" data-stage-resident="'+item.id+'" style="left:'+p.x+'%;top:'+p.y+'%" aria-label="'+label+
+        '" title="'+esc(item.species)+'">'+svg+'</button>';
+    }).join('');
+    by('gardenStageHint').textContent=items.length>30
+      ?'場景先顯示 30 位夥伴，其餘可在下方清單找到。點一下照顧，按住拖曳可移動。'
+      :'點一下照顧小生命，按住拖曳可以替牠們換個位置。';
+  }
+  function growthLevel(item){
+    if(item.kind!=='plant')return 3;
+    const days=Math.max(0,Math.floor((Date.now()-item.createdAt)/day));
+    return Math.min(3,Math.floor(days/2)+Math.floor(item.care/3));
+  }
   function renderCollection(){
     const w=currentWorld(),items=itemsHere();
     by('gardenWorldTitle').textContent=w.name;
     by('gardenWorldSubtitle').textContent=w.sub;
     by('gardenBackdrop').style.backgroundImage='url("'+w.image+'")';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
+    renderResidentsStage();
     by('gardenPets').innerHTML=w.pets.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
     by('gardenPlants').innerHTML=w.plants.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
     by('gardenResidents').innerHTML=items.length?items.map(item=>
@@ -98,7 +134,10 @@
       by('gardenFeedback').textContent='這片花園已經很熱鬧，先照顧現在的夥伴吧。';return;
     }
     const id=(globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)).replace(/[^a-z0-9-]/gi,'').slice(0,48);
-    const item={id,world:state.world,kind,species:name,createdAt:Date.now(),care:0,lastAction:''};
+    const occupied=itemsHere();
+    const slot=occupied.length%24;
+    const item={id,world:state.world,kind,species:name,createdAt:Date.now(),care:0,lastAction:'',
+      x:clamp(13+(slot%6)*14,8,92),y:clamp(57+Math.floor(slot/6)*10,45,90)};
     state.items.push(item);save();renderCollection();
     by('gardenFeedback').textContent=kind==='pet'?name+'來到這裡了。慢慢認識牠也很好。':name+'已經種下，會按自己的步調長大。';
     by('gardenWorldRoom').classList.remove('garden-pop');void by('gardenWorldRoom').offsetWidth;by('gardenWorldRoom').classList.add('garden-pop');
@@ -128,6 +167,12 @@
     // Preserve panel; re-render resident growth without scrolling elsewhere.
     const selected=item.id;renderCollection();by('gardenCarePanel').dataset.selected=selected;
     by('gardenCarePanel').hidden=false;
+    const marker=by('gardenResidentsStage')?.querySelector('[data-stage-resident="'+item.id+'"]');
+    if(marker){
+      marker.dataset.activity=action;
+      if(!reduceMotion)setTimeout(()=>{if(marker.isConnected)delete marker.dataset.activity},1300);
+      else delete marker.dataset.activity;
+    }
   }
   function backup(){
     const b=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),...state},null,2)],{type:'application/json'});
@@ -141,6 +186,9 @@
       const raw=JSON.parse(text);
       if(raw.version!==1||!Array.isArray(raw.items)||raw.items.length>160)throw Error('invalid');
       const clean=sanitize(raw);
+      // Reject invalid backups rather than silently discarding residents.
+      if(clean.items.length!==raw.items.length || clean.items.length>160)throw Error('invalid residents');
+      if(new Set(clean.items.map(x=>x.id)).size!==clean.items.length)throw Error('duplicate ids');
       // Do not silently merge into an existing garden.
       if(!window.confirm('匯入將取代這台裝置目前的陪伴花園。確定要繼續嗎？'))return;
       state=clean;save();renderCollection();by('gardenFeedback').textContent='備份已匯入。';
@@ -157,9 +205,54 @@
     if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
     else setTimeout(finish,700);
   }
+  let drag=null,lastDragEnded=0;
+  const stage=by('gardenResidentsStage');
+  if(stage){
+    stage.addEventListener('pointerdown',e=>{
+      const button=e.target.closest?.('[data-stage-resident]');
+      if(!button||e.button>0)return;
+      const item=itemsHere().find(x=>x.id===button.dataset.stageResident);if(!item)return;
+      const rect=stage.getBoundingClientRect(),point=position(item);
+      drag={button,id:e.pointerId,item,rect,startX:e.clientX,startY:e.clientY,x:point.x,y:point.y,moved:false};
+      try{button.setPointerCapture(e.pointerId)}catch(_){}
+    });
+    stage.addEventListener('pointermove',e=>{
+      if(!drag||drag.id!==e.pointerId)return;
+      const d=drag;
+      if(!d.moved&&Math.hypot(e.clientX-d.startX,e.clientY-d.startY)<6)return;
+      d.moved=true;e.preventDefault();
+      const x=clamp(d.x+(e.clientX-d.startX)/(d.rect.width||1)*100,8,92);
+      const y=clamp(d.y+(e.clientY-d.startY)/(d.rect.height||1)*100,45,90);
+      d.button.style.left=x+'%';d.button.style.top=y+'%';
+    });
+    const end=e=>{
+      if(!drag||drag.id!==e.pointerId)return;
+      if(drag.moved){
+        const d=drag;d.item.x=clamp(d.x+(e.clientX-d.startX)/(d.rect.width||1)*100,8,92);
+        d.item.y=clamp(d.y+(e.clientY-d.startY)/(d.rect.height||1)*100,45,90);
+        lastDragEnded=Date.now();save();
+      }
+      try{drag.button.releasePointerCapture(e.pointerId)}catch(_){}
+      drag=null;
+    };
+    stage.addEventListener('pointerup',end);
+    stage.addEventListener('pointercancel',end);
+    stage.addEventListener('keydown',e=>{
+      if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))return;
+      const b=e.target.closest?.('[data-stage-resident]');if(!b)return;
+      const item=itemsHere().find(x=>x.id===b.dataset.stageResident);if(!item)return;
+      const old=position(item);item.x=clamp(old.x+(e.key==='ArrowLeft'?-3:e.key==='ArrowRight'?3:0),8,92);
+      item.y=clamp(old.y+(e.key==='ArrowUp'?-3:e.key==='ArrowDown'?3:0),45,90);
+      b.style.left=item.x+'%';b.style.top=item.y+'%';e.preventDefault();save();
+    });
+  }
   root.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.id==='gardenEnter'||b.id==='gardenSkipGate')enter();
+    else if(b.dataset.stageResident){
+      if(Date.now()-lastDragEnded<350)return;
+      selectItem(b.dataset.stageResident);
+    }
     else if(b.dataset.chooseWorld)setWorld(b.dataset.chooseWorld);
     else if(b.id==='gardenChangeWorld'){by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
     else if(b.id==='gardenAddPet')add('pet');
