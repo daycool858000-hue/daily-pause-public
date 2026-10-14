@@ -261,3 +261,28 @@
 .garden-recovery-actions button{font:inherit;border:1px solid #bd9b71;background:#fffdf7;
  color:#705c48;border-radius:999px;padding:.8rem 1rem;cursor:pointer}
 .garden-recovery-actions button:focus-visible{outline:3px solid #ac7c4e;outline-offset:3px}
+
+/* Personal furnishing collection, visually grouped below the living stage. */
+.garden-decor-controls{
+  margin-top:1.1rem;padding:1.15rem 1.3rem;background:#fffcf5;
+  border:1px solid #ddd9ca;border-radius:20px;color:#637367;
+}
+.garden-decor-controls h3{margin:0 0 .35rem;color:#4d685a;font-size:1.09rem}
+.garden-decor-controls p{margin:.3rem 0 .75rem;line-height:1.7;font-size:.88rem}
+.garden-decor-picker{display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;margin-bottom:.65rem}
+.garden-decor-picker label{font-size:.82rem}
+.garden-decor-picker select{
+  flex:1 1 140px;min-width:0;padding:.65rem .8rem;
+  border:1px solid #d0d6c9;border-radius:12px;background:#fff;color:#506c5a;font:inherit;
+}
+.garden-decor-picker button{white-space:nowrap}
+.garden-decor-selected{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;
+ margin-top:.85rem;padding:.75rem;border:1px solid #d5d3c6;border-radius:13px;background:#f7f7ef}
+.garden-decor-selected[hidden]{display:none}
+.garden-decor-selected button{border:1px solid #bdc9bb;border-radius:999px;
+ padding:.55rem .8rem;background:#fff;color:#587060;font:inherit;cursor:pointer}
+.garden-decor-selected button:focus-visible{outline:3px solid #76998a;outline-offset:2px}
+.garden-stage-decor{width:clamp(64px,11vw,130px);height:clamp(60px,11vw,120px)}
+.garden-stage-decor svg{animation:none!important}
+.garden-stage-decor:focus-visible{outline:3px solid #f3e1b4;outline-offset:2px}
+@media(max-width:620px){.garden-decor-controls{padding:.9rem}.garden-stage-decor{width:clamp(55px,17vw,100px);height:clamp(53px,16vw,94px)}}
