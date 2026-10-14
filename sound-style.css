@@ -77,3 +77,16 @@
 }
 .site-footer .pause-music-credits p{margin:9px auto;text-align:left}
 .site-footer .pause-music-credits a{color:#51786c;text-decoration:underline;text-underline-offset:3px}
+
+/* Optional offline audio download: stays within the original unobtrusive soundbar. */
+.pause-soundbar{position:relative}
+.pause-soundbar [data-sound-save-offline]{font-weight:600}
+.pause-soundbar [data-sound-save-offline]:disabled{opacity:.4;cursor:wait}
+.pause-sound-offline-hint:empty{display:none}
+.pause-sound-offline-hint:not(:empty){
+ display:block;position:absolute;z-index:9;top:calc(100% + 5px);right:0;
+ max-width:260px;min-width:150px;box-sizing:border-box;
+ padding:7px 10px;border:1px solid #c7d8ca;border-radius:11px;
+ background:#fffdf7;color:#547464;font-size:.68rem;line-height:1.5;
+ box-shadow:0 6px 17px #6d806c22;white-space:normal;
+}
