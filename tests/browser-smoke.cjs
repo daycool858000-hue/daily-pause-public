@@ -125,6 +125,18 @@ const server=http.createServer(async(req,res)=>{
     assert.equal(lonely.props.length,1,'Furniture must stay editable after landscape switch');
     assert.equal(lonely.marks.length,1,'Object mode must not paint; brush must paint over furniture');
     assert.equal(lonely.customScene,false,'Reset should restore the independent mood preset');
+    // Actual branch-rendered scene screenshots are the visual review source.
+    // Unlike concept art, these contain exactly what the draft canvas displays.
+    if(scenario.engine===chromium){
+      const sceneNames=['room','living','sea','rain','garden','night','island',
+        'balcony','hill','lake','library','cloud','sunrise','blank'];
+      for(const sceneName of sceneNames){
+        await page.locator('[data-scene="'+sceneName+'"]').click();
+        await page.waitForTimeout(220); // leave time for local WebP decoding
+        await stage.screenshot({path:path.join(__dirname,'screenshots',
+          'palette-scene-'+sceneName+'.png')});
+      }
+    }
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
       'The garden must share the existing playback and offline sound controls');
