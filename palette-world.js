@@ -49,7 +49,8 @@
     const root=$('paletteWorld'), canvas=$('worldCanvas'),wrap=$('worldStage'); if(!root||!canvas)return;
     const ctx=canvas.getContext('2d',{alpha:false}); if(!ctx)return;
     const art=window.PauseWorldArt; if(!art)return;
-    const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const W=art.W,H=art.H, motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+    let reduce=motionPreference.matches;
     const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null,customScene:false};
     const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
       'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
@@ -280,7 +281,7 @@
       ctx.restore();
     }
     const schedule=()=>{
-      if(frames!==null||document.hidden||$('palette').hidden||model.paused||reduce)return;
+      if(pointer||frames!==null||document.hidden||$('palette').hidden||model.paused||reduce)return;
       frames=requestAnimationFrame(t=>{frames=null;if(t-lastMoment>32){paint(t);lastMoment=t}schedule()});
     };
     const stop=()=>{if(frames!==null){cancelAnimationFrame(frames);frames=null}};
@@ -379,6 +380,7 @@
         history.record();model.selected=null;let mark=createMark(p);
         pointer={id:e.pointerId,mode:'mark',from:p,mark,last:p};
       }
+      if(pointer)stop(); // Avoid competing background frames while a finger or pen is drawing.
       try{canvas.setPointerCapture(e.pointerId)}catch(_){}
       updateSelections();paint(performance.now(),true);
     });
@@ -593,6 +595,12 @@
       if(document.hidden||$('palette').hidden){stop();return}
       sizeCanvas();schedule();
     };
+    // Match the device's current accessibility setting without needing a reload.
+    motionPreference.addEventListener?.('change',event=>{
+      reduce=event.matches;
+      if(reduce){stop();paint(performance.now(),true)}
+      else {paint(performance.now(),true);schedule()}
+    });
     document.addEventListener('visibilitychange',onVisible);
     window.addEventListener('palette-view-change',onVisible);
     window.addEventListener('resize',onVisible);
