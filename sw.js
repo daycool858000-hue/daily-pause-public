@@ -1,17 +1,18 @@
 // 今日一息：只快取網站程式與使用者主動選擇的離線聲音。
 // Never touch localStorage, IndexedDB or the Holding Place's private records.
 'use strict';
-const VERSION='20261014-01';
+const VERSION='20261015-01';
 const SHELL='todaypause-shell-'+VERSION;
 const MEDIA='todaypause-audio-v1';
 const CORE=[
-  "./",
   "./index.html",
+  "./icons/today-pause-180.png",
+  "./manifest.webmanifest",
   "./styles.css?v=20261013-3",
   "./world-style.css?v=20261013-7",
   "./surprise-style.css?v=20261013-2",
   "./sound-style.css?v=20261013-3",
-  "./garden.css?v=20261014-2",
+  "./garden.css?v=20261014-5",
   "./media.js?v=20261010-7",
   "./long-articles.js?v=20261012-7",
   "./short-articles.js?v=20261010-4",
@@ -25,21 +26,26 @@ const CORE=[
   "./reading-20261013.js?v=20261013-2",
   "./palette-history.js?v=20261013-1",
   "./world-art.js?v=20261013-3",
-  "./mood-scenery.js?v=20261014-1",
+  "./mood-scenery.js?v=20261014-2",
   "./mood-atmospheres.js?v=20261014-1",
-  "./palette-world.js?v=20261014-4",
+  "./palette-world.js?v=20261014-5",
   "./photo-rotation.js?v=20261013-1",
-  "./soundscape.js?v=20261013-9",
+  "./offline-audio.js?v=20261014-1",
+  "./soundscape.js?v=20261014-2",
   "./companion-site.js?v=20261013-5",
   "./rest-stage.js?v=20261013-5",
   "./surprise-visit.js?v=20261013-4",
   "./app.js?v=20261013-10",
   "./quiet-spaces.js?v=20261012-8",
   "./garden-scenes.js?v=20261014-1",
+  "./garden-motion.js?v=20261014-1",
+  "./garden-decor.js?v=20261014-1",
   "./garden-sprites.js?v=20261014-1",
-  "./garden.js?v=20261014-3",
-  "./manifest.webmanifest",
-  "./icons/today-pause-180.png",
+  "./garden.js?v=20261015-2",
+  "./media/generated/scene-02.webp",
+  "./media/generated/scene-03.webp",
+  "./media/generated/scene-08.webp",
+  "./media/generated/scene-11.webp",
   "./icons/today-pause-192.png",
   "./icons/today-pause-512.png"
 ];
