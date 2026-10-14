@@ -1,5 +1,5 @@
 // 今日一息｜陪伴花園第一階段：本機單人照顧與五個世界。
-// This is a development preview. Landscape images are existing on-site artwork,
+// Development preview: existing AI-generated landscapes, rights still under review.
 // pending original dedicated assets, rights verification and owner visual acceptance.
 (() => {
   'use strict';
@@ -170,8 +170,14 @@
     const marker=by('gardenResidentsStage')?.querySelector('[data-stage-resident="'+item.id+'"]');
     if(marker){
       marker.dataset.activity=action;
-      if(!reduceMotion)setTimeout(()=>{if(marker.isConnected)delete marker.dataset.activity},1300);
-      else delete marker.dataset.activity;
+      marker.querySelector('.garden-action-vfx')?.remove();
+      if(!reduceMotion){
+        marker.insertAdjacentHTML('beforeend',sprites?.effect(action)||'');
+        setTimeout(()=>{if(marker.isConnected){
+          delete marker.dataset.activity;
+          marker.querySelector('.garden-action-vfx')?.remove();
+        }},1400);
+      }else delete marker.dataset.activity;
     }
   }
   function backup(){
