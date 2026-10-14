@@ -198,3 +198,41 @@
  .garden-explore-message{font-size:.73rem;padding:.65rem .9rem;border-radius:17px}
 }
 @media(prefers-reduced-motion:reduce){.garden-hotspot-active:after{animation:none;top:-.6rem;opacity:1}}
+
+/* Changeable lighting without reloading the environment or its inhabitants. */
+.garden-light-control{
+ display:flex;align-items:center;justify-content:space-between;gap:1rem;
+ flex-wrap:wrap;margin-top:.8rem;padding:.75rem 1rem;border:1px solid #e0d9c9;
+ border-radius:17px;background:#fffcf6;color:#6b675d;font-size:.88rem;
+}
+.garden-light-choices{display:flex;gap:.4rem;flex-wrap:wrap}
+.garden-light-choices button{
+ border:1px solid #ddd2c2;background:#fffdf9;color:#72685c;cursor:pointer;
+ border-radius:999px;padding:.55rem .85rem;min-height:40px;font:inherit;font-size:.82rem;
+}
+.garden-light-choices button[aria-pressed="true"]{
+ border-color:#7d9b87;background:#e4eee5;color:#3f6454;box-shadow:inset 0 0 0 1px #7d9b87;
+}
+.garden-landscape:before{
+ content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+ transition:background .65s ease;
+}
+.garden-landscape[data-light="morning"]:before{
+ background:linear-gradient(120deg,#ffeabb5a 0%,#fff1d31d 50%,transparent 85%);
+}
+.garden-landscape[data-light="day"]:before{background:transparent}
+.garden-landscape[data-light="dusk"]:before{
+ background:linear-gradient(125deg,#c47e5830 0%,#ebaf6544 45%,#69566b33 100%);
+}
+.garden-landscape[data-light="night"]:before{
+ background:linear-gradient(145deg,#23385298 0%,#364a6f90 52%,#121d3555 100%);
+}
+.garden-landscape[data-light="night"] .garden-stage-resident{
+ filter:drop-shadow(0 1px 10px #f7d38c55);
+}
+@media(max-width:420px){
+ .garden-light-control{padding:.65rem .7rem}
+ .garden-light-choices{gap:.25rem}
+ .garden-light-choices button{padding:.5rem .67rem}
+}
+@media(prefers-reduced-motion:reduce){.garden-landscape:before{transition:none!important}}
