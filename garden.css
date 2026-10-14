@@ -305,3 +305,57 @@
  100%{opacity:0;transform:translate(-50%,-50px) scale(.9)}
 }
 @media(prefers-reduced-motion:reduce){.garden-word-trail{animation:none;opacity:1}}
+
+/* Five distinct ambient landscapes; each motion is restrained, not a generic overlay. */
+.garden-scene-fx{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.garden-scene-fx span{position:absolute;display:block;pointer-events:none}
+.garden-ambient-petal{
+ top:-18px;width:13px;height:9px;border-radius:3px 12px 3px 12px;
+ background:linear-gradient(135deg,#f9e4db,#e7b8a7);opacity:.7;
+ animation:garden-falling-petals 15s linear infinite;
+ animation-delay:var(--delay);
+}
+.garden-ambient-stem{
+ bottom:-2%;height:20%;width:3px;background:#9aae78a6;border-radius:100%;
+ transform-origin:50% 100%;box-shadow:4px 4px 4px #667b5230;
+ animation:garden-crop-breeze 6.2s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-stem:before{
+ content:'';position:absolute;left:-7px;top:17%;width:20px;height:10px;
+ border-radius:100% 0;background:#a8bd83c0;transform:rotate(-35deg);
+}
+.garden-ambient-sunray{
+ top:-15%;height:90%;width:13%;opacity:.16;
+ transform:rotate(20deg);
+ background:linear-gradient(to bottom,#fff6d0d1,#fff9df14);
+ filter:blur(15px);animation:garden-rays 13s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-wave{
+ left:15%;width:72%;height:3px;border-radius:100%;opacity:.42;
+ background:linear-gradient(90deg,transparent,#fdf6dd 22%,#fefce9 57%,transparent);
+ box-shadow:0 8px 2px #ebf4e355;
+ animation:garden-water-flow 8s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-ripple{
+ width:14%;aspect-ratio:2.8;border:2px solid #e2eddd85;border-radius:50%;
+ opacity:.7;animation:garden-ripple 8.8s ease-out infinite;
+ animation-delay:var(--delay);
+}
+@keyframes garden-falling-petals{
+ 0%{transform:translateY(-5px) translateX(0) rotate(-28deg) scale(var(--scale));opacity:0}
+ 15%{opacity:.68}
+ 70%{opacity:.55}
+ 100%{transform:translateY(560px) translateX(70px) rotate(340deg) scale(var(--scale));opacity:0}
+}
+@keyframes garden-crop-breeze{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes garden-rays{from{opacity:.07;transform:rotate(17deg)}to{opacity:.23;transform:rotate(22deg)}}
+@keyframes garden-water-flow{from{transform:translateX(-5%) scaleX(.87)}to{transform:translateX(5%) scaleX(1.05)}}
+@keyframes garden-ripple{0%{opacity:0;transform:scale(.3)}25%{opacity:.65}100%{opacity:0;transform:scale(2)}}
+@media(max-width:620px){.garden-ambient-petal{width:9px;height:7px}}
+@media(prefers-reduced-motion:reduce){
+ .garden-scene-fx span{animation:none!important;transform:none!important;opacity:.2}
+ .garden-ambient-petal{display:none}
+}
