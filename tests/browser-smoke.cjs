@@ -140,6 +140,13 @@ const server=http.createServer(async(req,res)=>{
     assert.ok(nextX>previousX,'Decor furniture keyboard movement should persist');
     await page.locator('[data-garden-hotspot="crop"]').click();
     assert.ok((await page.locator('#gardenExploreMessage').textContent()).length>5);
+    await page.locator('[data-self-care="water"]').click();
+    assert.ok((await page.locator('#gardenSelfCareFeedback').textContent()).includes('喝一點水'),
+      'Optional self-care needs a visible response');
+    const storedBefore=await page.evaluate(()=>localStorage.getItem('daily-pause-garden-v1'));
+    await page.locator('[data-self-care="feelings"]').click();
+    const storedAfter=await page.evaluate(()=>localStorage.getItem('daily-pause-garden-v1'));
+    assert.equal(storedAfter,storedBefore,'Self-care selections must never be tracked');
     await page.locator('[data-garden-light="night"]').click();
     assert.equal(await page.locator('.garden-landscape').getAttribute('data-light'),'night');
     await page.reload({waitUntil:'load'});
