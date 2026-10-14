@@ -1,0 +1,59 @@
+/* 陪伴花園：第一階段手機優先互動骨架。正式寫實場景素材待獨立產製及驗收。 */
+.garden-view{max-width:1140px;margin:0 auto;padding:1.5rem 1.25rem 5rem;color:#574b43}
+.garden-intro h1{font-size:clamp(2rem,5vw,3.8rem);line-height:1.16;letter-spacing:.04em;margin:.4rem 0}
+.garden-intro p{max-width:700px;line-height:1.9;color:#756a60}
+.garden-gate{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:radial-gradient(circle at 55% 30%,#f5ddba,#bda58d 70%,#807369);overflow:hidden}
+.garden-gate[hidden],.garden-choices[hidden],.garden-room[hidden],.garden-care[hidden]{display:none!important}
+.garden-door-frame{width:min(74vw,405px);height:min(74vh,690px);max-height:640px;border:17px solid #b69877;border-bottom-width:5px;border-radius:210px 210px 8px 8px;box-shadow:0 0 0 10px #dbccb3,0 16px 70px #56443688;position:relative;background:linear-gradient(150deg,#e5cfad,#8fae95 66%,#648775);perspective:900px;overflow:hidden}
+.garden-door-glimpse{position:absolute;inset:0;background:url('./media/generated/scene-04.webp') center/cover}
+.garden-door-leaf{position:absolute;width:34px;height:70px;border-radius:90% 2%;background:#80988488;filter:blur(2px);animation:garden-leaves 5s ease-in-out infinite alternate}
+.garden-door-leaf.a{left:5%;top:10%}.garden-door-leaf.b{right:8%;top:35%;animation-delay:1.2s}
+.garden-door{position:absolute;inset:0;border:2px solid #c9ad88;border-radius:205px 205px 5px 5px;background:linear-gradient(100deg,#97775c,#cfad83 32%,#ad8564 65%,#957155);box-shadow:inset 22px 0 38px #704f3480,inset -18px 0 32px #f2d7a066;transform-origin:left center;transition:transform .7s ease}
+.garden-door:after{content:'';position:absolute;right:11%;top:53%;width:23px;height:23px;border:4px solid #dfc08c;border-radius:50%;box-shadow:0 0 0 3px #80684c}
+.garden-door-open .garden-door{transform:rotateY(-98deg)}
+.garden-gate-title{position:absolute;bottom:9%;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.garden-gate-title button{border:1px solid #e6ddd1;color:#3e554b;background:#faf6ec;padding:.8rem 2.2rem;border-radius:99px;font:inherit;font-weight:600;cursor:pointer}
+.garden-gate-title .garden-skip{font-size:.85rem;background:transparent;color:#fff;border-color:#fffc}
+.garden-gate-title strong{color:#fff9e8;letter-spacing:.1em;text-shadow:0 2px 10px #42352c}
+.garden-choices{margin-top:1.5rem}
+.garden-world-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}
+.garden-world-choice{border:1px solid #d9ccba;border-radius:22px;overflow:hidden;text-align:left;background:#fffbf4;padding:0;cursor:pointer;box-shadow:0 5px 22px #76665413;color:#524c44}
+.garden-world-choice img{display:block;object-fit:cover;width:100%;aspect-ratio:16/9}
+.garden-world-choice span{display:flex;flex-direction:column;gap:4px;padding:1rem}
+.garden-world-choice strong{font-size:1.17rem}.garden-world-choice small{font-size:.88rem;color:#81756b}
+.garden-world-choice:focus-visible,.garden-view button:focus-visible{outline:3px solid #648a7a;outline-offset:3px}
+.garden-room{margin-top:1.7rem}
+.garden-room-header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:.9rem}
+.garden-room-header h2{margin:.2rem 0;font-size:1.8rem}
+.garden-room-header p{margin:0;color:#756a60}
+.garden-view button:not(.garden-world-choice):not(.garden-resident):not(.garden-gate button){font:inherit;cursor:pointer}
+.garden-soft-button,.garden-add-button,.garden-care-actions button{padding:.7rem 1.1rem;border-radius:99px;border:1px solid #c7c9b9;background:#faf9f3;color:#52695e}
+.garden-add-button{background:#567d70!important;color:white!important;border-color:#567d70!important}
+.garden-landscape{position:relative;min-height:340px;aspect-ratio:16/9;max-height:650px;overflow:hidden;border-radius:26px;isolation:isolate;box-shadow:0 15px 40px #73685827}
+.garden-backdrop{position:absolute;inset:0;background-position:center;background-size:cover;transform:scale(1.035);animation:garden-breeze 14s ease-in-out infinite alternate;z-index:-1}
+.garden-landscape:after{content:'';pointer-events:none;position:absolute;inset:0;background:linear-gradient(0deg,#283b3199,transparent 48%)}
+.garden-landscape-message{position:absolute;bottom:1.2rem;left:1.4rem;color:white;z-index:1;text-shadow:0 1px 8px #122a27}
+.garden-pop .garden-backdrop{animation:garden-breeze 1.2s ease-in-out}
+.garden-controls{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+.garden-control-box,.garden-residents-box,.garden-care{background:#fffcf5;border:1px solid #e0d7c9;border-radius:21px;padding:1.2rem}
+.garden-control-box h3,.garden-residents-box h3{margin:.15rem 0 .8rem}
+.garden-control-box select{min-width:0;width:100%;padding:.7rem;border-radius:12px;border:1px solid #c9cbbf;background:#fff;color:#4a554e;font:inherit;margin-bottom:.7rem}
+.garden-residents-box{margin-top:1.4rem}
+.garden-residents{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+.garden-resident{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;min-height:112px;border:1px solid #d3d6c8;border-radius:14px;background:#f7f8f1;padding:.7rem;cursor:pointer;color:#4d6056}
+.garden-resident-icon{font-size:2.1rem}.garden-resident small{font-size:.76rem;color:#79877c}
+.garden-empty{color:#807568;line-height:1.8}
+.garden-care{margin-top:1rem}
+.garden-care-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.garden-care-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+.garden-care label{display:block;margin-bottom:.35rem}
+.garden-care textarea{box-sizing:border-box;width:100%;padding:.8rem;min-height:78px;border-radius:12px;border:1px solid #cdd3c6;resize:vertical;background:white;font:inherit;color:#4d554e}
+.garden-care-feedback{line-height:1.8;min-height:2em;color:#557a6e}
+.garden-backup{display:flex;flex-wrap:wrap;gap:.75rem;margin:1.2rem 0}
+.garden-note{color:#8a7c6b;font-size:.86rem;line-height:1.8}
+.garden-pulse{animation:garden-feedback .7s ease}.garden-save-state{font-size:.8rem;color:#648478}
+@keyframes garden-breeze{to{transform:scale(1.07) translateX(-1%)}}
+@keyframes garden-leaves{to{transform:translateY(14px) rotate(8deg)}}
+@keyframes garden-feedback{from{opacity:.1;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:620px){.garden-view{padding:1rem .85rem 4rem}.garden-world-grid{grid-template-columns:1fr}.garden-landscape{min-height:220px;aspect-ratio:4/3}.garden-controls{grid-template-columns:1fr}.garden-residents{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-gate-title{bottom:5%}.garden-door-frame{height:min(70vh,610px);width:min(80vw,405px)}}
+@media(prefers-reduced-motion:reduce){.garden-door,.garden-backdrop,.garden-door-leaf,.garden-pulse{transition:none!important;animation:none!important}}
