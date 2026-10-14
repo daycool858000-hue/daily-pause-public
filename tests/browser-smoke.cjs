@@ -70,6 +70,11 @@ const server=http.createServer(async(req,res)=>{
       image.src=window.PauseMoodScenes.imageUrl('安靜');
     }));
     assert.ok(rendered,'SVG mood illustration must load as a real image');
+    await fs.mkdir(path.join(__dirname,'screenshots'),{recursive:true});
+    const screenshotId=scenario.name.toLowerCase().replace(/[^a-z]+/g,'-');
+    await page.locator('#worldCanvas').screenshot({
+      path:path.join(__dirname,'screenshots',screenshotId+'-mood-canvas.png')
+    });
     const living=await page.evaluate(()=>new Promise(resolve=>{
       const image=new Image();
       image.onload=()=>resolve({ok:image.naturalWidth===960,distinct:
@@ -138,6 +143,9 @@ const server=http.createServer(async(req,res)=>{
       return data.decorations[0].x;
     });
     assert.ok(nextX>previousX,'Decor furniture keyboard movement should persist');
+    await page.locator('.garden-landscape').screenshot({
+      path:path.join(__dirname,'screenshots',screenshotId+'-farm-scene.png')
+    });
     await page.locator('[data-garden-hotspot="crop"]').click();
     assert.ok((await page.locator('#gardenExploreMessage').textContent()).length>5);
     await page.locator('[data-self-care="water"]').click();
