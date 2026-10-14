@@ -103,6 +103,12 @@
       '<path d="M65 139Q57 81 65 39" fill="none" stroke="#7d7653" stroke-width="'+trunk+'" stroke-linecap="round"/>'+
       branches+leafMarkup+pine+petals+'</g></svg>';
   }
-  function markup(item,stage){return item.kind==='pet'?animal(item.species):plant(item.species,stage)}
+  function markup(item,stage){
+    const raw=item.kind==='pet'?animal(item.species):plant(item.species,stage);
+    // Unique SVG references per resident: prevent gradient collisions across sprites.
+    const key=String(item.id||'default').replace(/[^a-z0-9-]/gi,'').slice(0,48);
+    return raw.replace(/id="(body|leaf)"/g,(_,id)=>'id="'+id+'-'+key+'"')
+      .replace(/url\(#(body|leaf)\)/g,(_,id)=>'url(#'+id+'-'+key+')');
+  }
   window.PauseGardenSprites={markup,animal,plant};
 })();
