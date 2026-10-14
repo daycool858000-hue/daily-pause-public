@@ -151,6 +151,33 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-choose-world="farm"]').click();
     assert.equal(await page.locator('[data-stage-resident]').count(),1);
     assert.equal(await page.locator('[data-stage-decor]').count(),1,'Decoration must survive reload');
+    await page.locator('[data-resident]').first().click();
+    assert.equal(await page.locator('[data-garden-action="harvest"]').count(),0,
+      'Freshly planted crops must not be harvestable immediately');
+    // Simulate a visitor returning a week later; never require a daily login streak.
+    await page.evaluate(()=>{
+      const key='daily-pause-garden-v1';
+      const state=JSON.parse(localStorage.getItem(key));
+      state.items[0].createdAt=Date.now()-9*86400000;
+      localStorage.setItem(key,JSON.stringify(state));
+    });
+    await page.reload({waitUntil:'load'});
+    await page.waitForTimeout(500);
+    if(await page.locator('#welcomeModal').isVisible())
+      await page.locator('#closeWelcome').click();
+    await page.locator('[data-view="garden"]').click();
+    await page.locator('#gardenSkipGate').click();
+    await page.locator('[data-choose-world="farm"]').click();
+    await page.locator('[data-resident]').first().click();
+    await page.locator('[data-garden-action="harvest"]').click();
+    const grown=await page.evaluate(()=>{
+      const item=JSON.parse(localStorage.getItem('daily-pause-garden-v1')).items[0];
+      return {harvests:item.harvests,lastHarvestAt:item.lastHarvestAt};
+    });
+    assert.equal(grown.harvests,1,'Mature plant must record harvest');
+    assert.ok(grown.lastHarvestAt>0);
+    assert.equal(await page.locator('[data-garden-action="harvest"]').count(),0,
+      'Plant must need time to regrow after harvest');
     const width=await page.evaluate(()=>({
       scrollWidth:document.documentElement.scrollWidth,viewport:window.innerWidth
     }));
