@@ -138,3 +138,22 @@
 }
 .garden-landscape.garden-scene-pending{border:1px dashed #b9c8b7}
 .garden-landscape.garden-scene-pending .garden-backdrop{filter:saturate(.7)}
+
+/* A distinct, geographically correct SVG environment replaces the fallback bands,
+   while remaining explicitly provisional until realistic scene art is approved. */
+.garden-backdrop.garden-has-original-art,
+.garden-backdrop.garden-has-original-art[data-area="flowers"],
+.garden-backdrop.garden-has-original-art[data-area="farm"],
+.garden-backdrop.garden-has-original-art[data-area="park"]{
+  background:none!important;filter:none!important
+}
+.garden-environment-art{
+  display:block;width:100%;height:100%;
+  object-fit:cover;pointer-events:none;
+}
+.garden-backdrop.garden-has-original-art{
+  transform:scale(1.025);animation:garden-breeze 15s ease-in-out infinite alternate;
+}
+@media(prefers-reduced-motion:reduce){
+ .garden-backdrop.garden-has-original-art{transform:none;animation:none}
+}
