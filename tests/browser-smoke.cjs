@@ -39,9 +39,12 @@ const server=http.createServer(async(req,res)=>{
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:'+port+'/',{waitUntil:'load',timeout:30000});
+    await page.waitForTimeout(500);
+    if(await page.locator('#welcomeModal').isVisible())
+      await page.locator('#closeWelcome').click();
     await page.locator('[data-view="palette"]').click();
     await page.locator('#worldMoods button').first().waitFor();
-    assert.equal(await page.locator('[data-mood]').count(),24);
+    assert.equal(await page.locator('#worldMoods [data-mood]').count(),24);
     assert.equal(await page.locator('[data-brush]').count(),8);
     const rendered=await page.evaluate(()=>new Promise(resolve=>{
       const image=new Image();
@@ -68,6 +71,9 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-garden-light="night"]').click();
     assert.equal(await page.locator('.garden-landscape').getAttribute('data-light'),'night');
     await page.reload({waitUntil:'load'});
+    await page.waitForTimeout(500);
+    if(await page.locator('#welcomeModal').isVisible())
+      await page.locator('#closeWelcome').click();
     await page.locator('[data-view="garden"]').click();
     await page.locator('#gardenSkipGate').click();
     await page.locator('[data-choose-world="farm"]').click();
