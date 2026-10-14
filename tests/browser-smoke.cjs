@@ -78,6 +78,7 @@ const server=http.createServer(async(req,res)=>{
       image.src=window.PauseMoodScenes.livingRoomUrl();
     }));
     assert.ok(living.ok&&living.distinct,'Living room must render separately from the bedroom');
+    await page.locator('[data-world-tab="scene"]').click();
     await page.locator('[data-scene="living"]').click();
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('[data-mood="孤單"]').click();
