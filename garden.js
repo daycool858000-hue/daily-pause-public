@@ -11,7 +11,11 @@
   const gateOverlay=by('gardenGate');
   if(gateOverlay && gateOverlay.parentElement!==document.body)document.body.appendChild(gateOverlay);
   gateOverlay?.addEventListener('click',e=>{
-    if(e.target.closest?.('#gardenEnter, #gardenSkipGate'))enter();
+    const pressed=e.target.closest?.('#gardenEnter, #gardenSkipGate');
+    if(pressed)enter(pressed.id==='gardenSkipGate');
+  });
+  gateOverlay?.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){e.preventDefault();enter(true);}
   });
   const storageKey='daily-pause-garden-v1';
   const sprites=window.PauseGardenSprites;
@@ -375,10 +379,10 @@
     gate.hidden=false;by('gardenChoicesPage').hidden=true;by('gardenWorldRoom').hidden=true;
     gate.classList.remove('garden-door-open');by('gardenEnter').focus({preventScroll:true});
   }
-  function enter(){
+  function enter(skip=false){
     const gate=by('gardenGate');gate.classList.add('garden-door-open');
     const finish=()=>{gate.hidden=true;by('gardenChoicesPage').hidden=false;renderWorlds();};
-    if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
+    if(skip||matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
     else setTimeout(finish,700);
   }
   let drag=null,lastDragEnded=0;
@@ -424,7 +428,7 @@
   }
   root.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
-    if(b.id==='gardenEnter'||b.id==='gardenSkipGate')enter();
+    if(b.id==='gardenEnter'||b.id==='gardenSkipGate')enter(b.id==='gardenSkipGate');
     else if(b.dataset.stageResident){
       if(Date.now()-lastDragEnded<350)return;
       selectItem(b.dataset.stageResident);
