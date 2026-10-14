@@ -332,6 +332,14 @@
               <input id="gardenImportFile" type="file" accept=".json,application/json" hidden>
               <span class="garden-save-state" id="gardenSaveState" aria-live="polite"></span>
             </div>
+            <section id="gardenRecovery" class="garden-recovery" hidden role="alert" aria-label="花園資料修復">
+              <h3>舊花園資料需要修復</h3>
+              <p>原本的資料無法完整讀取，本站不會偷偷覆蓋它。你可以先匯出原始資料，或使用先前下載的花園備份重新匯入。若確認不需要舊資料，也可以選擇重新開始。</p>
+              <div class="garden-recovery-actions">
+                <button type="button" id="gardenExportRecovery">下載原始資料備份</button>
+                <button type="button" id="gardenResetBroken">確認後重新開始</button>
+              </div>
+            </section>
             <p class="garden-note">寵物和植物只記錄在此裝置的瀏覽器。清除網站資料或更換手機可能遺失進度；請先匯出備份。寵物／植物名稱保存在這台裝置；照顧時輸入的心情文字不會保存或傳送。</p>
           </section>
         </div>
