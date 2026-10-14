@@ -87,7 +87,9 @@
     by('gardenWorldChoices').innerHTML=worlds.map(w=>
       '<button type="button" class="garden-world-choice" data-choose-world="'+w.id+'" aria-pressed="'+(w.id===state.world)+'">'+
       (w.image?'<img src="'+w.image+'" alt="" loading="lazy">':
-      '<span class="garden-world-preview garden-world-preview-'+w.id+'" aria-hidden="true"><span>專屬場景製作中</span></span>')+
+      (window.PauseGardenScenes?.thumbnail(w.id)
+       ?'<img src="'+window.PauseGardenScenes.thumbnail(w.id)+'" alt="" loading="lazy">'
+       :'<span class="garden-world-preview garden-world-preview-'+w.id+'" aria-hidden="true"><span>專屬場景製作中</span></span>'))+
       '<span><strong>'+w.name+'</strong><small>'+w.sub+'</small></span></button>'
     ).join('');
   }
@@ -117,11 +119,14 @@
     by('gardenWorldSubtitle').textContent=w.sub;
     const backdrop=by('gardenBackdrop'),stage=by('gardenWorldRoom').querySelector('.garden-landscape');
     backdrop.style.backgroundImage=w.image?'url("'+w.image+'")':'none';
+    // Use a geographically correct dedicated illustration when no suitable
+    // real-life-style generated background is available yet.
+    backdrop.innerHTML=w.image?'':(window.PauseGardenScenes?.draw(w.id)||'');
     backdrop.dataset.area=w.id;
-    stage.classList.toggle('garden-scene-pending',w.visual==='pending');
+    stage.classList.toggle('garden-scene-pending',!w.image&&!backdrop.firstElementChild);
     const sceneNotice=by('gardenSceneNotice');
     if(sceneNotice)sceneNotice.textContent=w.visual==='pending'
-      ?'開發預覽：'+w.name+'的專屬寫實風景尚未完成。此處先顯示佈置區底色，不會以其他地方的照片冒充。'
+      ?'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，已能分辨場景；你要求的專屬寫實景觀仍待完成。'
       :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
     renderResidentsStage();
