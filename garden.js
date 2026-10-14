@@ -45,6 +45,41 @@
     {id:'park',name:'公園',sub:'留一張椅子給今天',image:null,visual:'pending',
       plants:['櫻花樹','榕樹','雛菊','玫瑰','杜鵑'],pets:['狗','貓','兔子']}
   ];
+  // Two site-existing AI-generated scenes can be reviewed alongside the
+  // authored vector environment. These are already in this repo, not scraped photos.
+  const sceneVariants={
+    flowers:[
+      {id:'open',title:'戶外花園構圖',image:null},
+      {id:'greenhouse',title:'玻璃花房（既有生成圖）',image:'./media/generated/scene-11.webp'}
+    ],
+    park:[
+      {id:'open',title:'公園構圖',image:null},
+      {id:'gardenpond',title:'靜謐庭園（既有生成圖）',image:'./media/generated/scene-08.webp'}
+    ]
+  };
+  function activeVisual(){
+    const world=currentWorld(),list=sceneVariants[world.id];
+    if(!list)return {image:world.image,legacy:world.visual==='reference'};
+    const selected=state.backgrounds?.[world.id]||'open';
+    const variant=list.find(x=>x.id===selected)||list[0];
+    return {image:variant.image,legacy:Boolean(variant.image),variant};
+  }
+  function renderSceneVariants(){
+    const root=by('gardenSceneVariant'),options=by('gardenSceneVariantOptions');
+    const list=sceneVariants[state.world];
+    if(!root||!options)return;
+    root.hidden=!list;
+    if(!list){options.innerHTML='';return;}
+    const current=state.backgrounds?.[state.world]||'open';
+    options.innerHTML=list.map(v=>'<button type="button" data-scene-variant="'+v.id+
+      '" aria-pressed="'+(current===v.id)+'">'+v.title+'</button>').join('');
+  }
+  function setSceneVariant(id){
+    if(!sceneVariants[state.world]?.some(v=>v.id===id))return;
+    state.backgrounds[state.world]=id;
+    save();renderCollection();
+    by('gardenFeedback').textContent='已切換這個地方的景觀樣式。寵物與植物的位置都會保留。';
+  }
   const ICONS={'玫瑰':'🌹','向日葵':'🌻','繡球花':'🌸','薰衣草':'🪻','蘋果樹':'🌳',
     '草莓':'🍓','番茄':'🍅','稻米':'🌾','南瓜':'🎃','橘子樹':'🍊','松樹':'🌲',
     '楓樹':'🍁','蕨類':'🌿','野花':'🌼','香草':'🌱','海濱木槿':'🌺','馬鞍藤':'🌿',
@@ -109,7 +144,7 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
   const lightingChoices=[['morning','晨光'],['day','白天'],['dusk','黃昏'],['night','夜晚']];
   const allowedLighting=new Set(lightingChoices.map(x=>x[0]));
-  const newState=()=>({version:1,world:'flowers',items:[],lighting:{},decorations:[]});
+  const newState=()=>({version:1,world:'flowers',items:[],lighting:{},backgrounds:{},decorations:[]});
   function renderLighting(){
     const selected=state.lighting[state.world]||'day';
     const root=by('gardenLightChoices');
@@ -145,6 +180,11 @@
         item.lastAction.slice(0,30):'',
       name:typeof item.name==='string'?item.name.slice(0,20):'',
       ...position(item)}));
+    if(input?.backgrounds && typeof input.backgrounds==='object'&&!Array.isArray(input.backgrounds)){
+      for(const [world,options] of Object.entries(sceneVariants)){
+        if(options.some(v=>v.id===input.backgrounds[world]))clean.backgrounds[world]=input.backgrounds[world];
+      }
+    }
     if(input?.decorations!==undefined){
       if(!Array.isArray(input.decorations)||input.decorations.length>65)throw Error('invalid decorations');
       clean.decorations=input.decorations.filter(item=>
@@ -271,20 +311,20 @@
     by('gardenWorldTitle').textContent=w.name;
     by('gardenWorldSubtitle').textContent=w.sub;
     const backdrop=by('gardenBackdrop'),stage=by('gardenWorldRoom').querySelector('.garden-landscape');
-    backdrop.style.backgroundImage=w.image?'url("'+w.image+'")':'none';
-    // Use a geographically correct dedicated illustration when no suitable
-    // real-life-style generated background is available yet.
-    backdrop.innerHTML=w.image?'':(window.PauseGardenScenes?.draw(w.id)||'');
+    const variant=activeVisual();
+    backdrop.style.backgroundImage=variant.image?'url("'+variant.image+'")':'none';
+    backdrop.innerHTML=variant.image?'':(window.PauseGardenScenes?.draw(w.id)||'');
     backdrop.classList.toggle('garden-has-original-art',!!backdrop.firstElementChild);
     backdrop.dataset.area=w.id;
     const motion=by('gardenSceneFX');
     if(motion){motion.dataset.world=w.id;motion.innerHTML=window.PauseGardenMotion?.render(w.id)||'';}
-    stage.classList.toggle('garden-scene-pending',!w.image&&!backdrop.firstElementChild);
+    stage.classList.toggle('garden-scene-pending',!variant.image&&!backdrop.firstElementChild);
     const sceneNotice=by('gardenSceneNotice');
-    if(sceneNotice)sceneNotice.textContent=w.visual==='pending'
-      ?'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，已能分辨場景；你要求的專屬寫實景觀仍待完成。'
-      :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
+    if(sceneNotice)sceneNotice.textContent=variant.legacy
+      ?'開發預覽：此景觀沿用網站現有的 AI 生成素材，與你喜歡的原站圖片一致；仍須完成來源與使用權利查核。'
+      :'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，專屬寫實景觀仍待完成。';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡，'+decorsHere().length+' 件擺設';
+    renderSceneVariants();
     const decorSelect=by('gardenDecorTypes');
     if(decorSelect)decorSelect.innerHTML=(decor?.worlds[state.world]||[]).map(id=>
       '<option value="'+id+'">'+esc(decor.defs[id][0])+'</option>').join('');
@@ -526,6 +566,7 @@
     else if(b.id==='gardenCloseDecor')by('gardenDecorSelection').hidden=true;
     else if(b.dataset.gardenHotspot)explore(b.dataset.gardenHotspot);
     else if(b.dataset.gardenLight)chooseLighting(b.dataset.gardenLight);
+    else if(b.dataset.sceneVariant)setSceneVariant(b.dataset.sceneVariant);
     else if(b.dataset.chooseWorld)setWorld(b.dataset.chooseWorld);
     else if(b.id==='gardenChangeWorld'){by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
     else if(b.id==='gardenAddPet')add('pet');
