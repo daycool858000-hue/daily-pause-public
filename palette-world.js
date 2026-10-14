@@ -229,7 +229,9 @@
         }
         flush();
       }
-      model.marks=next.slice(0,500);
+      // Never discard unrelated artwork if a heavily segmented erasure would
+      // exceed the editable-backup schema limit.
+      if(next.length<=500)model.marks=next;
     }
     function selectTool(tool){
       if(brushTypes.has(tool)){lastBrush=tool;activeTab='brush'}
@@ -335,7 +337,10 @@
     }
     function screenPosition(e){
       const rect=canvas.getBoundingClientRect();
-      return {x:(e.clientX-rect.left)/rect.width*W,y:(e.clientY-rect.top)/rect.height*H};
+      // Captured touches can drift outside the canvas. Keep exported coordinates valid.
+      const clamp=(v,limit)=>Math.max(0,Math.min(limit,v));
+      return {x:clamp((e.clientX-rect.left)/rect.width*W,W),
+        y:clamp((e.clientY-rect.top)/rect.height*H,H)};
     }
     function hitProp(pos){
       return model.props.slice().sort((a,b)=>b.z-a.z).find(item=>Math.abs(item.x-pos.x)<70*item.scale&&Math.abs(item.y-pos.y)<85*item.scale);
@@ -349,7 +354,7 @@
       const mark={kind:'element',type:t,x:pos.x,y:pos.y,size:Math.max(14,38*model.size),color:model.color,seed:Math.random()*9,speed:.6+Math.random()*.4};
       model.marks.push(mark);return mark;
     }
-    const canMark=()=>model.marks.length<260;
+    const canMark=()=>model.marks.length<500;
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
       const p=screenPosition(e);const prop=model.tool==='eraser'?null:hitProp(p);
@@ -366,18 +371,32 @@
     });
     canvas.addEventListener('pointermove',e=>{
       if(!pointer||pointer.id!==e.pointerId)return;e.preventDefault();
-      const p=screenPosition(e);
-      if(pointer.mode==='move'){
-        const item=currentProp();if(!item)return;
-        if(!pointer.recorded){if(Math.hypot(p.x-pointer.from.x,p.y-pointer.from.y)<5)return;history.record();pointer.recorded=true;}
-        item.x=pointer.old.x+p.x-pointer.from.x;item.y=pointer.old.y+p.y-pointer.from.y;
-      } else if(pointer.mode==='erase'){eraseAt(p);
-      } else {
-        const d=Math.hypot(p.x-pointer.last.x,p.y-pointer.last.y);
-        if(d<11)return;
-        if(pointer.mark.kind==='stroke')pointer.mark.coords.push([p.x,p.y]);
-        else if(canMark()){pointer.mark=createMark(p)}
-        pointer.last=p;
+      // On iPhone, touchmove events may jump many pixels in one frame. Interpolate
+      // each segment so lines stay continuous and the eraser cannot skip a gap.
+      const events=typeof e.getCoalescedEvents==='function' ? e.getCoalescedEvents() : [];
+      const samples=events.length?events:[e];
+      for(const sample of samples){
+        const p=screenPosition(sample);
+        if(pointer.mode==='move'){
+          const item=currentProp();if(!item)return;
+          if(!pointer.recorded){if(Math.hypot(p.x-pointer.from.x,p.y-pointer.from.y)<5)continue;
+            history.record();pointer.recorded=true;}
+          item.x=pointer.old.x+p.x-pointer.from.x;item.y=pointer.old.y+p.y-pointer.from.y;
+        } else {
+          const from=pointer.last;
+          const length=Math.hypot(p.x-from.x,p.y-from.y);
+          const spacing=pointer.mode==='erase'?7:pointer.mark.kind==='stroke'?5:23;
+          if(length<spacing*.45)continue;
+          const steps=Math.ceil(length/spacing);
+          for(let i=1;i<=steps;i++){
+            const part={x:from.x+(p.x-from.x)*i/steps,y:from.y+(p.y-from.y)*i/steps};
+            if(pointer.mode==='erase')eraseAt(part);
+            else if(pointer.mark.kind==='stroke'){
+              if(pointer.mark.coords.length<3000)pointer.mark.coords.push([part.x,part.y]);
+            }else if(canMark())pointer.mark=createMark(part);
+          }
+          pointer.last=p;
+        }
       }
       paint(performance.now(),true);
     });
@@ -458,7 +477,7 @@
     const strokeNames=new Set(brushTools.filter(x=>x[0]!=='eraser').map(x=>x[0]));
     function cleanCanvas(raw){
       if(!raw||typeof raw!=='object'||!sceneNames.has(raw.scene)||
-        !Array.isArray(raw.marks)||raw.marks.length>260||
+        !Array.isArray(raw.marks)||raw.marks.length>500||
         !Array.isArray(raw.props)||raw.props.length>45||
         !validColor(raw.color)||!finite(raw.size,.5,2.4))throw Error('invalid canvas');
       const marks=raw.marks.map(mark=>{
@@ -510,8 +529,8 @@
       }catch(_){sayBackup('備份沒有成功。請先保留頁面，不要重新整理。')}
     }
     function importEditable(file){
-      if(!file||file.size>2*1024*1024){
-        sayBackup('檔案超過 2 MB，未讀取也未更動現有畫布。');return;
+      if(!file||file.size>12*1024*1024){
+        sayBackup('檔案超過 12 MB，未讀取也未更動現有畫布。');return;
       }
       file.text().then(raw=>{
         const doc=JSON.parse(raw);
@@ -540,12 +559,16 @@
       e.target.value='';
     });
     const downloadWorld=()=>{
-      paint(performance.now(),true);
+      // Export the same animation phase the visitor just saw; hide selection
+      // affordances only, then restore the interactive canvas immediately.
+      const originalSelection=model.selected;
+      model.selected=null;
       try{
+        paint(lastMoment||performance.now());
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
-        
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
+      finally{model.selected=originalSelection;paint(performance.now(),true)}
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
