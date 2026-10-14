@@ -83,6 +83,21 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('#gardenPlants').selectOption('稻米');
     await page.locator('#gardenAddPlant').click();
     assert.equal(await page.locator('[data-stage-resident]').count(),1);
+    await page.locator('#gardenDecorTypes').selectOption('scarecrow');
+    await page.locator('#gardenAddDecor').click();
+    assert.equal(await page.locator('[data-stage-decor]').count(),1);
+    const decoration=page.locator('[data-stage-decor]').first();
+    const previousX=await page.evaluate(()=>{
+      const data=JSON.parse(localStorage.getItem('daily-pause-garden-v1'));
+      return data.decorations[0].x;
+    });
+    await decoration.focus();
+    await decoration.press('ArrowRight');
+    const nextX=await page.evaluate(()=>{
+      const data=JSON.parse(localStorage.getItem('daily-pause-garden-v1'));
+      return data.decorations[0].x;
+    });
+    assert.ok(nextX>previousX,'Decor furniture keyboard movement should persist');
     await page.locator('[data-garden-hotspot="crop"]').click();
     assert.ok((await page.locator('#gardenExploreMessage').textContent()).length>5);
     await page.locator('[data-garden-light="night"]').click();
@@ -95,6 +110,7 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('#gardenSkipGate').click();
     await page.locator('[data-choose-world="farm"]').click();
     assert.equal(await page.locator('[data-stage-resident]').count(),1);
+    assert.equal(await page.locator('[data-stage-decor]').count(),1,'Decoration must survive reload');
     const width=await page.evaluate(()=>({
       scrollWidth:document.documentElement.scrollWidth,viewport:window.innerWidth
     }));
