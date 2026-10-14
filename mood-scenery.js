@@ -123,6 +123,23 @@ function indoor(s){
  body+=Array.from({length:30},(_,i)=>`<rect x="${566+(i%6)*49}" y="${113+Math.floor(i/6)*60}" width="${27+i%3*6}" height="50" rx="2" fill="${['#b9b9aa','#aa876f','#c9b48f','#879e90'][i%4]}"/>`).join('');
  body+=chair(303,478)+lamp(833,373);
  }
+ if(s.key==='soft-living-room'){
+ body+=`<ellipse cx="486" cy="553" rx="335" ry="82" fill="#d4c7af" opacity=".72"/>
+ <ellipse cx="486" cy="551" rx="307" ry="70" fill="none" stroke="#efdfc7" stroke-width="8" opacity=".78"/>
+ <rect x="233" y="326" width="506" height="167" rx="46" fill="#a8b6a6" stroke="#879c8d" stroke-width="5"/>
+ <rect x="208" y="397" width="552" height="132" rx="42" fill="url(#ms-cloth)" stroke="#a3aa9c" stroke-width="5"/>
+ <rect x="230" y="438" width="514" height="97" rx="34" fill="#bdc0b4"/>
+ <rect x="246" y="353" width="143" height="89" rx="23" fill="#d6c8b8"/>
+ <rect x="580" y="348" width="143" height="89" rx="23" fill="#d8d4c4"/>
+ <path d="M245 530l-13 51m494-51 13 51" stroke="#786958" stroke-width="15"/>
+ <ellipse cx="490" cy="570" rx="151" ry="18" fill="#423f35" opacity=".13"/>
+ <ellipse cx="492" cy="529" rx="139" ry="31" fill="url(#ms-wood)"/>
+ <path d="M404 539l-15 74m199-74 15 74" stroke="#92775b" stroke-width="14"/>
+ <path d="M610 276q31 0 39-36h125q13 37 44 37" stroke="#b5a992" stroke-width="12" fill="none"/>
+ <rect x="680" y="111" width="127" height="135" rx="5" fill="#a9bcae" stroke="#e8d5b9" stroke-width="13"/>
+ <path d="M687 194q40-39 116-24" stroke="#e0edda" stroke-width="7" fill="none" opacity=".5"/>`;
+ body+=lamp(858,348)+plant(116,411)+cup(485,503);
+ }
  if(s.key==='tea-and-flowers')body+=chair(269,478)+cup(715,300)+plant(852,424)+flower(756,225,'#dbaeb8',.8)+flower(789,217,'#eccdbf',.62);
  if(s.key==='open-garden-door')body+=`<path d="M118 74V414L9 504V74Z" fill="#a99478" stroke="#7c6550" stroke-width="12"/><path d="M140 105V410l-92 52V105Z" fill="#aec6b2" opacity=".62"/><path d="M125 480Q353 454 551 424l177 206H183Z" fill="#dcc6a4" opacity=".8"/>`+plant(853,430);
  if(s.key==='fireplace-corner')body+=`<rect x="611" y="233" width="263" height="271" rx="12" fill="#ac9481" stroke="#dac8b3" stroke-width="15"/><path d="M648 480V326h183v154Z" fill="#645148"/><path d="M730 475q-75-98-9-116q-16 58 37 68q-28-95 24-104q-10 80 27 101q-24 74-79 51Z" fill="#f5bc66"/><ellipse cx="747" cy="427" rx="143" ry="174" fill="url(#ms-sun)" opacity=".56"/>`+chair(282,478)+cup(529,310);
@@ -133,10 +150,21 @@ function svg(name){
  const body=['room','library'].includes(s.type)?indoor(s):outdoors(s);
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${name}的專屬畫布">${defs}<rect width="960" height="630" fill="${s.warm}"/>${body}<rect width="960" height="630" fill="${s.green}" opacity=".03"/><rect width="960" height="630" fill="#fff5e8" filter="url(#ms-grain)" opacity=".066"/><rect width="960" height="630" fill="url(#ms-vignette)"/></svg>`;
 }
+function livingRoomSvg(){
+ const scene={key:'soft-living-room',type:'room',index:25,warm:'#ead9c5',green:'#aebcae'};
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630"
+ preserveAspectRatio="xMidYMid slice" role="img" aria-label="明亮的獨立客廳景觀">${defs}
+ <rect width="960" height="630" fill="#ebdfce"/>${indoor(scene)}
+ <rect width="960" height="630" fill="#fff3e2" filter="url(#ms-grain)" opacity=".05"/>
+ <rect width="960" height="630" fill="url(#ms-vignette)"/></svg>`;
+}
+function livingRoomUrl(){
+ return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(livingRoomSvg());
+}
 const cache=new Map();
 function imageUrl(name){
  if(!cache.has(name)){const source=svg(name);if(!source)return null;cache.set(name,'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source));}
  return cache.get(name);
 }
-window.PauseMoodScenes={entries,byName,svg,imageUrl};
+window.PauseMoodScenes={entries,byName,svg,imageUrl,livingRoomSvg,livingRoomUrl};
 })();
