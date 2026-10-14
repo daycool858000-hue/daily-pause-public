@@ -241,8 +241,10 @@
               <div class="world-actions">
                 <button id="worldUndo" type="button" disabled>↶ 復原</button><button id="worldRedo" type="button" disabled>↷ 重做</button>
                 <button id="worldClearMarks" type="button">清空筆跡與自然元素</button><button id="worldClear" type="button">全部清空</button><button id="worldDownload" type="button">保存 PNG ↓</button>
+                <button id="worldExportEditable" type="button">備份 24 張可編輯畫布</button><button id="worldImportEditable" type="button">匯入畫布備份</button><input id="worldImportFile" type="file" accept=".json,application/json" hidden>
               </div>
-              <p class="world-notice">你的作品只存在這次開啟的頁面中，重新整理會消失。請下載 PNG 保存圖片；它不是可重新編輯的圖層檔。本站不會上傳你的作品。</p>
+              <p class="world-notice">你的作品僅存在這次開啟的頁面中。保存 PNG 可以留下圖片；「備份 24 張可編輯畫布」則可以下載可繼續編輯的 JSON 檔。重新整理或換裝置前請先下載備份。本站不會自動上傳作品。</p>
+              <p id="worldBackupStatus" class="world-backup-status" aria-live="polite"></p>
             </aside>
           </div>
         </div>
