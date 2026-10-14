@@ -6,6 +6,13 @@
   const root=document.getElementById('gardenWorld');
   if(!root)return;
   const by=id=>document.getElementById(id);
+  // A transformed/animated page section breaks position:fixed on iPhone.
+  // Mount the full-screen door under body, independent of the main page width.
+  const gateOverlay=by('gardenGate');
+  if(gateOverlay && gateOverlay.parentElement!==document.body)document.body.appendChild(gateOverlay);
+  gateOverlay?.addEventListener('click',e=>{
+    if(e.target.closest?.('#gardenEnter, #gardenSkipGate'))enter();
+  });
   const storageKey='daily-pause-garden-v1';
   const sprites=window.PauseGardenSprites;
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
