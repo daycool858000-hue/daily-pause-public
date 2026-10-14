@@ -236,3 +236,15 @@
  .garden-light-choices button{padding:.5rem .67rem}
 }
 @media(prefers-reduced-motion:reduce){.garden-landscape:before{transition:none!important}}
+
+/* Editable emotion-canvas backups use the existing palette design tokens. */
+.world-v2 .world-backup-status{
+  margin-top:.75rem;min-height:1.8em;color:#55776b;font-size:.8rem;
+  line-height:1.7;
+}
+.world-v2 #worldExportEditable,.world-v2 #worldImportEditable{
+  background:#e8eee5;color:#4d6c5c;border:1px solid #aec5b6;
+}
+.world-v2 #worldExportEditable:focus-visible,.world-v2 #worldImportEditable:focus-visible{
+  outline:3px solid #5c8879;outline-offset:3px;
+}
