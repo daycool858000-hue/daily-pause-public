@@ -148,20 +148,41 @@
       ctx.restore();
     }
     function eraseAt(p){
-      const radius=24*model.size;
-      const dist=(a,b)=>Math.hypot(a[0]-b.x,a[1]-b.y);
-      model.marks=model.marks.filter(mark=>{
-        if(mark.kind==='element')return Math.hypot(mark.x-p.x,mark.y-p.y)>radius+(mark.size||0)*.4;
-        const pts=mark.coords||[];
-        for(let i=0;i<pts.length;i++){
-          if(dist(pts[i],p)<radius)return false;
-          if(i===0)continue;
-          const a=pts[i-1],b=pts[i],dx=b[0]-a[0],dy=b[1]-a[1];
-          const f=Math.max(0,Math.min(1,((p.x-a[0])*dx+(p.y-a[1])*dy)/(dx*dx+dy*dy||1)));
-          if(Math.hypot(p.x-a[0]-dx*f,p.y-a[1]-dy*f)<radius)return false;
+      const radius=16*model.size;
+      const next=[];
+      const near=([x,y])=>Math.hypot(x-p.x,y-p.y)<=radius;
+      for(const mark of model.marks){
+        if(mark.kind==='element'){
+          if(Math.hypot(mark.x-p.x,mark.y-p.y)>radius+(mark.size||0)*.25)next.push(mark);
+          continue;
         }
-        return true;
-      });
+        const pts=mark.coords||[];
+        if(!pts.length)continue;
+        if(pts.length===1){if(!near(pts[0]))next.push(mark);continue;}
+        // Keep untouched segments as separate strokes. Sample long spans so
+        // a quick pointer gesture removes only the contacted part of the line.
+        let chunk=[];
+        const flush=()=>{
+          if(chunk.length)next.push({...mark,coords:chunk});
+          chunk=[];
+        };
+        for(let i=0;i<pts.length;i++){
+          if(i===0){
+            if(!near(pts[0]))chunk.push(pts[0]);
+            continue;
+          }
+          const a=pts[i-1],b=pts[i],length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+          const steps=Math.max(1,Math.ceil(length/Math.max(3,radius*.38)));
+          for(let k=1;k<=steps;k++){
+            const fraction=k/steps;
+            const point=[a[0]+(b[0]-a[0])*fraction,a[1]+(b[1]-a[1])*fraction];
+            if(near(point))flush();
+            else chunk.push(point);
+          }
+        }
+        flush();
+      }
+      model.marks=next.slice(0,500);
     }
     function selectTool(tool){
       if(brushTypes.has(tool)){lastBrush=tool;activeTab='brush'}
