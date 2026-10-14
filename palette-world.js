@@ -296,6 +296,13 @@
       if(workspaceStatus)workspaceStatus.textContent='目前畫布：'+model.mood+'｜切換情緒會保留這次開啟時各自的創作';
       $('worldPause').textContent=model.paused?'恢復流動':'暫停流動';
       $('worldBrushSize').value=String(model.size);
+      // Each mood has a separate undo stack. Recalculate controls after switching,
+      // not just after drawing, or old mood history leaks into the current UI.
+      if(history) {
+        const canUndo=history.canUndo(),canRedo=history.canRedo();
+        for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!canUndo;
+        for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!canRedo;
+      }
       // No large tool drawer: each category is an inline collapsible panel.
     }
     function screenPosition(e){
