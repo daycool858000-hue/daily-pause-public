@@ -57,3 +57,14 @@
 @keyframes garden-feedback{from{opacity:.1;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(max-width:620px){.garden-view{padding:1rem .85rem 4rem}.garden-world-grid{grid-template-columns:1fr}.garden-landscape{min-height:220px;aspect-ratio:4/3}.garden-controls{grid-template-columns:1fr}.garden-residents{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-gate-title{bottom:5%}.garden-door-frame{height:min(70vh,610px);width:min(80vw,405px)}}
 @media(prefers-reduced-motion:reduce){.garden-door,.garden-backdrop,.garden-door-leaf,.garden-pulse{transition:none!important;animation:none!important}}
+/* Shared mobile navigation: seven destinations must not push the viewport wider. */
+@media(max-width:640px){
+ .site-nav{flex-wrap:wrap;justify-content:center;gap:3px 5px}
+ .site-nav .nav-link{flex:0 0 auto;padding:8px 11px;min-height:38px}
+ .garden-view .garden-intro h1{font-size:2.25rem}
+}
+.world-tool-current{display:inline-flex;align-items:center;margin:.3rem 0 .75rem;padding:.4rem .8rem;border-radius:20px;background:#edf0e8;color:#52766a;font-size:.85rem}
+.world-brushes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem}
+.world-brushes button{min-height:44px}
+.world-brushes button[aria-pressed="true"]{background:#deeae3;border-color:#5e9381;color:#3e6356;box-shadow:inset 0 0 0 1px #5e9381}
+@media(max-width:420px){.world-brushes{grid-template-columns:repeat(2,minmax(0,1fr))}}
