@@ -142,11 +142,64 @@
       ...position(item)}));
     return clean;
   }
-  let state;
-  try{state=sanitize(JSON.parse(localStorage.getItem(storageKey)||'null'));}catch(_){state=newState();}
+  let state,loadError=false,recoverableRaw=null,storeAvailable=true;
+  try{
+    const stored=localStorage.getItem(storageKey);
+    if(stored===null)state=newState();
+    else{
+      const parsed=JSON.parse(stored);
+      const checked=sanitize(parsed);
+      if(!parsed||parsed.version!==1||
+         !worlds.some(w=>w.id===parsed.world)||
+         !Array.isArray(parsed.items)||parsed.items.length>160||
+         checked.items.length!==parsed.items.length||
+         new Set(checked.items.map(x=>x.id)).size!==checked.items.length){
+        throw Error('Invalid saved garden');
+      }
+      state=checked;
+    }
+  }catch(_){
+    // Never overwrite an unknown/corrupt previous garden automatically.
+    try{recoverableRaw=localStorage.getItem(storageKey)}catch(_){storeAvailable=false}
+    loadError=true;state=newState();
+  }
+  function recoveryUI(){
+    const el=by('gardenRecovery');
+    if(!el)return;
+    el.hidden=!loadError;
+    if(loadError){
+      by('gardenSaveState').textContent='原本的花園資料暫時無法讀取；為避免覆蓋，已停止自動儲存';
+    }
+  }
   function save(){
-    try{localStorage.setItem(storageKey,JSON.stringify(state));by('gardenSaveState').textContent='保存在此裝置';}
-    catch(_){by('gardenSaveState').textContent='儲存空間不足，請匯出備份';}
+    if(loadError){recoveryUI();return false;}
+    try{
+      localStorage.setItem(storageKey,JSON.stringify(state));
+      by('gardenSaveState').textContent='保存在此裝置';
+      return true;
+    }catch(_){
+      by('gardenSaveState').textContent='此裝置無法儲存，請立即匯出花園備份';
+      return false;
+    }
+  }
+  function exportRecovery(){
+    if(!loadError||typeof recoverableRaw!=='string')return;
+    const blob=new Blob([recoverableRaw],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;
+    a.download='今日一息-花園原始資料-待修復.txt';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+  function resetBrokenGarden(){
+    if(!loadError)return;
+    if(!window.confirm('原本的花園資料仍在這台裝置。重新開始會覆蓋它，請先匯出「原始資料」。確定要重新開始嗎？'))return;
+    try{
+      // If storage is unavailable, do not claim that we can reset safely.
+      localStorage.setItem(storageKey,JSON.stringify(newState()));
+      state=newState();loadError=false;recoverableRaw=null;
+      recoveryUI();renderCollection();
+      by('gardenFeedback').textContent='已重新建立花園。';
+    }catch(_){by('gardenSaveState').textContent='無法寫入此裝置，原始資料未被更動';}
   }
   function currentWorld(){return worlds.find(w=>w.id===state.world)||worlds[0]}
   function itemsHere(){return state.items.filter(x=>x.world===state.world)}
@@ -308,7 +361,13 @@
       if(new Set(clean.items.map(x=>x.id)).size!==clean.items.length)throw Error('duplicate ids');
       // Do not silently merge into an existing garden.
       if(!window.confirm('匯入將取代這台裝置目前的陪伴花園。確定要繼續嗎？'))return;
-      state=clean;save();renderCollection();by('gardenFeedback').textContent='備份已匯入。';
+      // A verified manual restore is allowed even if the existing stored data
+      // could not be read; otherwise the damaged record remains untouched.
+      try{
+        localStorage.setItem(storageKey,JSON.stringify(clean));
+      }catch(_){throw Error('cannot persist restored data');}
+      state=clean;loadError=false;recoverableRaw=null;
+      recoveryUI();renderCollection();by('gardenFeedback').textContent='備份已匯入並儲存在此裝置。';
     }).catch(()=>{by('gardenFeedback').textContent='這份檔案無法讀取，現有花園沒有變更。';});
   }
   function openGate(){
@@ -382,11 +441,14 @@
     else if(b.id==='gardenSaveName')rename();
     else if(b.id==='gardenBackup')backup();
     else if(b.id==='gardenImport')by('gardenImportFile').click();
+    else if(b.id==='gardenExportRecovery')exportRecovery();
+    else if(b.id==='gardenResetBroken')resetBrokenGarden();
   });
   by('gardenImportFile').addEventListener('change',e=>{restore(e.target.files?.[0]);e.target.value='';});
   window.addEventListener('pause:view-change',e=>{
     if(e.detail?.view==='garden')openGate();
   });
   renderCollection();
-  save();
+  recoveryUI();
+  if(!loadError)save();
 })();
