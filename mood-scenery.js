@@ -161,10 +161,25 @@ function livingRoomSvg(){
 function livingRoomUrl(){
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(livingRoomSvg());
 }
+// Site-owned AI-generated scenes already in the repository. Assign at most
+// one photograph per emotion: never swap labels onto the same photo.
+const realisticMoodScenes=Object.freeze({
+  '孤單':'./media/generated/scene-07.webp',
+  '想念':'./media/generated/scene-01.webp',
+  '希望':'./media/generated/scene-10.webp',
+  '期待':'./media/generated/scene-12.webp',
+  '好奇':'./media/generated/scene-11.webp',
+  '安心':'./media/generated/scene-08.webp',
+  '溫柔':'./media/generated/scene-06.webp',
+  '想重新開始':'./media/generated/scene-04.webp',
+  '想看海':'./media/generated/scene-02.webp',
+  '想接近自然':'./media/generated/scene-03.webp'
+});
 const cache=new Map();
 function imageUrl(name){
+ if(realisticMoodScenes[name])return realisticMoodScenes[name];
  if(!cache.has(name)){const source=svg(name);if(!source)return null;cache.set(name,'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(source));}
  return cache.get(name);
 }
-window.PauseMoodScenes={entries,byName,svg,imageUrl,livingRoomSvg,livingRoomUrl};
+window.PauseMoodScenes={entries,byName,svg,imageUrl,livingRoomSvg,livingRoomUrl,realisticMoodScenes};
 })();
