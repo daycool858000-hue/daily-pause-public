@@ -291,11 +291,18 @@
       paint(performance.now(),true);
     }
     function renderChoices(){
+      // Scene thumbnails preview the bundled scene itself, never an unrelated mood.
+      const sceneThumbnail=id=>{
+        const src=landscapeArt[id];
+        return typeof src==='string'&&/^\.\/media\/generated\/scene-\d{2}\.webp$/.test(src)
+          ? ' style="background-image:url('+src+');background-size:cover;background-position:center"' : '';
+      };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
       ).join('');
-      $('worldScenes').innerHTML=scenes.map(([id,name,description])=>
-        '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"></span><strong>'+name+'</strong><small>'+description+'</small></button>'
+      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>情緒預設景觀</strong><small>回到這種心情原本的畫面</small></button>'+
+        scenes.map(([id,name,description])=>
+        '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"'+sceneThumbnail(id)+'></span><strong>'+name+'</strong><small>'+description+'</small></button>'
       ).join('');
       $('worldElements').innerHTML=elements.map(([id,name,symbol])=>'<button type="button" data-element="'+id+'" aria-pressed="false"><span>'+symbol+'</span>'+name+'</button>').join('');
       $('worldProps').innerHTML=props.map(([id,name,symbol])=>'<button type="button" data-prop="'+id+'" aria-label="加入'+name+'"><span>'+symbol+'</span>'+name+'</button>').join('');
@@ -306,7 +313,8 @@
     }
     function updateSelections(){
       root.querySelectorAll('[data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mood===model.mood)));
-      root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===model.scene)));
+      root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(model.customScene&&b.dataset.scene===model.scene)));
+      root.querySelectorAll('[data-scene-default]').forEach(b=>b.setAttribute('aria-pressed',String(!model.customScene)));
       root.querySelectorAll('[data-element]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.element===model.tool)));
       root.querySelectorAll('[data-brush]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.brush===model.tool)));
       const currentTool=$('worldCurrentTool');
@@ -436,6 +444,7 @@
         switchMood(name);
         stampMessage(moodFor()[2]);return;
       }
+      if(b.dataset.sceneDefault){change(()=>{model.scene=moodFor()[1];model.customScene=false;});return;}
       if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;model.customScene=true;});return;}
       if(b.dataset.element){selectTool(b.dataset.element);return;}
       if(b.dataset.brush){selectTool(b.dataset.brush);return;}
