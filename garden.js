@@ -142,6 +142,28 @@
     const hint=by('gardenExploreMessage');
     if(hint){hint.textContent=item[2];hint.hidden=false;}
   }
+  // A small optional self-care corner; never records answers or attendance.
+  const selfCareOptions={
+    water:'喝一點水，慢慢喝就好。你也值得被照顧。',
+    stretch:'伸展一下肩膀和手臂，找到舒服的角度就好。',
+    eyes:'看看遠處的景色，讓眼睛暫時離開眼前的文字。',
+    pause:'坐著休息一會兒，沒有什麼任務需要完成。',
+    feelings:'留意現在身體的感覺；可以說出來，也可以留在心裡。',
+    outside:'如果方便，去看看窗外的天色，感受一下空氣。'
+  };
+  function chooseSelfCare(id){
+    if(!Object.prototype.hasOwnProperty.call(selfCareOptions,id))return;
+    const feedback=by('gardenSelfCareFeedback');
+    if(!feedback)return;
+    feedback.textContent=selfCareOptions[id];
+    const options=by('gardenSelfCareOptions');
+    options?.querySelectorAll('[data-self-care]').forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.selfCare===id)));
+    feedback.classList.remove('garden-selfcare-appear');
+    void feedback.offsetWidth;
+    feedback.classList.add('garden-selfcare-appear');
+    // Intentionally do not write choice, text, or timestamp to localStorage.
+  }
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
   const lightingChoices=[['morning','晨光'],['day','白天'],['dusk','黃昏'],['night','夜晚']];
   const allowedLighting=new Set(lightingChoices.map(x=>x[0]));
@@ -585,6 +607,7 @@
     else if(b.id==='gardenAddDecor')createDecoration();
     else if(b.id==='gardenRemoveDecor')removeDecoration();
     else if(b.id==='gardenCloseDecor')by('gardenDecorSelection').hidden=true;
+    else if(b.dataset.selfCare)chooseSelfCare(b.dataset.selfCare);
     else if(b.dataset.gardenHotspot)explore(b.dataset.gardenHotspot);
     else if(b.dataset.gardenLight)chooseLighting(b.dataset.gardenLight);
     else if(b.dataset.sceneVariant)setSceneVariant(b.dataset.sceneVariant);
