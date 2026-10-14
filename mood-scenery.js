@@ -148,11 +148,11 @@ function indoor(s){
 function svg(name){
  const s=byName[name];if(!s)return '';
  const body=['room','library'].includes(s.type)?indoor(s):outdoors(s);
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${name}的專屬畫布">${defs}<rect width="960" height="630" fill="${s.warm}"/>${body}<rect width="960" height="630" fill="${s.green}" opacity=".03"/><rect width="960" height="630" fill="#fff5e8" filter="url(#ms-grain)" opacity=".066"/><rect width="960" height="630" fill="url(#ms-vignette)"/></svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="630" viewBox="0 0 960 630" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${name}的專屬畫布">${defs}<rect width="960" height="630" fill="${s.warm}"/>${body}<rect width="960" height="630" fill="${s.green}" opacity=".03"/><rect width="960" height="630" fill="#fff5e8" filter="url(#ms-grain)" opacity=".066"/><rect width="960" height="630" fill="url(#ms-vignette)"/></svg>`;
 }
 function livingRoomSvg(){
  const scene={key:'soft-living-room',type:'room',index:25,warm:'#ead9c5',green:'#aebcae'};
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630"
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="630" viewBox="0 0 960 630"
  preserveAspectRatio="xMidYMid slice" role="img" aria-label="明亮的獨立客廳景觀">${defs}
  <rect width="960" height="630" fill="#ebdfce"/>${indoor(scene)}
  <rect width="960" height="630" fill="#fff3e2" filter="url(#ms-grain)" opacity=".05"/>
