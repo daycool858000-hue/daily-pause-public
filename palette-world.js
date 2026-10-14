@@ -68,7 +68,8 @@
     const landscapeArt={
       living:window.PauseMoodScenes?.livingRoomUrl()||null,
       sea:'./media/generated/scene-02.webp',
-      garden:'./media/generated/scene-04.webp',
+      // A planted stone-and-moss courtyard is a garden; scene-04 is open wildflowers.
+      garden:'./media/generated/scene-08.webp',
       hill:'./media/generated/scene-01.webp',
       lake:'./media/generated/scene-10.webp',
       night:'./media/generated/scene-07.webp'
