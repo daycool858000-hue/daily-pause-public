@@ -224,10 +224,15 @@
       }else drawLandscape(model.scene,t);
       const m=moodFor(),special=m[0];
       const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
-      art.drawAtmosphere?.(ctx,{
-        scene:model.scene,moodTone:m[4],accent:model.color,index:moodIndex,
-        effect:effects[moodIndex]
-      },t);
+      if(window.PauseMoodAtmospheres?.paint){
+        window.PauseMoodAtmospheres.paint(ctx,model.mood,t,model.scene);
+      }else{
+        // Keep a fallback for loading errors; this is not the intended final renderer.
+        art.drawAtmosphere?.(ctx,{
+          scene:model.scene,moodTone:m[4],accent:model.color,index:moodIndex,
+          effect:effects[moodIndex]
+        },t);
+      }
       if(model.scene!=='blank' && ['想哭','疲倦','悶住','孤單'].includes(special)){
         ctx.fillStyle='rgba(60,72,86,.11)';ctx.fillRect(0,0,W,H);
       }
