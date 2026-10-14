@@ -49,6 +49,22 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
  }
 });
 
+
+test('mood photo assignments never mislabel an exterior as an indoor room',()=>{
+ const win={};
+ load('mood-scenery.js',{window:win});
+ const scenes=win.PauseMoodScenes;
+ // No photograph of a garden, flower or greenhouse can stand in for a
+ // room, study or the unique fern trail promised by its composition.
+ for(const name of ['安心','溫柔','想重新開始','好奇']){
+   assert.ok(scenes.imageUrl(name).startsWith('data:image/svg+xml;charset=utf-8,'),
+     name+' must await matching original scenery rather than use a mislabeled photo');
+ }
+ for(const name of ['孤單','想念','想看海','想接近自然']){
+   assert.match(scenes.imageUrl(name),/^\.\/media\/generated\/scene-\d{2}\.webp$/);
+ }
+});
+
 test('five worlds have correct geographic visual references',()=>{
  const win={};load('garden-scenes.js',{window:win});
  const sketch=win.PauseGardenScenes;
