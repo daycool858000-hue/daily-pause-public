@@ -122,6 +122,7 @@
     // Use a geographically correct dedicated illustration when no suitable
     // real-life-style generated background is available yet.
     backdrop.innerHTML=w.image?'':(window.PauseGardenScenes?.draw(w.id)||'');
+    backdrop.classList.toggle('garden-has-original-art',!!backdrop.firstElementChild);
     backdrop.dataset.area=w.id;
     stage.classList.toggle('garden-scene-pending',!w.image&&!backdrop.firstElementChild);
     const sceneNotice=by('gardenSceneNotice');
