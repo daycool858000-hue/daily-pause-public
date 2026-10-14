@@ -29,15 +29,15 @@
       y:Number.isFinite(item.y)?clamp(item.y,45,90):d.y};
   }
   const worlds=[
-    {id:'flowers',name:'花園',sub:'為自己種一片花與樹',image:'./media/generated/scene-04.webp',
+    {id:'flowers',name:'花園',sub:'為自己種一片花與樹',image:null,visual:'pending',
       plants:['玫瑰','向日葵','繡球花','薰衣草','蘋果樹'],pets:['貓','狗','兔子','天竺鼠']},
-    {id:'farm',name:'田間',sub:'慢慢耕種，等果實長大',image:'./media/generated/scene-11.webp',
+    {id:'farm',name:'田間',sub:'慢慢耕種，等果實長大',image:null,visual:'pending',
       plants:['草莓','番茄','稻米','南瓜','橘子樹'],pets:['雞','鴨','牛','狗']},
-    {id:'forest',name:'森林',sub:'沿著樹影走一會兒',image:'./media/generated/scene-03.webp',
+    {id:'forest',name:'森林',sub:'沿著樹影走一會兒',image:'./media/generated/scene-03.webp',visual:'reference',
       plants:['松樹','楓樹','蕨類','野花','香草'],pets:['貓','狗','兔子']},
-    {id:'coast',name:'海邊',sub:'聽風來，陪海浪待一下',image:'./media/generated/scene-02.webp',
+    {id:'coast',name:'海邊',sub:'聽風來，陪海浪待一下',image:'./media/generated/scene-02.webp',visual:'reference',
       plants:['海濱木槿','馬鞍藤','濱刺麥','椰子樹'],pets:['狗','貓']},
-    {id:'park',name:'公園',sub:'留一張椅子給今天',image:'./media/generated/scene-08.webp',
+    {id:'park',name:'公園',sub:'留一張椅子給今天',image:null,visual:'pending',
       plants:['櫻花樹','榕樹','雛菊','玫瑰','杜鵑'],pets:['狗','貓','兔子']}
   ];
   const ICONS={'玫瑰':'🌹','向日葵':'🌻','繡球花':'🌸','薰衣草':'🪻','蘋果樹':'🌳',
@@ -86,7 +86,9 @@
   function renderWorlds(){
     by('gardenWorldChoices').innerHTML=worlds.map(w=>
       '<button type="button" class="garden-world-choice" data-choose-world="'+w.id+'" aria-pressed="'+(w.id===state.world)+'">'+
-      '<img src="'+w.image+'" alt="" loading="lazy"><span><strong>'+w.name+'</strong><small>'+w.sub+'</small></span></button>'
+      (w.image?'<img src="'+w.image+'" alt="" loading="lazy">':
+      '<span class="garden-world-preview garden-world-preview-'+w.id+'" aria-hidden="true"><span>專屬場景製作中</span></span>')+
+      '<span><strong>'+w.name+'</strong><small>'+w.sub+'</small></span></button>'
     ).join('');
   }
   function renderResidentsStage(){
@@ -113,7 +115,14 @@
     const w=currentWorld(),items=itemsHere();
     by('gardenWorldTitle').textContent=w.name;
     by('gardenWorldSubtitle').textContent=w.sub;
-    by('gardenBackdrop').style.backgroundImage='url("'+w.image+'")';
+    const backdrop=by('gardenBackdrop'),stage=by('gardenWorldRoom').querySelector('.garden-landscape');
+    backdrop.style.backgroundImage=w.image?'url("'+w.image+'")':'none';
+    backdrop.dataset.area=w.id;
+    stage.classList.toggle('garden-scene-pending',w.visual==='pending');
+    const sceneNotice=by('gardenSceneNotice');
+    if(sceneNotice)sceneNotice.textContent=w.visual==='pending'
+      ?'開發預覽：'+w.name+'的專屬寫實風景尚未完成。此處先顯示佈置區底色，不會以其他地方的照片冒充。'
+      :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
     renderResidentsStage();
     by('gardenPets').innerHTML=w.pets.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
