@@ -102,6 +102,18 @@ const server=http.createServer(async(req,res)=>{
       await page.locator('[data-choose-world="'+world+'"]').click();
       assert.equal(await page.locator('#gardenSceneFX').getAttribute('data-world'),world);
       assert.equal(await page.locator(selector).count(),count,world+' has wrong environment motion');
+      if(world==='flowers'){
+        await page.locator('[data-scene-variant="greenhouse"]').click();
+        assert.ok((await page.locator('#gardenBackdrop').getAttribute('style')).includes('scene-11.webp'));
+        await page.locator('[data-scene-variant="open"]').click();
+        assert.equal(await page.locator('.garden-environment-art').count(),1);
+      }
+      if(world==='park'){
+        await page.locator('[data-scene-variant="gardenpond"]').click();
+        assert.ok((await page.locator('#gardenBackdrop').getAttribute('style')).includes('scene-08.webp'));
+        await page.locator('[data-scene-variant="open"]').click();
+        assert.equal(await page.locator('.garden-environment-art').count(),1);
+      }
     }
     await page.locator('#gardenChangeWorld').click();
     await page.locator('[data-choose-world="farm"]').click();
