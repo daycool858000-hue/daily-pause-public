@@ -49,6 +49,58 @@
     pet:[['feed','餵食','吃飽後，牠在你身邊舒服地休息。'],['play','玩耍','牠朝你靠近，像是想再玩一下。'],['wash','洗澡','水珠輕輕落下，牠甩了甩身體。'],['rest','陪牠休息','牠找到舒服的位置，慢慢安靜下來。']],
     plant:[['water','澆水','泥土吸收了水分，葉子在微風裡搖晃。'],['care','整理','你替它整理周圍的空間。'],['watch','看看它','它照自己的速度生長。'],['rest','坐在旁邊','你和它一起待了一會兒。']]
   };
+  // Simple, non-competitive exploration. Each response has a visible scene effect.
+  const hotspots={
+    flowers:[
+      ['petal','看花朵','花開在不同的時間，也可以慢慢看。',27,78,'flower'],
+      ['walk','走上花徑','你沿著花徑往前走，看看光從哪裡落下。',52,67,'light'],
+      ['tree','坐在樹下','樹影替這個下午留下一點空間。',13,49,'leaf']
+    ],
+    farm:[
+      ['crop','看看農作物','田裡的作物還在慢慢長大。',43,81,'leaf'],
+      ['barn','走近農舍','你走到農舍旁，停下來望著田野。',79,48,'light'],
+      ['wind','聽田間的風','細細的風穿過田間，帶來一點晃動。',20,49,'breeze']
+    ],
+    forest:[
+      ['trail','沿小徑散步','小徑延伸到樹木更深的地方。',55,69,'leaf'],
+      ['listen','聽森林','樹葉與風帶來細小的聲音。',20,42,'breeze'],
+      ['rest','看看天空','樹冠之間留了一道光。',69,32,'light']
+    ],
+    coast:[
+      ['wave','看看浪花','一道浪湧來，又慢慢退去。',45,77,'water'],
+      ['breeze','感受海風','海風吹過，遠方的景色還很寬。',71,43,'breeze'],
+      ['horizon','望向遠方','你可以看得更遠一些。',30,39,'light']
+    ],
+    park:[
+      ['pond','觀察池塘','池塘輕輕泛起了幾道水波。',81,76,'water'],
+      ['bench','坐在長椅','你可以在這裡坐一會兒，不需要做什麼。',49,77,'light'],
+      ['shade','走進樹蔭','葉影輕輕晃動，這裡有個能停下來的角落。',13,51,'leaf']
+    ]
+  };
+  function renderHotspots(){
+    const area=by('gardenHotspots');if(!area)return;
+    area.innerHTML=(hotspots[state.world]||[]).map(([id,name,description,x,y,effect])=>
+      '<button type="button" class="garden-hotspot" data-garden-hotspot="'+id+
+      '" style="left:'+x+'%;top:'+y+'%" aria-label="'+name+'" title="'+name+'">'+
+      '<span aria-hidden="true">✧</span><small>'+name+'</small></button>'
+    ).join('');
+  }
+  function explore(id){
+    const item=(hotspots[state.world]||[]).find(x=>x[0]===id);
+    if(!item)return;
+    const button=by('gardenHotspots').querySelector('[data-garden-hotspot="'+id+'"]');
+    if(!button)return;
+    button.classList.remove('garden-hotspot-active');
+    void button.offsetWidth;
+    button.classList.add('garden-hotspot-active');
+    const effect=item[5];
+    const symbols={flower:'❀',leaf:'❧',water:'◌',breeze:'〰',light:'✦'};
+    button.dataset.effect=effect;
+    button.setAttribute('data-effect-label',symbols[effect]||'✦');
+    by('gardenFeedback').textContent=item[2];
+    const hint=by('gardenExploreMessage');
+    if(hint){hint.textContent=item[2];hint.hidden=false;}
+  }
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
   const newState=()=>({version:1,world:'flowers',items:[]});
   const speciesValid=item=>worlds.some(w=>w.id===item.world &&
@@ -130,6 +182,9 @@
       ?'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，已能分辨場景；你要求的專屬寫實景觀仍待完成。'
       :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
+    renderHotspots();
+    const exploreNotice=by('gardenExploreMessage');
+    if(exploreNotice){exploreNotice.textContent='';exploreNotice.hidden=true;}
     renderResidentsStage();
     by('gardenPets').innerHTML=w.pets.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
     by('gardenPlants').innerHTML=w.plants.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
@@ -293,6 +348,7 @@
       if(Date.now()-lastDragEnded<350)return;
       selectItem(b.dataset.stageResident);
     }
+    else if(b.dataset.gardenHotspot)explore(b.dataset.gardenHotspot);
     else if(b.dataset.chooseWorld)setWorld(b.dataset.chooseWorld);
     else if(b.id==='gardenChangeWorld'){by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
     else if(b.id==='gardenAddPet')add('pet');
