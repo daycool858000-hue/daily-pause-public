@@ -85,6 +85,8 @@ const server=http.createServer(async(req,res)=>{
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
     assert.ok(png.startsWith('data:image/png;base64,'));
     await page.locator('[data-view="garden"]').click();
+    assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
+      'The garden must share the existing playback and offline sound controls');
     await page.locator('#gardenSkipGate').click();
     await page.locator('#gardenWorldChoices').waitFor();
     assert.equal(await page.locator('[data-choose-world]').count(),5);
