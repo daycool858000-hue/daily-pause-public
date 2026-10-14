@@ -104,3 +104,10 @@
   100%{transform:translate(-50%,-47px) scale(1.18);opacity:0}
 }
 @media(prefers-reduced-motion:reduce){.garden-action-vfx{animation:none!important;opacity:1}}
+
+.garden-care-nickname{margin-top:.6rem;padding:.7rem .85rem;background:#f5f5ed;border-radius:13px}
+.garden-care-nickname label{font-size:.87rem;color:#657d6d}
+.garden-care-nickname>div{display:flex;align-items:center;gap:.55rem}
+.garden-care-nickname input{min-width:0;flex:1;max-width:280px;border-radius:9px;border:1px solid #c7cabe;
+ padding:.7rem .8rem;font:inherit;background:#fffefb;color:#47584f}
+@media(max-width:460px){.garden-care-nickname>div{flex-wrap:wrap}.garden-care-nickname input{max-width:none;flex-basis:100%}}
