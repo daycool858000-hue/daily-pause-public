@@ -61,6 +61,41 @@
     ];
     const brushTypes=new Set(brushTools.map(x=>x[0]));
     const brushName=type=>brushTools.find(x=>x[0]===type)?.[1] || elements.find(x=>x[0]===type)?.[1] || type;
+    // Existing AI-generated images already published on this site. Only use where the
+    // geography is accurate; never show a mountain for a room or an ocean for a library.
+    // Dedicated artwork for all 24 emotions and all indoor scenes remains to be produced.
+    const landscapeArt={
+      sea:'./media/generated/scene-02.webp',
+      garden:'./media/generated/scene-04.webp',
+      hill:'./media/generated/scene-01.webp',
+      lake:'./media/generated/scene-10.webp',
+      night:'./media/generated/scene-07.webp'
+    };
+    const landscapeCache=new Map();
+    function drawLandscape(scene,t){
+      const src=landscapeArt[scene];
+      if(!src){art.drawScene(ctx,scene,t);return;}
+      let asset=landscapeCache.get(scene);
+      if(!asset){
+        const img=new Image();
+        asset={img,ready:false,error:false};
+        landscapeCache.set(scene,asset);
+        img.onload=()=>{asset.ready=true;if(model.scene===scene)paint(performance.now(),true)};
+        img.onerror=()=>{asset.error=true};
+        img.src=src;
+      }
+      if(!asset.ready){art.drawScene(ctx,scene,t);return;}
+      const img=asset.img,scale=Math.max(W/img.naturalWidth,H/img.naturalHeight);
+      const width=img.naturalWidth*scale,height=img.naturalHeight*scale;
+      ctx.drawImage(img,(W-width)/2,(H-height)/2,width,height);
+      // Small animated light cues sit behind the visitor's marks.
+      const a=.04+(Math.sin(t*.00035)+1)*.015;
+      const fog=ctx.createLinearGradient(0,0,W,H);
+      fog.addColorStop(0,'rgba(249,236,221,'+a+')');
+      fog.addColorStop(1,'rgba(99,127,126,0)');
+      ctx.fillStyle=fog;ctx.fillRect(0,0,W,H);
+    }
+
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
@@ -140,7 +175,7 @@
         ctx.fillStyle='#faf7f1';ctx.fillRect(0,0,W,H);
         ctx.save();ctx.globalAlpha=.15;ctx.fillStyle='#b4aa99';
         for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
-      }else art.drawScene(ctx,model.scene,t);
+      }else drawLandscape(model.scene,t);
       const m=moodFor(),special=m[0];
       const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
       art.drawAtmosphere?.(ctx,{
