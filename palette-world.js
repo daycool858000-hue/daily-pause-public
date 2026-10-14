@@ -100,7 +100,16 @@
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
     const stampMessage=(message)=>window.dispatchEvent(new CustomEvent('pause:companion',{detail:{text:message,kind:'light'}}));
-    const history=window.createPaletteHistory({
+    // Every emotion owns its own composition and brush marks. Drawings are deliberately
+    // memory-only, matching the existing privacy contract: nothing is auto-uploaded or saved.
+    const workspaces=new Map();
+    const histories=new Map();
+    const snapshot=()=>({
+      scene:model.scene,marks:model.marks,props:model.props,
+      color:model.color,size:model.size
+    });
+    let history;
+    function createHistory(){return window.createPaletteHistory({
       read:()=>JSON.parse(JSON.stringify(model)),
       write:old=>{
         Object.assign(model,JSON.parse(JSON.stringify(old)));
@@ -109,7 +118,23 @@
       },
       onChange:state=>{ for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!state.canUndo; for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!state.canRedo; },
       limit:20
-    });
+    });}
+    history=createHistory();
+    histories.set(model.mood,history);
+    function switchMood(name){
+      if(name===model.mood)return;
+      const entry=moods.find(x=>x[0]===name);
+      if(!entry)return;
+      workspaces.set(model.mood,snapshot());
+      const next=workspaces.get(name) || {
+        scene:entry[1],marks:[],props:[],color:entry[4],size:1
+      };
+      Object.assign(model,{...next,mood:name,selected:null});
+      if(!histories.has(name))histories.set(name,createHistory());
+      history=histories.get(name);
+      updateSelections();
+      paint(performance.now(),true);
+    }
     const change=fn=>{history.record();fn();updateSelections();paint(performance.now(),true);};
     function drawStroke(stroke) {
       if(!stroke.coords?.length||stroke.type==='eraser')return;
@@ -267,6 +292,8 @@
       const selection=currentProp();$('worldPropEditor').hidden=!selection;
       if(selection) $('worldPropName').textContent=props.find(p=>p[0]===selection.type)?.[1]||'生活物件';
       $('worldSceneLabel').textContent=moodFor()[2];
+      const workspaceStatus=$('worldWorkspaceStatus');
+      if(workspaceStatus)workspaceStatus.textContent='目前畫布：'+model.mood+'｜切換情緒會保留這次開啟時各自的創作';
       $('worldPause').textContent=model.paused?'恢復流動':'暫停流動';
       $('worldBrushSize').value=String(model.size);
       // No large tool drawer: each category is an inline collapsible panel.
@@ -347,7 +374,7 @@
       const b=e.target.closest('button');if(!b)return;
       if(b.dataset.mood){
         const name=b.dataset.mood;
-        change(()=>{model.mood=name;model.scene=moods.find(x=>x[0]===name)[1];});
+        switchMood(name);
         stampMessage(moodFor()[2]);return;
       }
       if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
