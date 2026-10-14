@@ -308,6 +308,11 @@
                 <h3 id="gardenCareName">正在照顧</h3>
                 <button class="garden-soft-button" id="gardenCloseCare" type="button" aria-label="關閉照顧選單">關閉</button>
               </div>
+              <div class="garden-care-nickname">
+                <label for="gardenNickname">替這位小夥伴取個名字（可留空）</label>
+                <div><input id="gardenNickname" type="text" maxlength="20" autocomplete="off" placeholder="這個名字只會存在本機">
+                <button class="garden-soft-button" id="gardenSaveName" type="button">保存名字</button></div>
+              </div>
               <div class="garden-care-actions" id="gardenCareActions"></div>
               <label for="gardenWords">想說一句什麼嗎？可以留空。</label>
               <textarea id="gardenWords" maxlength="120" placeholder="這句話不會被評分，也不會被儲存。"></textarea>
@@ -319,7 +324,7 @@
               <input id="gardenImportFile" type="file" accept=".json,application/json" hidden>
               <span class="garden-save-state" id="gardenSaveState" aria-live="polite"></span>
             </div>
-            <p class="garden-note">寵物和植物只記錄在此裝置的瀏覽器。清除網站資料或更換手機可能遺失進度；請先匯出備份。輸入的心情文字不會保存或傳送。</p>
+            <p class="garden-note">寵物和植物只記錄在此裝置的瀏覽器。清除網站資料或更換手機可能遺失進度；請先匯出備份。寵物／植物名稱保存在這台裝置；照顧時輸入的心情文字不會保存或傳送。</p>
           </section>
         </div>
       </section>
