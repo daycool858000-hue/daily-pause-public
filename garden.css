@@ -248,3 +248,16 @@
 .world-v2 #worldExportEditable:focus-visible,.world-v2 #worldImportEditable:focus-visible{
   outline:3px solid #5c8879;outline-offset:3px;
 }
+
+/* Existing locally saved life must never be erased by parsing errors. */
+.garden-recovery[hidden]{display:none!important}
+.garden-recovery{
+ margin:1rem 0;padding:1.25rem;
+ background:#fff5e5;color:#73553c;border:2px solid #dcbf8a;border-radius:19px;
+}
+.garden-recovery h3{margin:.1rem 0 .5rem;font-size:1.12rem}
+.garden-recovery p{margin:.3rem 0 1rem;line-height:1.8}
+.garden-recovery-actions{display:flex;flex-wrap:wrap;gap:.7rem}
+.garden-recovery-actions button{font:inherit;border:1px solid #bd9b71;background:#fffdf7;
+ color:#705c48;border-radius:999px;padding:.8rem 1rem;cursor:pointer}
+.garden-recovery-actions button:focus-visible{outline:3px solid #ac7c4e;outline-offset:3px}
