@@ -89,6 +89,42 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
     assert.ok(png.startsWith('data:image/png;base64,'));
+
+    // Palette editing regression: object mode must never create a brush stroke;
+    // brush mode must draw even over an existing furniture hitbox.
+    await page.locator('[data-world-tab="object"]').click();
+    await page.locator('[data-prop="cup"]').click();
+    const stage=page.locator('#worldCanvas');
+    await stage.scrollIntoViewIfNeeded();
+    let bounds=await stage.boundingBox();
+    const pos={x:bounds.x+bounds.width*.365,y:bounds.y+bounds.height*.57};
+    await page.mouse.move(pos.x,pos.y);
+    await page.mouse.down();
+    await page.mouse.move(pos.x+Math.min(45,bounds.width*.12),pos.y+10,{steps:7});
+    await page.mouse.up();
+    await page.locator('[data-world-tab="brush"]').click();
+    await page.locator('[data-brush="pencil"]').click();
+    await stage.scrollIntoViewIfNeeded();
+    bounds=await stage.boundingBox();
+    const draw={x:bounds.x+bounds.width*.365,y:bounds.y+bounds.height*.57};
+    await page.mouse.move(draw.x,draw.y);
+    await page.mouse.down();
+    await page.mouse.move(draw.x+Math.min(38,bounds.width*.1),draw.y+12,{steps:8});
+    await page.mouse.up();
+    await page.locator('[data-world-tab="scene"]').click();
+    await page.locator('[data-scene="sea"]').click();
+    assert.equal(await page.locator('[data-scene="sea"]').getAttribute('aria-pressed'),'true');
+    await page.locator('[data-scene-default]').click();
+    assert.equal(await page.locator('[data-scene-default]').getAttribute('aria-pressed'),'true');
+    const [backupDownload]=await Promise.all([
+      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+    ]);
+    const backup=JSON.parse(await fs.readFile(await backupDownload.path(),'utf8'));
+    assert.equal(backup.canvases.length,24);
+    const lonely=backup.canvases.find(m=>m.mood==='孤單');
+    assert.equal(lonely.props.length,1,'Furniture must stay editable after landscape switch');
+    assert.equal(lonely.marks.length,1,'Object mode must not paint; brush must paint over furniture');
+    assert.equal(lonely.customScene,false,'Reset should restore the independent mood preset');
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
       'The garden must share the existing playback and offline sound controls');
