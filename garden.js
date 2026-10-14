@@ -85,9 +85,10 @@
     '楓樹':'🍁','蕨類':'🌿','野花':'🌼','香草':'🌱','海濱木槿':'🌺','馬鞍藤':'🌿',
     '濱刺麥':'🌾','椰子樹':'🌴','櫻花樹':'🌸','榕樹':'🌳','雛菊':'🌼','杜鵑':'🌺',
     '狗':'🐕','貓':'🐈','兔子':'🐇','天竺鼠':'🐹','雞':'🐓','鴨':'🦆','牛':'🐄'};
+  const harvestable=new Set(['草莓','番茄','稻米','南瓜','橘子樹','蘋果樹']);
   const actions={
     pet:[['feed','餵食','吃飽後，牠在你身邊舒服地休息。'],['play','玩耍','牠朝你靠近，像是想再玩一下。'],['wash','洗澡','水珠輕輕落下，牠甩了甩身體。'],['rest','陪牠休息','牠找到舒服的位置，慢慢安靜下來。']],
-    plant:[['water','澆水','泥土吸收了水分，葉子在微風裡搖晃。'],['care','整理','你替它整理周圍的空間。'],['watch','看看它','它照自己的速度生長。'],['rest','坐在旁邊','你和它一起待了一會兒。']]
+    plant:[['water','澆水','泥土吸收了水分，葉子在微風裡搖晃。'],['care','整理','你替它整理周圍的空間。'],['watch','看看它','它照自己的速度生長。'],['rest','坐在旁邊','你和它一起待了一會兒。'],['harvest','收成','你收下成熟的果實，植物還會繼續生長。']]
   };
   // Simple, non-competitive exploration. Each response has a visible scene effect.
   const hotspots={
@@ -179,6 +180,9 @@
       createdAt:item.createdAt,care:item.care,lastAction:typeof item.lastAction==='string' ?
         item.lastAction.slice(0,30):'',
       name:typeof item.name==='string'?item.name.slice(0,20):'',
+      harvests:Number.isInteger(item.harvests)&&item.harvests>=0&&item.harvests<100000?item.harvests:0,
+      lastHarvestAt:Number.isFinite(item.lastHarvestAt)&&item.lastHarvestAt>=0&&
+        item.lastHarvestAt<=Date.now()+86400000?item.lastHarvestAt:0,
       ...position(item)}));
     if(input?.backgrounds && typeof input.backgrounds==='object'&&!Array.isArray(input.backgrounds)){
       for(const [world,options] of Object.entries(sceneVariants)){
@@ -266,8 +270,7 @@
   const day=86400000;
   function growth(item){
     if(item.kind!=='plant')return '';
-    const age=Math.max(0,Math.floor((Date.now()-item.createdAt)/day));
-    return ['種子','發芽','長葉','長成'][Math.min(3,Math.floor(age/2)+Math.floor(item.care/3))];
+    return ['種子','發芽','長葉','長成'][growthLevel(item)];
   }
   function renderWorlds(){
     by('gardenWorldChoices').innerHTML=worlds.map(w=>
@@ -304,7 +307,9 @@
   function growthLevel(item){
     if(item.kind!=='plant')return 3;
     const days=Math.max(0,Math.floor((Date.now()-item.createdAt)/day));
-    return Math.min(3,Math.floor(days/2)+Math.floor(item.care/3));
+    const level=Math.min(3,Math.floor(days/2)+(item.care>=2?1:0));
+    if(item.lastHarvestAt && Date.now()-item.lastHarvestAt<2*day)return Math.min(level,2);
+    return level;
   }
   function renderCollection(){
     const w=currentWorld(),items=itemsHere();
@@ -364,7 +369,8 @@
     const occupied=itemsHere();
     const slot=occupied.length%24;
     const item={id,world:state.world,kind,species:name,createdAt:Date.now(),care:0,lastAction:'',
-      x:clamp(13+(slot%6)*14,8,92),y:clamp(57+Math.floor(slot/6)*10,45,90),name:''};
+      x:clamp(13+(slot%6)*14,8,92),y:clamp(57+Math.floor(slot/6)*10,45,90),name:'',
+      harvests:0,lastHarvestAt:0};
     state.items.push(item);save();renderCollection();
     by('gardenFeedback').textContent=kind==='pet'?name+'來到這裡了。慢慢認識牠也很好。':name+'已經種下，會按自己的步調長大。';
     by('gardenWorldRoom').classList.remove('garden-pop');void by('gardenWorldRoom').offsetWidth;by('gardenWorldRoom').classList.add('garden-pop');
@@ -399,14 +405,24 @@
     by('gardenDecorSelection').hidden=true;
     by('gardenFeedback').textContent='已收起'+decor.defs[current.type][0]+'。';
   }
+  function refreshCareOptions(item){
+    const available=actions[item.kind].filter(([action])=>
+      action!=='harvest'||(harvestable.has(item.species)&&growthLevel(item)===3));
+    by('gardenCareActions').innerHTML=available.map(([action,label])=>
+      '<button type="button" data-garden-action="'+action+'">'+label+'</button>').join('');
+    const progress=by('gardenCareGrowth');
+    if(progress)progress.textContent=item.kind==='plant'
+      ?growth(item)+(harvestable.has(item.species)?
+        ' · 已收成 '+item.harvests+' 次'+(growthLevel(item)<3?' · 長成後可以收成':' · 現在可以收成'):' · 隨時間慢慢生長')
+      :'陪牠休息、玩耍或照顧，不需要每天回來。';
+  }
   function selectItem(id){
     const item=itemsHere().find(x=>x.id===id);if(!item)return;
     const panel=by('gardenCarePanel');panel.dataset.selected=id;panel.hidden=false;
     by('gardenDecorSelection').hidden=true;
     by('gardenCareName').textContent=(ICONS[item.species]||'🌱')+' '+(item.name||item.species);
     by('gardenNickname').value=item.name||'';
-    by('gardenCareActions').innerHTML=actions[item.kind].map(([action,label])=>
-      '<button type="button" data-garden-action="'+action+'">'+label+'</button>').join('');
+    refreshCareOptions(item);
     by('gardenWords').value='';
     by('gardenCareFeedback').textContent='可以只做一個動作，也能留一句話。這裡不會替心情打分數。';
     panel.scrollIntoView({block:'nearest',behavior:'smooth'});
@@ -425,7 +441,11 @@
     const panel=by('gardenCarePanel'),item=itemsHere().find(x=>x.id===panel.dataset.selected);
     if(!item)return;
     const found=actions[item.kind].find(x=>x[0]===action);if(!found)return;
-    item.care+=1;item.lastAction=action;
+    if(action==='harvest'){
+      if(item.kind!=='plant'||!harvestable.has(item.species)||growthLevel(item)<3)return;
+      item.harvests+=1;item.lastHarvestAt=Date.now();
+    }else item.care+=1;
+    item.lastAction=action;
     const words=by('gardenWords').value.trim().slice(0,120);
     // Intentionally DO NOT persist or transmit private words; they're only displayed transiently.
     by('gardenCareFeedback').textContent=found[2]+(words?' 你留下：「'+words+'」':'');
@@ -436,6 +456,7 @@
     // Preserve panel; re-render resident growth without scrolling elsewhere.
     const selected=item.id;renderCollection();by('gardenCarePanel').dataset.selected=selected;
     by('gardenCarePanel').hidden=false;
+    refreshCareOptions(item);
     const currentStage=by('gardenResidentsStage');
     if(words&&currentStage){
       // Ephemeral visual only. Never store input text in JSON, URLs or external services.
