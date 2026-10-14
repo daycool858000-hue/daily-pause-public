@@ -190,11 +190,12 @@
                   </div>
               </div>
               <div class="world-caption"><p id="worldSceneLabel">微光停在房間裡。</p><button id="worldPause" type="button">暫停流動</button></div>
-              <p class="world-inline-note">小蝴蝶或光點會在網站裡緩慢飛行，想聊聊時點一下即可。工具就在畫布旁：點「顏色」只看色票，點「形狀」只看元素。</p>
+              <p class="world-inline-note">先選「形狀」或「畫筆」再動手創作；換景觀不會清空筆跡。小蝴蝶或光點可以點擊互動。</p>
             </div>
             <aside class="world-control-panel" id="worldControlPanel" aria-label="情緒畫室工具">
               <h2>畫布工具</h2>
-              <p>點一下工具名稱，才會打開那組選項。選好後就能在上方畫布創作。</p>
+              <p>選擇畫筆就能畫線；選擇形狀就能放入自然元素。兩種工具分開記住上一次的選擇。</p>
+              <p class="world-tool-current" id="worldCurrentTool" aria-live="polite">目前工具：鉛筆</p>
               <div class="world-tabs" role="tablist" aria-label="按需開啟畫室工具">
                 <button type="button" role="tab" data-world-tab="color" aria-selected="false">顏色</button>
                 <button type="button" role="tab" data-world-tab="element" aria-selected="false">形狀</button>
@@ -233,13 +234,13 @@
                 <label class="world-color-custom">自選顏色 <input id="worldCustomColor" type="color" value="#b78072" aria-label="自選筆觸顏色"></label>
               </section>
               <section class="world-panel world-paint-row" data-world-panel="brush" role="tabpanel" hidden>
-                <p class="world-tool-help">先選筆觸，再在畫布上畫出線條；也能調整自然元素大小。</p>
-                <div class="world-brushes"><button id="worldBrushLine" type="button">細線</button><button id="worldBrushInk" type="button">鉛筆</button><button id="worldBrushWash" type="button">水彩</button></div>
+                <p class="world-tool-help">鉛筆、細線、水彩、蠟筆、粉彩、麥克筆、柔光筆與橡皮擦。橡皮擦只清除你的筆跡或自然元素，不會擦掉背景。</p>
+                <div class="world-brushes" id="worldBrushPalette" role="group" aria-label="選擇畫筆"></div>
                 <label for="worldBrushSize">筆觸與元素大小</label><input id="worldBrushSize" type="range" min=".5" max="2.4" value="1" step=".1">
               </section>
               <div class="world-actions">
                 <button id="worldUndo" type="button" disabled>↶ 復原</button><button id="worldRedo" type="button" disabled>↷ 重做</button>
-                <button id="worldClear" type="button">清空元素</button><button id="worldDownload" type="button">保存 PNG ↓</button>
+                <button id="worldClearMarks" type="button">清空筆跡與自然元素</button><button id="worldClear" type="button">全部清空</button><button id="worldDownload" type="button">保存 PNG ↓</button>
               </div>
               <p class="world-notice">你的作品只存在這次開啟的頁面中，重新整理會消失。請下載 PNG 保存圖片；它不是可重新編輯的圖層檔。本站不會上傳你的作品。</p>
             </aside>
