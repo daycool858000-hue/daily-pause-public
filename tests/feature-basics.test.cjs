@@ -144,3 +144,20 @@ test('mobile and backup controls present and reduced-motion style exists',()=>{
  assert.match(css,/prefers-reduced-motion/);
  assert.match(css,/garden-backdrop\.garden-has-original-art/);
 });
+test('all five worlds have unique native motion and approved scene decoration sets',()=>{
+ const win={};
+ load('garden-motion.js',{window:win});
+ load('garden-decor.js',{window:win});
+ assert.equal(Object.keys(win.PauseGardenMotion).includes('render'),true);
+ const worlds=['flowers','farm','forest','coast','park'];
+ const allMotion=worlds.map(key=>win.PauseGardenMotion.render(key));
+ assert.equal(new Set(allMotion).size,5);
+ for(const key of worlds){
+   assert.ok(allMotion[worlds.indexOf(key)].length>150);
+   const list=win.PauseGardenDecor.worlds[key];
+   assert.equal(list.length,4,key+' should have four curated decorations');
+   for(const type of list){
+     assert.ok(win.PauseGardenDecor.markup({type}).includes('<svg'),type);
+   }
+ }
+});
