@@ -277,6 +277,8 @@
     backdrop.innerHTML=w.image?'':(window.PauseGardenScenes?.draw(w.id)||'');
     backdrop.classList.toggle('garden-has-original-art',!!backdrop.firstElementChild);
     backdrop.dataset.area=w.id;
+    const motion=by('gardenSceneFX');
+    if(motion){motion.dataset.world=w.id;motion.innerHTML=window.PauseGardenMotion?.render(w.id)||'';}
     stage.classList.toggle('garden-scene-pending',!w.image&&!backdrop.firstElementChild);
     const sceneNotice=by('gardenSceneNotice');
     if(sceneNotice)sceneNotice.textContent=w.visual==='pending'
