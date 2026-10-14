@@ -110,5 +110,19 @@
     return raw.replace(/id="(body|leaf)"/g,(_,id)=>'id="'+id+'-'+key+'"')
       .replace(/url\(#(body|leaf)\)/g,(_,id)=>'url(#'+id+'-'+key+')');
   }
-  window.PauseGardenSprites={markup,animal,plant};
+  function effect(action){
+    // Distinct motion cues for feeding, washing, watering and play.
+    const shapes={
+      feed:'<path d="M8 22q12 10 24 0l-3 11H11Z" fill="#cfac86" stroke="#906f56" stroke-width="1.5"/><path d="M10 22q10-14 20 0" fill="#b58a5c"/><circle cx="19" cy="18" r="2" fill="#72583f"/>',
+      water:'<path d="M20 5Q9 19 11 27a9 9 0 0 0 18 0Q31 19 20 5Z" fill="#9bbec5" stroke="#e6f2ef" stroke-width="1.5"/>',
+      wash:'<circle cx="14" cy="19" r="9" fill="#d1e8e6" stroke="#fff" stroke-width="2"/><circle cx="27" cy="13" r="6" fill="#d1e8e6" stroke="#fff" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="#fff9ea" opacity=".9"/>',
+      play:'<circle cx="20" cy="20" r="13" fill="#cf9578" stroke="#fff0da" stroke-width="2"/><path d="M7 20h26M20 7v26" stroke="#f2d8b6" stroke-width="2"/>',
+      care:'<path d="M9 29 26 9M25 8l9-1-3 9" fill="none" stroke="#a09b7d" stroke-width="4" stroke-linecap="round"/><path d="M7 15l5 5m9-14 5 5" stroke="#7a9d7a" stroke-width="2"/>',
+      watch:'<path d="M5 20q15-18 30 0Q20 38 5 20Z" fill="#fff7e9" stroke="#adac8e" stroke-width="2"/><circle cx="20" cy="20" r="7" fill="#7f9992"/>',
+      rest:'<path d="M23 4A16 16 0 1 0 36 30 16 16 0 0 1 23 4Z" fill="#ead4aa"/><circle cx="34" cy="8" r="2" fill="#f5e1af"/>'
+    };
+    const paths=shapes[action]||shapes.rest;
+    return '<span class="garden-action-vfx" aria-hidden="true"><svg viewBox="0 0 40 40" width="42" height="42">'+paths+'</svg></span>';
+  }
+  window.PauseGardenSprites={markup,animal,plant,effect};
 })();
