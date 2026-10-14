@@ -65,6 +65,7 @@
     ).map(item=>({id:item.id,world:item.world,kind:item.kind,species:item.species,
       createdAt:item.createdAt,care:item.care,lastAction:typeof item.lastAction==='string' ?
         item.lastAction.slice(0,30):'',
+      name:typeof item.name==='string'?item.name.slice(0,20):'',
       ...position(item)}));
     return clean;
   }
@@ -93,7 +94,7 @@
     const items=itemsHere();
     area.innerHTML=items.slice(0,30).map(item=>{
       const p=position(item),stage=growthLevel(item);
-      const label=esc(item.species)+'，'+(item.kind==='pet'?'點擊照顧':growth(item)+'，點擊照顧');
+      const label=esc(item.name||item.species)+'，'+(item.kind==='pet'?'點擊照顧':growth(item)+'，點擊照顧');
       const svg=sprites?.markup(item,stage)||'<span aria-hidden="true">'+(ICONS[item.species]||'🌱')+'</span>';
       return '<button type="button" class="garden-stage-resident garden-stage-'+item.kind+
         '" data-stage-resident="'+item.id+'" style="left:'+p.x+'%;top:'+p.y+'%" aria-label="'+label+
@@ -120,7 +121,7 @@
     by('gardenResidents').innerHTML=items.length?items.map(item=>
       '<button type="button" class="garden-resident" data-resident="'+item.id+'" aria-label="照顧'+esc(item.species)+'">'+
       '<span class="garden-resident-icon" aria-hidden="true">'+(ICONS[item.species]||'🌱')+'</span>'+
-      '<strong>'+esc(item.species)+'</strong><small>'+(item.kind==='pet'?'我的陪伴':'植物 · '+growth(item))+'</small></button>'
+      '<strong>'+esc(item.name||item.species)+'</strong><small>'+(item.kind==='pet'?esc(item.species)+' · 我的陪伴':'植物 · '+growth(item))+'</small></button>'
     ).join(''):'<p class="garden-empty">這裡還有很多空間。你可以先種一朵花，或邀請一個小夥伴。</p>';
     const sel=by('gardenCarePanel').dataset.selected;
     if(!items.some(x=>x.id===sel))by('gardenCarePanel').hidden=true;
@@ -144,7 +145,7 @@
     const occupied=itemsHere();
     const slot=occupied.length%24;
     const item={id,world:state.world,kind,species:name,createdAt:Date.now(),care:0,lastAction:'',
-      x:clamp(13+(slot%6)*14,8,92),y:clamp(57+Math.floor(slot/6)*10,45,90)};
+      x:clamp(13+(slot%6)*14,8,92),y:clamp(57+Math.floor(slot/6)*10,45,90),name:''};
     state.items.push(item);save();renderCollection();
     by('gardenFeedback').textContent=kind==='pet'?name+'來到這裡了。慢慢認識牠也很好。':name+'已經種下，會按自己的步調長大。';
     by('gardenWorldRoom').classList.remove('garden-pop');void by('gardenWorldRoom').offsetWidth;by('gardenWorldRoom').classList.add('garden-pop');
@@ -152,12 +153,23 @@
   function selectItem(id){
     const item=itemsHere().find(x=>x.id===id);if(!item)return;
     const panel=by('gardenCarePanel');panel.dataset.selected=id;panel.hidden=false;
-    by('gardenCareName').textContent=(ICONS[item.species]||'🌱')+' '+item.species;
+    by('gardenCareName').textContent=(ICONS[item.species]||'🌱')+' '+(item.name||item.species);
+    by('gardenNickname').value=item.name||'';
     by('gardenCareActions').innerHTML=actions[item.kind].map(([action,label])=>
       '<button type="button" data-garden-action="'+action+'">'+label+'</button>').join('');
     by('gardenWords').value='';
     by('gardenCareFeedback').textContent='可以只做一個動作，也能留一句話。這裡不會替心情打分數。';
     panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+  function rename(){
+    const panel=by('gardenCarePanel');
+    const item=itemsHere().find(x=>x.id===panel.dataset.selected);
+    if(!item)return;
+    const name=by('gardenNickname').value.trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,20);
+    item.name=name;save();renderCollection();
+    by('gardenCarePanel').hidden=false;
+    by('gardenCareName').textContent=(ICONS[item.species]||'🌱')+' '+(name||item.species);
+    by('gardenCareFeedback').textContent=name?'你替這位小夥伴取了名字：「'+name+'」。':'已使用原本的物種名稱。';
   }
   function care(action){
     const panel=by('gardenCarePanel'),item=itemsHere().find(x=>x.id===panel.dataset.selected);
@@ -273,6 +285,7 @@
     else if(b.dataset.resident)selectItem(b.dataset.resident);
     else if(b.dataset.gardenAction)care(b.dataset.gardenAction);
     else if(b.id==='gardenCloseCare')by('gardenCarePanel').hidden=true;
+    else if(b.id==='gardenSaveName')rename();
     else if(b.id==='gardenBackup')backup();
     else if(b.id==='gardenImport')by('gardenImportFile').click();
   });
