@@ -102,12 +102,33 @@
     if(hint){hint.textContent=item[2];hint.hidden=false;}
   }
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
-  const newState=()=>({version:1,world:'flowers',items:[]});
+  const lightingChoices=[['morning','晨光'],['day','白天'],['dusk','黃昏'],['night','夜晚']];
+  const allowedLighting=new Set(lightingChoices.map(x=>x[0]));
+  const newState=()=>({version:1,world:'flowers',items:[],lighting:{}});
+  function renderLighting(){
+    const selected=state.lighting[state.world]||'day';
+    const root=by('gardenLightChoices');
+    if(root)root.innerHTML=lightingChoices.map(([id,name])=>
+      '<button type="button" data-garden-light="'+id+'" aria-pressed="'+(selected===id)+'">'+name+'</button>'
+    ).join('');
+    const stage=by('gardenWorldRoom')?.querySelector('.garden-landscape');
+    if(stage)stage.dataset.light=selected;
+  }
+  function chooseLighting(name){
+    if(!allowedLighting.has(name))return;
+    state.lighting[state.world]=name;save();renderLighting();
+    by('gardenFeedback').textContent='光線已換成'+lightingChoices.find(x=>x[0]===name)[1]+'。這個選擇只影響畫面。';
+  }
   const speciesValid=item=>worlds.some(w=>w.id===item.world &&
     (item.kind==='pet'?w.pets:w.plants).includes(item.species));
   function sanitize(input){
     const clean=newState();
     if(input && worlds.some(w=>w.id===input.world))clean.world=input.world;
+    if(input?.lighting&&typeof input.lighting==='object'&&!Array.isArray(input.lighting)){
+      for(const w of worlds){
+        if(allowedLighting.has(input.lighting[w.id]))clean.lighting[w.id]=input.lighting[w.id];
+      }
+    }
     if(Array.isArray(input?.items))clean.items=input.items.slice(0,160).filter(item=>
       item && typeof item==='object' &&
       ['pet','plant'].includes(item.kind) && speciesValid(item) &&
@@ -182,6 +203,7 @@
       ?'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，已能分辨場景；你要求的專屬寫實景觀仍待完成。'
       :'開發預覽：此區暫用既有生成風景，仍須完成來源查核與正式視覺驗收。';
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡';
+    renderLighting();
     renderHotspots();
     const exploreNotice=by('gardenExploreMessage');
     if(exploreNotice){exploreNotice.textContent='';exploreNotice.hidden=true;}
@@ -349,6 +371,7 @@
       selectItem(b.dataset.stageResident);
     }
     else if(b.dataset.gardenHotspot)explore(b.dataset.gardenHotspot);
+    else if(b.dataset.gardenLight)chooseLighting(b.dataset.gardenLight);
     else if(b.dataset.chooseWorld)setWorld(b.dataset.chooseWorld);
     else if(b.id==='gardenChangeWorld'){by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
     else if(b.id==='gardenAddPet')add('pet');
