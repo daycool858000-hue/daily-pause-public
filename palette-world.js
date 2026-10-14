@@ -50,10 +50,17 @@
     const ctx=canvas.getContext('2d',{alpha:false}); if(!ctx)return;
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'leaf',size:1,velocity:.5,paused:false,selected:null};
+    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null};
     const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
       'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
-    let activeTab=null,pointer=null,frames=null,lastMoment=0;
+    let activeTab='brush',pointer=null,frames=null,lastMoment=0;
+    let lastBrush='pencil',lastElement='leaf';
+    const brushTools=[
+      ['pencil','鉛筆'],['ink','細線'],['wash','水彩'],['crayon','蠟筆'],
+      ['pastel','粉彩'],['marker','麥克筆'],['glow','柔光筆'],['eraser','橡皮擦']
+    ];
+    const brushTypes=new Set(brushTools.map(x=>x[0]));
+    const brushName=type=>brushTools.find(x=>x[0]===type)?.[1] || elements.find(x=>x[0]===type)?.[1] || type;
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
@@ -70,16 +77,61 @@
     });
     const change=fn=>{history.record();fn();updateSelections();paint(performance.now(),true);};
     function drawStroke(stroke) {
-      if(!stroke.coords.length)return;
+      if(!stroke.coords?.length||stroke.type==='eraser')return;
+      const pts=stroke.coords;
+      const unit=Math.max(.5,stroke.size);
       ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-      ctx.lineWidth=(stroke.type==='ink'?3:stroke.type==='pencil'?3.4:15)*stroke.size;
-      ctx.strokeStyle=stroke.color;ctx.globalAlpha=stroke.type==='wash'?.27:stroke.type==='pencil'?.68:.85;
-      ctx.beginPath();ctx.moveTo(stroke.coords[0][0],stroke.coords[0][1]);
-      for(const p of stroke.coords.slice(1))ctx.lineTo(p[0],p[1]);
-      if(stroke.coords.length===1){ctx.lineTo(stroke.coords[0][0]+.1,stroke.coords[0][1]+.1)}
+      ctx.strokeStyle=stroke.color;
+      const widths={ink:3,pencil:3.4,wash:24,crayon:12,pastel:22,marker:15,glow:20};
+      const alpha={ink:.95,pencil:.65,wash:.19,crayon:.84,pastel:.3,marker:.82,glow:.37};
+      ctx.lineWidth=(widths[stroke.type]||4)*unit;
+      ctx.globalAlpha=alpha[stroke.type]??.9;
+      if(stroke.type==='glow'){ctx.shadowColor=stroke.color;ctx.shadowBlur=24*unit;}
+      if(stroke.type==='pastel'){ctx.shadowColor=stroke.color;ctx.shadowBlur=11*unit;}
+      ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+      for(const [x,y] of pts.slice(1))ctx.lineTo(x,y);
+      if(pts.length===1)ctx.lineTo(pts[0][0]+.1,pts[0][1]+.1);
       ctx.stroke();
-      if(stroke.type==='wash'){ctx.lineWidth=stroke.size*25;ctx.globalAlpha=.075;ctx.stroke()}
+      if(stroke.type==='wash'){
+        ctx.lineWidth=unit*39;ctx.globalAlpha=.053;ctx.stroke();
+        ctx.lineWidth=unit*9;ctx.globalAlpha=.1;ctx.stroke();
+      }
+      // Deterministic rough pigment, not freshly randomized on every animation frame.
+      if(stroke.type==='crayon'||stroke.type==='pastel'){
+        let tick=0;ctx.globalAlpha=stroke.type==='crayon'?.22:.12;
+        for(let k=0;k<pts.length;k++){
+          const [x,y]=pts[k],r=(stroke.type==='crayon'?8:17)*unit;
+          for(let n=0;n<5;n++){
+            const a=(tick*2.3999632297)%6.28318530718;
+            const d=Math.sqrt((tick*0.61803398875)%1)*r;
+            ctx.fillStyle=stroke.color;
+            ctx.fillRect(x+Math.cos(a)*d,y+Math.sin(a)*d,stroke.type==='crayon'?2:3,2);
+            tick++;
+          }
+        }
+      }
       ctx.restore();
+    }
+    function eraseAt(p){
+      const radius=24*model.size;
+      const dist=(a,b)=>Math.hypot(a[0]-b.x,a[1]-b.y);
+      model.marks=model.marks.filter(mark=>{
+        if(mark.kind==='element')return Math.hypot(mark.x-p.x,mark.y-p.y)>radius+(mark.size||0)*.4;
+        const pts=mark.coords||[];
+        for(let i=0;i<pts.length;i++){
+          if(dist(pts[i],p)<radius)return false;
+          if(i===0)continue;
+          const a=pts[i-1],b=pts[i],dx=b[0]-a[0],dy=b[1]-a[1];
+          const f=Math.max(0,Math.min(1,((p.x-a[0])*dx+(p.y-a[1])*dy)/(dx*dx+dy*dy||1)));
+          if(Math.hypot(p.x-a[0]-dx*f,p.y-a[1]-dy*f)<radius)return false;
+        }
+        return true;
+      });
+    }
+    function selectTool(tool){
+      if(brushTypes.has(tool)){lastBrush=tool;activeTab='brush'}
+      else{lastElement=tool;activeTab='element'}
+      model.tool=tool;updateSelections();
     }
     function paint(time=0,still=false) {
       const t=reduce||model.paused||still?0:time*model.velocity;
@@ -136,12 +188,18 @@
       ).join('');
       $('worldElements').innerHTML=elements.map(([id,name,symbol])=>'<button type="button" data-element="'+id+'" aria-pressed="false"><span>'+symbol+'</span>'+name+'</button>').join('');
       $('worldProps').innerHTML=props.map(([id,name,symbol])=>'<button type="button" data-prop="'+id+'" aria-label="加入'+name+'"><span>'+symbol+'</span>'+name+'</button>').join('');
+      const brushPanel=$('worldBrushPalette');
+      if(brushPanel)brushPanel.innerHTML=brushTools.map(([id,name])=>
+        '<button type="button" data-brush="'+id+'" aria-pressed="false">'+name+'</button>').join('');
       $('worldColors').innerHTML=swatches.map(c=>'<button type="button" data-color="'+c+'" style="--c:'+c+'" aria-label="選擇顏色 '+c+'" title="套用至下一筆 '+c+'"></button>').join('');
     }
     function updateSelections(){
       root.querySelectorAll('[data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mood===model.mood)));
       root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===model.scene)));
       root.querySelectorAll('[data-element]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.element===model.tool)));
+      root.querySelectorAll('[data-brush]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.brush===model.tool)));
+      const currentTool=$('worldCurrentTool');
+      if(currentTool)currentTool.textContent='目前工具：'+brushName(model.tool);
       root.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===model.color)));
       $('worldCustomColor').value=model.color;
       $('worldActiveColorPreview').style.backgroundColor=model.color;
@@ -166,7 +224,7 @@
     }
     function createMark(pos){
       const t=model.tool;
-      if(['ink','pencil','wash'].includes(t)){
+      if(brushTypes.has(t)&&t!=='eraser'){
         const stroke={kind:'stroke',type:t,coords:[[pos.x,pos.y]],color:model.color,size:model.size};
         model.marks.push(stroke);return stroke;
       }
@@ -176,12 +234,14 @@
     const canMark=()=>model.marks.length<260;
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
-      const p=screenPosition(e);const prop=hitProp(p);
+      const p=screenPosition(e);const prop=model.tool==='eraser'?null:hitProp(p);
       if(prop){model.selected=prop.id;pointer={id:e.pointerId,mode:'move',from:p,old:{...prop},recorded:false};}
-      else if(canMark()){
+      else if(model.tool==='eraser'){
+        history.record();model.selected=null;eraseAt(p);
+        pointer={id:e.pointerId,mode:'erase',from:p,last:p};
+      } else if(canMark()){
         history.record();model.selected=null;let mark=createMark(p);
         pointer={id:e.pointerId,mode:'mark',from:p,mark,last:p};
-        
       }
       try{canvas.setPointerCapture(e.pointerId)}catch(_){}
       updateSelections();paint(performance.now(),true);
@@ -193,6 +253,7 @@
         const item=currentProp();if(!item)return;
         if(!pointer.recorded){if(Math.hypot(p.x-pointer.from.x,p.y-pointer.from.y)<5)return;history.record();pointer.recorded=true;}
         item.x=pointer.old.x+p.x-pointer.from.x;item.y=pointer.old.y+p.y-pointer.from.y;
+      } else if(pointer.mode==='erase'){eraseAt(p);
       } else {
         const d=Math.hypot(p.x-pointer.last.x,p.y-pointer.last.y);
         if(d<11)return;
@@ -234,30 +295,34 @@
         stampMessage(moodFor()[2]);return;
       }
       if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
-      if(b.dataset.element){model.tool=b.dataset.element;activeTab='element';updateSelections();return;}
+      if(b.dataset.element){selectTool(b.dataset.element);return;}
+      if(b.dataset.brush){selectTool(b.dataset.brush);return;}
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
       if(b.dataset.color){
         model.color=b.dataset.color;
         updateSelections();paint(performance.now(),true);return;
       }
-      if(b.dataset.worldTab){activeTab=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;updateSelections();return;}
+      if(b.dataset.worldTab){
+        const next=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;
+        activeTab=next;
+        if(next==='element')model.tool=lastElement;
+        if(next==='brush')model.tool=lastBrush;
+        updateSelections();return;
+      }
       if(b.dataset.propAction){editProp(b.dataset.propAction);return;}
     });
     $('worldBrushSize').addEventListener('input',e=>model.size=Number(e.target.value));
     $('worldCustomColor').addEventListener('input',e=>{model.color=e.target.value;updateSelections();paint(performance.now(),true)});
-    $('worldBrushInk').addEventListener('click',()=>{model.tool='pencil';updateSelections()});
-    $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';updateSelections()});
-    $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';updateSelections()});
+    // Brush selection is delegated to the [data-brush] tools.
     $('worldUndo').addEventListener('click',()=>history.undo());
     $('worldQuickUndo').addEventListener('click',()=>history.undo());
     $('worldRedo').addEventListener('click',()=>history.redo());
     $('worldQuickRedo').addEventListener('click',()=>history.redo());
-    const clearWorld=()=>{
-      change(()=>{model.marks=[];model.props=[];model.selected=null});
-      
-    };
+    const clearWorld=()=>change(()=>{model.marks=[];model.props=[];model.selected=null});
+    const clearMarks=()=>change(()=>{model.marks=[];});
     $('worldClear').addEventListener('click',clearWorld);
     $('worldQuickClear').addEventListener('click',clearWorld);
+    $('worldClearMarks')?.addEventListener('click',clearMarks);
     $('worldPause').addEventListener('click',()=>{
       model.paused=!model.paused;updateSelections();
       if(model.paused){stop();paint(performance.now(),true)}else schedule();
