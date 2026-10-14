@@ -115,6 +115,7 @@
     const shapes={
       feed:'<path d="M8 22q12 10 24 0l-3 11H11Z" fill="#cfac86" stroke="#906f56" stroke-width="1.5"/><path d="M10 22q10-14 20 0" fill="#b58a5c"/><circle cx="19" cy="18" r="2" fill="#72583f"/>',
       water:'<path d="M20 5Q9 19 11 27a9 9 0 0 0 18 0Q31 19 20 5Z" fill="#9bbec5" stroke="#e6f2ef" stroke-width="1.5"/>',
+      harvest:'<path d="M20 34Q2 16 8 11Q16 5 22 15Q28 5 35 10Q43 22 20 34Z" fill="#c87465" stroke="#a56053" stroke-width="2"/><path d="M21 14Q22 5 29 3" stroke="#6d9070" stroke-width="3" fill="none"/>',
       wash:'<circle cx="14" cy="19" r="9" fill="#d1e8e6" stroke="#fff" stroke-width="2"/><circle cx="27" cy="13" r="6" fill="#d1e8e6" stroke="#fff" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="#fff9ea" opacity=".9"/>',
       play:'<circle cx="20" cy="20" r="13" fill="#cf9578" stroke="#fff0da" stroke-width="2"/><path d="M7 20h26M20 7v26" stroke="#f2d8b6" stroke-width="2"/>',
       care:'<path d="M9 29 26 9M25 8l9-1-3 9" fill="none" stroke="#a09b7d" stroke-width="4" stroke-linecap="round"/><path d="M7 15l5 5m9-14 5 5" stroke="#7a9d7a" stroke-width="2"/>',
