@@ -372,3 +372,23 @@
  background:#e6f0e8;color:#3d6953;box-shadow:inset 0 0 0 1px #6c9a82}
 .garden-scene-variant button:focus-visible{outline:3px solid #6d9980;outline-offset:2px}
 .garden-scene-variant p{font-size:.76rem;line-height:1.7;margin:.55rem 0 .05rem;color:#849282}
+
+/* Plants reveal their growth gradually; the harvest option appears only when ripe. */
+.garden-care-growth{font-size:.84rem;line-height:1.65;margin:.85rem 0 .45rem;color:#66816f;
+ background:#edf3e9;padding:.55rem .8rem;border-radius:12px}
+.garden-care-actions button[data-garden-action="harvest"]{
+ background:#f2e6bf;color:#87674c;border-color:#d9bc79;
+ font-weight:600;
+}
+.garden-stage-plant[data-activity="harvest"] .garden-plant{
+ animation:garden-harvest-gentle .8s ease-in-out 1;
+}
+@keyframes garden-harvest-gentle{
+  0%{transform:scale(1) rotate(0)}
+  25%{transform:scale(.94) rotate(-7deg)}
+  68%{transform:scale(1.03) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ .garden-stage-plant[data-activity="harvest"] .garden-plant{animation:none!important}
+}
