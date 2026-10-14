@@ -50,7 +50,7 @@
     const ctx=canvas.getContext('2d',{alpha:false}); if(!ctx)return;
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null};
+    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null,customScene:false};
     const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
       'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
     let activeTab='brush',pointer=null,frames=null,lastMoment=0;
@@ -96,6 +96,27 @@
       ctx.fillStyle=fog;ctx.fillRect(0,0,W,H);
     }
 
+    const moodImageCache=new Map();
+    function moodImageState(name){
+      if(!window.PauseMoodScenes?.imageUrl)return null;
+      if(moodImageCache.has(name))return moodImageCache.get(name);
+      const src=window.PauseMoodScenes.imageUrl(name);if(!src)return null;
+      const image=new Image();
+      const state={image,ready:false,failed:false};
+      moodImageCache.set(name,state);
+      image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
+      image.onerror=()=>{state.failed=true;};
+      image.src=src;return state;
+    }
+    function drawMoodBackground(name,t){
+      const state=moodImageState(name);
+      if(!state||state.failed){drawLandscape(model.scene,t);return;}
+      if(!state.ready){drawLandscape(model.scene,t);return;}
+      const image=state.image;
+      const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
+      const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
+      ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+    }
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
@@ -105,7 +126,7 @@
     const workspaces=new Map();
     const histories=new Map();
     const snapshot=()=>({
-      scene:model.scene,marks:model.marks,props:model.props,
+      scene:model.scene,customScene:model.customScene,marks:model.marks,props:model.props,
       color:model.color,size:model.size
     });
     let history;
@@ -127,7 +148,7 @@
       if(!entry)return;
       workspaces.set(model.mood,snapshot());
       const next=workspaces.get(name) || {
-        scene:entry[1],marks:[],props:[],color:entry[4],size:1
+        scene:entry[1],customScene:false,marks:[],props:[],color:entry[4],size:1
       };
       Object.assign(model,{...next,mood:name,selected:null});
       if(!histories.has(name))histories.set(name,createHistory());
@@ -221,7 +242,8 @@
         ctx.fillStyle='#faf7f1';ctx.fillRect(0,0,W,H);
         ctx.save();ctx.globalAlpha=.15;ctx.fillStyle='#b4aa99';
         for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
-      }else drawLandscape(model.scene,t);
+      }else if(!model.customScene)drawMoodBackground(model.mood,t);
+      else drawLandscape(model.scene,t);
       const m=moodFor(),special=m[0];
       const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
       if(window.PauseMoodAtmospheres?.paint){
@@ -389,7 +411,7 @@
         switchMood(name);
         stampMessage(moodFor()[2]);return;
       }
-      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
+      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;model.customScene=true;});return;}
       if(b.dataset.element){selectTool(b.dataset.element);return;}
       if(b.dataset.brush){selectTool(b.dataset.brush);return;}
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
@@ -466,7 +488,7 @@
         return {id:p.id,type:p.type,x:p.x,y:p.y,scale:p.scale,angle:p.angle,z:p.z};
       });
       if(new Set(cleanProps.map(p=>p.id)).size!==cleanProps.length)throw Error('duplicate objects');
-      return {scene:raw.scene,marks,props:cleanProps,color:raw.color,size:raw.size};
+      return {scene:raw.scene,customScene:typeof raw.customScene==='boolean'?raw.customScene:true,marks,props:cleanProps,color:raw.color,size:raw.size};
     }
     function exportEditable(){
       try{
@@ -474,7 +496,7 @@
         all.set(model.mood,snapshot());
         const canvases=moods.map(([name])=>
           ({mood:name,...cleanCanvas(all.get(name)||{
-            scene:moods.find(x=>x[0]===name)[1],marks:[],props:[],
+            scene:moods.find(x=>x[0]===name)[1],customScene:false,marks:[],props:[],
             color:moods.find(x=>x[0]===name)[4],size:1
           })}));
         const doc={format:'today-pause-editable-palette',version:1,
