@@ -18,7 +18,7 @@
     ['想慢一點','lake','湖面有自己的速度。','〜','#9ebbb7'],['想暖一點','room','有一盞燈為你亮著。','☀','#d2a780']
   ];
   const scenes=[
-    ['room','晨光房間','窗光、茶與植物'],['sea','海邊','潮線與海風'],['rain','窗邊雨天','雨線與木桌'],
+    ['room','晨光房間','窗光、茶與植物'],['living','溫暖客廳','沙發、地毯、桌燈與綠植'],['sea','海邊','潮線與海風'],['rain','窗邊雨天','雨線與木桌'],
     ['garden','小花園','草葉與細花'],['night','月光夜晚','夜色與微燈'],['island','慢慢的小島','海面與山影'],
     ['balcony','黃昏陽台','藤椅與遠方'],['hill','霧中的山坡','山線與老樹'],
     ['lake','湖邊','水面與山影'],['library','安靜書房','閱讀與溫熱茶氣'],
@@ -65,6 +65,7 @@
     // geography is accurate; never show a mountain for a room or an ocean for a library.
     // Dedicated artwork for all 24 emotions and all indoor scenes remains to be produced.
     const landscapeArt={
+      living:window.PauseMoodScenes?.livingRoomUrl()||null,
       sea:'./media/generated/scene-02.webp',
       garden:'./media/generated/scene-04.webp',
       hill:'./media/generated/scene-01.webp',
