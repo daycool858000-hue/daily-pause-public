@@ -42,3 +42,11 @@ jobs:
         run: npx playwright install --with-deps chromium webkit
       - name: Desktop Chromium and Mobile WebKit smoke test
         run: node tests/browser-smoke.cjs
+      - name: Upload development-only visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: palette-garden-scene-review
+          path: tests/screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 7
