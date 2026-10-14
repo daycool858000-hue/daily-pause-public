@@ -157,3 +157,44 @@
 @media(prefers-reduced-motion:reduce){
  .garden-backdrop.garden-has-original-art{transform:none;animation:none}
 }
+
+/* Gentle, optional micro-interactions within each environment. */
+.garden-hotspots{position:absolute;inset:0;z-index:3;pointer-events:none}
+.garden-hotspot{
+ position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;
+ justify-content:center;flex-direction:column;gap:3px;width:64px;min-height:50px;
+ border:1px solid #fff8e5aa;border-radius:100px;background:#2d504444;
+ color:#fff8e8;cursor:pointer;pointer-events:auto;text-shadow:0 1px 4px #23463f;
+ backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+ box-shadow:0 3px 16px #172d2820;
+}
+.garden-hotspot span{font-size:1.2rem;line-height:1}
+.garden-hotspot small{font-size:.66rem;line-height:1.15;white-space:nowrap}
+.garden-hotspot:focus-visible{outline:3px solid #fff8d5;outline-offset:4px}
+.garden-hotspot-active{background:#5c8476a0}
+.garden-hotspot-active:after{
+ content:attr(data-effect-label);position:absolute;top:-.5rem;left:50%;
+ transform:translateX(-50%);font-size:2.6rem;color:#fff0c5;
+ text-shadow:0 3px 9px #38584a;pointer-events:none;
+ animation:garden-discovery 1.5s ease-out both;
+}
+.garden-explore-message{
+ position:absolute;z-index:5;left:50%;top:8%;transform:translateX(-50%);
+ width:min(85%,480px);padding:.8rem 1.2rem;text-align:center;
+ background:#fdfaf1e8;color:#4e665a;line-height:1.65;
+ border:1px solid #e2e4d7;border-radius:100px;box-shadow:0 8px 25px #324a462a;
+ pointer-events:none;font-size:.84rem;
+}
+.garden-explore-message[hidden]{display:none}
+@keyframes garden-discovery{
+ 0%{opacity:0;transform:translate(-50%,7px) scale(.5)}
+ 25%{opacity:1;transform:translate(-50%,-16px) scale(1)}
+ 80%{opacity:1}
+ 100%{opacity:0;transform:translate(-50%,-60px) scale(1.4)}
+}
+@media(max-width:620px){
+ .garden-hotspot{width:49px;min-height:45px}
+ .garden-hotspot small{font-size:.59rem}
+ .garden-explore-message{font-size:.73rem;padding:.65rem .9rem;border-radius:17px}
+}
+@media(prefers-reduced-motion:reduce){.garden-hotspot-active:after{animation:none;top:-.6rem;opacity:1}}
