@@ -87,6 +87,22 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('#gardenSkipGate').click();
     await page.locator('#gardenWorldChoices').waitFor();
     assert.equal(await page.locator('[data-choose-world]').count(),5);
+    // Environmental motion must be specific to the chosen place.
+    const worldMotions=[
+      ['flowers','.garden-ambient-petal',11],
+      ['farm','.garden-ambient-stem',9],
+      ['forest','.garden-ambient-sunray',4],
+      ['coast','.garden-ambient-wave',5],
+      ['park','.garden-ambient-ripple',4]
+    ];
+    for(let i=0;i<worldMotions.length;i++){
+      const [world,selector,count]=worldMotions[i];
+      if(i>0)await page.locator('#gardenChangeWorld').click();
+      await page.locator('[data-choose-world="'+world+'"]').click();
+      assert.equal(await page.locator('#gardenSceneFX').getAttribute('data-world'),world);
+      assert.equal(await page.locator(selector).count(),count,world+' has wrong environment motion');
+    }
+    await page.locator('#gardenChangeWorld').click();
     await page.locator('[data-choose-world="farm"]').click();
     await page.locator('.garden-environment-art').waitFor();
     await page.locator('#gardenPlants').selectOption('稻米');
