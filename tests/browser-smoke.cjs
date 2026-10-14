@@ -39,6 +39,23 @@ const server=http.createServer(async(req,res)=>{
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:'+port+'/',{waitUntil:'load',timeout:30000});
+    const manifest=await page.locator('link[rel="manifest"]').getAttribute('href');
+    assert.equal(manifest,'./manifest.webmanifest');
+    assert.equal(await page.locator('link[rel="apple-touch-icon"]').count(),1);
+    const icon=await page.evaluate(()=>new Promise(resolve=>{
+      const image=new Image();
+      image.onload=()=>resolve([image.naturalWidth,image.naturalHeight]);
+      image.onerror=()=>resolve([]);
+      image.src='./icons/today-pause-180.png';
+    }));
+    assert.deepEqual(icon,[180,180],'iPhone home-screen icon must be a valid 180x180 PNG');
+    const install=await page.evaluate(async()=>{
+      if(!('serviceWorker' in navigator))return 'not-supported';
+      await navigator.serviceWorker.ready;
+      return 'registered';
+    });
+    assert.ok(['registered','not-supported'].includes(install));
+
     await page.waitForTimeout(500);
     if(await page.locator('#welcomeModal').isVisible())
       await page.locator('#closeWelcome').click();
@@ -83,7 +100,36 @@ const server=http.createServer(async(req,res)=>{
     }));
     assert.ok(width.scrollWidth<=width.viewport+3,
       'Page must not horizontally overflow: '+JSON.stringify(width));
-    assert.deepEqual(errors,[],'No browser page errors expected');
+
+    if(scenario.engine===chromium){
+      const offline=await page.evaluate(async()=>{
+        const reg=await navigator.serviceWorker.ready;
+        if(!reg.active)throw Error('No active service worker');
+        const track=window.PauseSound.tracks.find(t=>t.src.includes('first-light.mp3'));
+        if(!track)throw Error('Local track missing');
+        const saved=await window.PauseOfflineMusic.save(track);
+        if(!saved.ok||saved.size<1000)throw Error('Offline music not cached');
+        return saved.size;
+      });
+      assert.ok(offline>1000);
+      await page.reload({waitUntil:'load'});
+      await page.waitForTimeout(500);
+      await context.setOffline(true);
+      const result=await page.evaluate(async()=>{
+        const audio=await fetch('./media/audio/first-light.mp3',{
+          headers:{Range:'bytes=0-1023'}
+        });
+        return {status:audio.status,length:(await audio.arrayBuffer()).byteLength,
+          range:audio.headers.get('Content-Range')};
+      });
+      assert.equal(result.status,206,'Offline audio must support HTML5 Range');
+      assert.equal(result.length,1024);
+      assert.ok(result.range?.startsWith('bytes 0-1023/'));
+      await page.reload({waitUntil:'domcontentloaded'});
+      assert.ok(await page.locator('.site-header').count()>0,'Offline app shell must render');
+      await context.setOffline(false);
+    }
+        assert.deepEqual(errors,[],'No browser page errors expected');
     await context.close();
     console.log('PASS',scenario.name,'24 moods, scene image, drawing export, farm interaction, persistent data, no overflow');
   }catch(e){
