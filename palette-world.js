@@ -238,7 +238,7 @@
       else{lastElement=tool;activeTab='element'}
       model.tool=tool;updateSelections();
     }
-    function paint(time=0,still=false) {
+    function paint(time=0,still=false,hideSelection=false) {
       const t=reduce||model.paused||still?0:time*model.velocity;
       ctx.save();ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
       if(model.scene==='blank'){
@@ -272,7 +272,7 @@
       }
       for(const item of model.props.slice().sort((a,b)=>a.z-b.z)) {
         art.drawProp(ctx,item,t);
-        if(item.id===model.selected && !still){
+        if(item.id===model.selected && !still && !hideSelection){
           ctx.save();ctx.strokeStyle='rgba(84,107,97,.55)';ctx.setLineDash([6,6]);ctx.lineWidth=1.5;
           ctx.strokeRect(item.x-66*item.scale,item.y-82*item.scale,132*item.scale,164*item.scale);ctx.restore();
         }
@@ -357,11 +357,16 @@
     const canMark=()=>model.marks.length<500;
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
-      const p=screenPosition(e);const prop=model.tool==='eraser'?null:hitProp(p);
+      const p=screenPosition(e);// Furniture is draggable only while editing objects, so drawing over a sofa
+      // or cup remains a continuous brush stroke on mobile and desktop.
+      const prop=activeTab==='object' && model.tool!=='eraser'?hitProp(p):null;
       if(prop){model.selected=prop.id;pointer={id:e.pointerId,mode:'move',from:p,old:{...prop},recorded:false};}
       else if(model.tool==='eraser'){
         history.record();model.selected=null;eraseAt(p);
         pointer={id:e.pointerId,mode:'erase',from:p,last:p};
+      } else if(activeTab==='object'){
+        // Empty space in the object panel deselects; it must not stamp a brush.
+        model.selected=null;
       } else if(canMark()){
         history.record();model.selected=null;let mark=createMark(p);
         pointer={id:e.pointerId,mode:'mark',from:p,mark,last:p};
@@ -564,11 +569,12 @@
       const originalSelection=model.selected;
       model.selected=null;
       try{
-        paint(lastMoment||performance.now());
+        const captureTime=lastMoment||performance.now();
+        paint(captureTime,false,true);
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
-      finally{model.selected=originalSelection;paint(performance.now(),true)}
+      finally{model.selected=originalSelection;paint(lastMoment||performance.now())}
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
