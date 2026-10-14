@@ -161,3 +161,21 @@ test('all five worlds have unique native motion and approved scene decoration se
    }
  }
 });
+
+test('offline shell includes current versioned scripts and verified assets',()=>{
+ const html=read('index.html'),sw=read('sw.js');
+ const match=sw.match(/const CORE=(\[[\s\S]*?\]);/);
+ assert.ok(match,'offline cache manifest must be an explicit JSON array');
+ const core=JSON.parse(match[1]);
+ const assets=[...html.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="(\.\/[^"]+)"/g)]
+   .map(m=>m[1]);
+ for(const src of [...assets,'./manifest.webmanifest']){
+   assert.ok(core.includes(src),'Stale or absent offline path: '+src);
+ }
+ for(const asset of core){
+   assert.ok(asset.startsWith('./'),'Only same-scope local resources may be precached');
+   const local=asset.slice(2).split('?')[0];
+   assert.ok(!local.includes('..')&&!local.includes(':'),'Unsafe precache path: '+asset);
+   assert.ok(fs.existsSync(path.join(root,local)),'Missing asset: '+local);
+ }
+});
