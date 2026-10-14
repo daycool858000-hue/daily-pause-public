@@ -392,3 +392,26 @@
 @media(prefers-reduced-motion:reduce){
  .garden-stage-plant[data-activity="harvest"] .garden-plant{animation:none!important}
 }
+
+/* Self-care is an optional quiet interaction, with no score or tracking. */
+.garden-selfcare{margin:1.5rem 0;padding:1.3rem;border:1px solid #dddccf;
+ border-radius:22px;background:linear-gradient(130deg,#f8f6ea,#edf3eb);color:#526b59}
+.garden-selfcare-heading h3{margin:0 0 .3rem;font-size:1.18rem}
+.garden-selfcare-heading p{margin:0 0 1rem;line-height:1.8;color:#738174;font-size:.89rem}
+.garden-selfcare-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}
+.garden-selfcare-options button{min-height:51px;padding:.65rem .8rem;
+ background:#fffefa;border:1px solid #cfdacc;border-radius:15px;
+ color:#5b7664;font:inherit;cursor:pointer}
+.garden-selfcare-options button:hover{background:#f5f8ed}
+.garden-selfcare-options button[aria-pressed="true"]{
+ background:#e4eee3;border-color:#729984;color:#456a55}
+.garden-selfcare-options button:focus-visible{outline:3px solid #648f78;outline-offset:3px}
+.garden-selfcare-feedback{margin:.9rem 0 0;min-height:2.2em;
+ padding:.7rem .9rem;border-radius:13px;background:#fffaf0;
+ color:#587766;line-height:1.65;font-size:.9rem}
+.garden-selfcare-appear{animation:garden-feedback .55s ease-out}
+@media(max-width:560px){
+ .garden-selfcare{padding:1rem}
+ .garden-selfcare-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.garden-selfcare-appear{animation:none!important}}
