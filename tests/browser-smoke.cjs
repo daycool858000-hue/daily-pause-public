@@ -70,6 +70,15 @@ const server=http.createServer(async(req,res)=>{
       image.src=window.PauseMoodScenes.imageUrl('安靜');
     }));
     assert.ok(rendered,'SVG mood illustration must load as a real image');
+    const living=await page.evaluate(()=>new Promise(resolve=>{
+      const image=new Image();
+      image.onload=()=>resolve({ok:image.naturalWidth===960,distinct:
+        window.PauseMoodScenes.livingRoomSvg()!==window.PauseMoodScenes.svg('安靜')});
+      image.onerror=()=>resolve({ok:false,distinct:false});
+      image.src=window.PauseMoodScenes.livingRoomUrl();
+    }));
+    assert.ok(living.ok&&living.distinct,'Living room must render separately from the bedroom');
+    await page.locator('[data-scene="living"]').click();
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
