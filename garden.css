@@ -111,3 +111,30 @@
 .garden-care-nickname input{min-width:0;flex:1;max-width:280px;border-radius:9px;border:1px solid #c7cabe;
  padding:.7rem .8rem;font:inherit;background:#fffefb;color:#47584f}
 @media(max-width:460px){.garden-care-nickname>div{flex-wrap:wrap}.garden-care-nickname input{max-width:none;flex-basis:100%}}
+
+/* The following three environments have no accurate generated artwork yet.
+   Do not silently replace a field with a greenhouse or a public park with a private temple. */
+.garden-world-choice .garden-world-preview{
+  display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;
+  aspect-ratio:16/9;margin:0;padding:.75rem;background:#dbe7db;color:#516c5d
+}
+.garden-world-choice .garden-world-preview>span{
+  display:inline-block;flex:none;padding:.4rem .75rem;background:#fffdf3e3;
+  border:1px solid #f4ecdd;border-radius:99px;font-size:.8rem;line-height:1.45
+}
+.garden-world-preview-flowers,.garden-backdrop[data-area="flowers"]{
+  background:radial-gradient(ellipse at 18% 88%,#b4bfa5 0 15%,transparent 16%),
+  radial-gradient(ellipse at 87% 78%,#c4b7a2 0 18%,transparent 19%),
+  linear-gradient(#f4dfca 0 39%,#a9bba0 40% 53%,#809e83 54% 100%)!important
+}
+.garden-world-preview-farm,.garden-backdrop[data-area="farm"]{
+  background:repeating-linear-gradient(109deg,#8da079 0 10px,#abb88b 11px 20px,#aa9476 21px 24px),
+    linear-gradient(#e7dbbd,#b7c9b1)!important
+}
+.garden-world-preview-park,.garden-backdrop[data-area="park"]{
+  background:radial-gradient(ellipse at 10% 21%,#88a17e 0 19%,transparent 20%),
+   radial-gradient(ellipse at 90% 28%,#8fa984 0 20%,transparent 21%),
+   linear-gradient(#d8e1d4 0 46%,#b5c1a7 47% 64%,#8b9f87 65% 100%)!important
+}
+.garden-landscape.garden-scene-pending{border:1px dashed #b9c8b7}
+.garden-landscape.garden-scene-pending .garden-backdrop{filter:saturate(.7)}
