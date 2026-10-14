@@ -27,3 +27,18 @@ jobs:
           node-version: '22'
       - name: Check local interactions and safeguards
         run: node --test tests/feature-basics.test.cjs
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test-only browser tool
+        run: npm install --no-save playwright@1.56.1
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium webkit
+      - name: Desktop Chromium and Mobile WebKit smoke test
+        run: node tests/browser-smoke.cjs
