@@ -286,3 +286,22 @@
 .garden-stage-decor svg{animation:none!important}
 .garden-stage-decor:focus-visible{outline:3px solid #f3e1b4;outline-offset:2px}
 @media(max-width:620px){.garden-decor-controls{padding:.9rem}.garden-stage-decor{width:clamp(55px,17vw,100px);height:clamp(53px,16vw,94px)}}
+
+/* Visitors may offer a few private words as a passing act of care.
+   The words are transient DOM content and never written to a saved garden. */
+.garden-word-trail{
+ position:absolute;z-index:7;max-width:160px;transform:translate(-50%,-50%);
+ padding:.4rem .75rem;border-radius:16px;background:#fffdf1e8;
+ border:1px solid #f6e4b8;color:#567262;box-shadow:0 5px 25px #344e3c44;
+ pointer-events:none;font-size:.78rem;line-height:1.5;overflow-wrap:anywhere;
+ animation:garden-word-fade 1.9s ease-in-out both;
+}
+.garden-word-trail[data-action="water"],.garden-word-trail[data-action="care"]{background:#e8f4f0ef;color:#577e7c}
+.garden-word-trail[data-action="feed"],.garden-word-trail[data-action="play"]{background:#fff5e3f1;color:#98704f}
+@keyframes garden-word-fade{
+ 0%{opacity:0;transform:translate(-50%,15px) scale(.8)}
+ 22%{opacity:1;transform:translate(-50%,-11px) scale(1)}
+ 65%{opacity:1}
+ 100%{opacity:0;transform:translate(-50%,-50px) scale(.9)}
+}
+@media(prefers-reduced-motion:reduce){.garden-word-trail{animation:none;opacity:1}}
