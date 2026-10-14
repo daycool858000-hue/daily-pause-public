@@ -352,6 +352,21 @@
               <textarea id="gardenWords" maxlength="120" placeholder="這句話不會被評分，也不會被儲存。"></textarea>
               <p class="garden-care-feedback" id="gardenCareFeedback" aria-live="polite"></p>
             </section>
+            <section class="garden-selfcare" aria-label="給自己的一點照顧">
+              <div class="garden-selfcare-heading">
+                <h3>也留一點照顧給自己</h3>
+                <p>照顧花草和小動物的時候，也可以選一件想為自己做的小事。沒有打卡，也沒有紀錄。</p>
+              </div>
+              <div id="gardenSelfCareOptions" class="garden-selfcare-options" role="group" aria-label="自行選擇照顧自己的方式">
+                <button type="button" data-self-care="water" aria-pressed="false">喝口水</button>
+                <button type="button" data-self-care="stretch" aria-pressed="false">動動肩膀</button>
+                <button type="button" data-self-care="eyes" aria-pressed="false">看看遠方</button>
+                <button type="button" data-self-care="pause" aria-pressed="false">坐著休息</button>
+                <button type="button" data-self-care="feelings" aria-pressed="false">感受自己</button>
+                <button type="button" data-self-care="outside" aria-pressed="false">看看窗外</button>
+              </div>
+              <p id="gardenSelfCareFeedback" class="garden-selfcare-feedback" aria-live="polite">想做什麼，由你自己決定。</p>
+            </section>
             <div class="garden-backup">
               <button class="garden-soft-button" id="gardenBackup" type="button">匯出花園備份</button>
               <button class="garden-soft-button" id="gardenImport" type="button">匯入備份</button>
@@ -496,6 +511,6 @@
     <script src="./garden-motion.js?v=20261014-1" defer></script>
     <script src="./garden-decor.js?v=20261014-1" defer></script>
     <script src="./garden-sprites.js?v=20261014-1" defer></script>
-    <script src="./garden.js?v=20261015-1" defer></script>
+    <script src="./garden.js?v=20261015-2" defer></script>
   </body>
 </html>
