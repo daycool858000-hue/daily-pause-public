@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="./world-style.css?v=20261013-7" />
     <link rel="stylesheet" href="./surprise-style.css?v=20261013-2" />
     <link rel="stylesheet" href="./sound-style.css?v=20261013-3" />
-    <link rel="stylesheet" href="./garden.css?v=20261014-4" />
+    <link rel="stylesheet" href="./garden.css?v=20261014-5" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -291,6 +291,11 @@
               <p class="garden-landscape-message" id="gardenWorldCount">你可以在這裡待一下</p>
               <p class="garden-explore-message" id="gardenExploreMessage" aria-live="polite" hidden></p>
             </div>
+            <section id="gardenSceneVariant" class="garden-scene-variant" hidden aria-label="切換景觀呈現方式">
+              <strong>喜歡哪一種景觀？</strong>
+              <div id="gardenSceneVariantOptions" role="group" aria-label="選擇景觀樣式"></div>
+              <p>你可以隨時切換，植物、寵物與擺設不會消失。</p>
+            </section>
             <div class="garden-light-control" aria-label="選擇這個場景的光線">
               <span>想要哪一種光線？</span>
               <div id="gardenLightChoices" class="garden-light-choices" role="group" aria-label="晨光、白天、黃昏或夜晚"></div>
@@ -490,6 +495,6 @@
     <script src="./garden-motion.js?v=20261014-1" defer></script>
     <script src="./garden-decor.js?v=20261014-1" defer></script>
     <script src="./garden-sprites.js?v=20261014-1" defer></script>
-    <script src="./garden.js?v=20261014-5" defer></script>
+    <script src="./garden.js?v=20261014-6" defer></script>
   </body>
 </html>
