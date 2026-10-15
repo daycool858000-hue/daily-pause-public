@@ -1,11 +1,7 @@
 name: Draft Independent CC0 Photo Alternatives
 on:
-  push:
-    branches:
-      - feature/companion-garden-palette-20261014
-    paths:
-      - tools/palette/build_licensed_candidates.py
-      - .github/workflows/palette-licensed-candidates.yml
+  # Reuse is explicit only. The CC0 studies were a one-time review,
+  # not an approved substitute for bespoke emotion-palette artwork.
   workflow_dispatch:
 permissions:
   contents: write
