@@ -169,10 +169,11 @@ const realisticMoodScenes=Object.freeze({
   '想被陪著':'./media/generated/palette-warm-living-room-v1.webp',
   '想哭':'./media/generated/palette-rain-window-v1.webp',
   '想躲起來':'./media/generated/palette-quiet-study-v1.webp',
+  '放空':'./media/generated/palette-cloud-v1.webp',
   '孤單':'./media/generated/scene-07.webp',
   '想念':'./media/generated/scene-01.webp',
-  '希望':'./media/generated/scene-10.webp',
-  '期待':'./media/generated/scene-12.webp',
+  '希望':'./media/generated/palette-sunrise-v1.webp',
+  '期待':'./media/generated/palette-balcony-v1.webp',
   // Indoor moods stay on their matching room/library compositions until
   // independently usable indoor image assets have been reviewed.
   // Do not present garden photographs or flower close-ups as living rooms.
