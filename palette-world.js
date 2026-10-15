@@ -82,6 +82,30 @@
       lake:'./media/generated/scene-10.webp',
       night:'./media/generated/scene-07.webp'
     };
+    // Reuse one scaled photograph surface across frames. Photos are otherwise
+    // resampled at every animation tick on high-DPI iPhones, even while untouched.
+    // Atmosphere and visitor-created layers are still rendered live on top.
+    const photoSurface=document.createElement('canvas');
+    photoSurface.width=W; photoSurface.height=H;
+    const photoCtx=photoSurface.getContext('2d',{alpha:false});
+    let lastScaledPhoto=null;
+    function drawCoverPhoto(image){
+      if(!image?.naturalWidth||!image?.naturalHeight)return false;
+      const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
+      const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
+      if(photoCtx){
+        if(lastScaledPhoto!==image){
+          photoCtx.setTransform(1,0,0,1,0,0);
+          photoCtx.clearRect(0,0,W,H);
+          photoCtx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+          lastScaledPhoto=image;
+        }
+        ctx.drawImage(photoSurface,0,0,W,H);
+      }else{
+        ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+      }
+      return true;
+    }
     const landscapeCache=new Map();
     function drawLandscape(scene,t){
       const src=landscapeArt[scene];
@@ -96,9 +120,7 @@
         img.src=src;
       }
       if(!asset.ready){art.drawScene(ctx,scene,t);return;}
-      const img=asset.img,scale=Math.max(W/img.naturalWidth,H/img.naturalHeight);
-      const width=img.naturalWidth*scale,height=img.naturalHeight*scale;
-      ctx.drawImage(img,(W-width)/2,(H-height)/2,width,height);
+      if(!drawCoverPhoto(asset.img)){art.drawScene(ctx,scene,t);return;}
       // Small animated light cues sit behind the visitor's marks.
       const a=.04+(Math.sin(t*.00035)+1)*.015;
       const fog=ctx.createLinearGradient(0,0,W,H);
@@ -123,10 +145,7 @@
       const state=moodImageState(name);
       if(!state||state.failed){drawLandscape(model.scene,t);return;}
       if(!state.ready){drawLandscape(model.scene,t);return;}
-      const image=state.image;
-      const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
-      const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
-      ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+      if(!drawCoverPhoto(state.image))drawLandscape(model.scene,t);
     }
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
