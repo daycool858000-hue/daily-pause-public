@@ -183,12 +183,13 @@ const realisticMoodScenes=Object.freeze({
   '悶住':'./media/generated/palette-mood-stifled-study-v1.webp',
   '混亂':'./media/generated/palette-mood-confusion-study-v1.webp',
   '煩躁':'./media/generated/palette-mood-irritation-study-v1.webp',
-  '害怕':'./media/generated/palette-mood-fear-study-v1.webp',
+  // CC0 photograph, independent image source: see art-review/mood-round3/curated-source-manifest.json.
+  '害怕':'./media/generated/palette-mood-fear-independent-v2.webp',
   '好奇':'./media/generated/palette-mood-curiosity-study-v1.webp',
   '安心':'./media/generated/palette-mood-reassurance-study-v1.webp',
   '溫柔':'./media/generated/palette-mood-tenderness-study-v1.webp',
   '想重新開始':'./media/generated/palette-mood-renewal-study-v1.webp',
-  '需要勇氣':'./media/generated/palette-mood-courage-study-v1.webp',
+  '需要勇氣':'./media/generated/palette-mood-courage-independent-v2.webp',
   '想暖一點':'./media/generated/palette-mood-warmth-study-v1.webp',
   // Indoor moods stay on their matching room/library compositions until
   // independently usable indoor image assets have been reviewed.

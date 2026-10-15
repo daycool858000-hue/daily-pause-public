@@ -10,7 +10,7 @@ const loaded={};
 const load=(name,context)=>vm.runInNewContext(read(name),context,{filename:name,timeout:5000});
 // Artistic proof requires human review. This regexp only verifies that the
 // app references real bundled files, including the image studies and 2x crops.
-const bundledArtwork=/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2)|palette-mood-[a-z-]+-study-v1)\.webp$/;
+const bundledArtwork=/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2)|palette-mood-[a-z-]+-(?:study-v1|independent-v2))\.webp$/;
 
 test('new modules parse and site branding stays unchanged',()=>{
  for(const name of ['mood-scenery.js','mood-atmospheres.js','palette-world.js',
