@@ -50,6 +50,19 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
 });
 
 
+test('all photograph-backed emotions have distinct existing local assets',()=>{
+ const win={};load('mood-scenery.js',{window:win});
+ const art=win.PauseMoodScenes.realisticMoodScenes;
+ const urls=Object.values(art);
+ assert.ok(urls.length>=11,'Existing photo-backed emotions unexpectedly lost');
+ assert.equal(new Set(urls).size,urls.length,
+   'Different emotions must not silently reuse the same photograph');
+ for(const url of urls){
+   assert.match(url,/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/);
+   assert.ok(fs.existsSync(path.join(root,url.slice(2))),url+' missing');
+ }
+});
+
 test('draft indoor scenes remain standalone and correctly match indoor labels',()=>{
  const win={};load('mood-scenery.js',{window:win});
  const mappings=[
