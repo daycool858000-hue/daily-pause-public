@@ -185,6 +185,19 @@ const server=http.createServer(async(req,res)=>{
         await stage.screenshot({path:path.join(__dirname,'screenshots',
           'palette-scene-'+sceneName+'.png')});
       }
+      // The cached bitmap must not accidentally reuse a previously selected
+      // scene. Returning to an existing image must restore identical pixels.
+      async function selectedScenePixels(sceneName){
+        await page.locator('[data-scene="'+sceneName+'"]').click();
+        await page.waitForTimeout(350);
+        return stage.evaluate(canvas=>canvas.toDataURL('image/png'));
+      }
+      const roomFirst=await selectedScenePixels('room');
+      const seaPixels=await selectedScenePixels('sea');
+      const roomReturn=await selectedScenePixels('room');
+      assert.notEqual(roomFirst,seaPixels,'Cached layers must show the newly chosen scenery');
+      assert.equal(roomReturn,roomFirst,
+        'Returning to the same scene must not retain the previously cached photograph');
       // Preserve 24 distinct default-composition screenshots for a visual
       // review that can identify unresolved SVGs without altering the main site.
       const moodNames=await page.locator('#worldMoods [data-mood]')
