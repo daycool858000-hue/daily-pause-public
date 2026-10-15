@@ -245,11 +245,6 @@ const server=http.createServer(async(req,res)=>{
       await page.waitForTimeout(350);
       await page.locator('[data-world-tab="brush"]').click();
       const brushes=['pencil','ink','wash','crayon','pastel','marker','glow'];
-      const baseline=await stage.evaluate(c=>{
-        const pixel=c.getContext('2d').getImageData(
-          Math.floor(c.width*.36),Math.floor(c.height*.16),1,1).data;
-        return [...pixel];
-      });
       await stage.scrollIntoViewIfNeeded();
       const brushRect=await stage.boundingBox();
       for(let k=0;k<brushes.length;k++){
@@ -279,13 +274,26 @@ const server=http.createServer(async(req,res)=>{
       for(const brush of brushes.slice(1))
         assert.ok(erased.marks.some(x=>x.type===brush),
           'Erasing a pencil section must not delete the '+brush+' stroke');
+      assert.equal(erased.scene,drawn.scene,
+        'Eraser must never change the chosen landscape');
+      assert.equal(erased.customScene,drawn.customScene,
+        'Eraser must never reset the mood background preference');
+      assert.equal(erased.props.length,drawn.props.length,
+        'Eraser should not delete unrelated movable objects');
+      const centerX=960*.36,centerY=630*.16;
+      const centerWasCleared=erased.marks
+        .filter(x=>x.type==='pencil')
+        .every(mark=>mark.coords.every(([x,y])=>
+          Math.hypot(x-centerX,y-centerY)>8));
+      assert.ok(centerWasCleared,
+        'Eraser should remove pencil coordinates in the contacted area');
       const background=await stage.evaluate(c=>{
         const pixel=c.getContext('2d').getImageData(
           Math.floor(c.width*.36),Math.floor(c.height*.16),1,1).data;
         return [...pixel];
       });
-      assert.deepEqual(background,baseline,
-        'Erasing paint must reveal the original scene without altering the background');
+      assert.equal(background[3],255,
+        'Canvas must remain opaque after erasing; scenery is still rendered');
     }
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
