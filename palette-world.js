@@ -603,17 +603,26 @@
       e.target.value='';
     });
     const downloadWorld=()=>{
-      // Export the same animation phase the visitor just saw; hide selection
-      // affordances only, then restore the interactive canvas immediately.
+      // Export at a stable, detailed 2x canvas size on both phones and desktops.
+      // Restore the interactive canvas's exact pixel dimensions immediately;
+      // changing backing resolution does not modify strokes or saved workspaces.
       const originalSelection=model.selected;
+      const originalWidth=canvas.width,originalHeight=canvas.height;
       model.selected=null;
       try{
         const captureTime=lastMoment||performance.now();
+        canvas.width=W*2;
+        canvas.height=H*2;
         paint(captureTime,false,true);
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
-      finally{model.selected=originalSelection;paint(lastMoment||performance.now())}
+      finally{
+        canvas.width=originalWidth;
+        canvas.height=originalHeight;
+        model.selected=originalSelection;
+        paint(lastMoment||performance.now());
+      }
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
