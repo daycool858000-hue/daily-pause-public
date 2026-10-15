@@ -105,6 +105,19 @@ test('eight distinct painterly scenery backgrounds have ink, pigment and layered
   }
   assert.match(scenes.svg('mountain'),/url\(#lake\)/);
   assert.match(scenes.svg('street'),/url\(#evening\)/);
+  // Final browser paints are rasterized once and bundled, never recomputed on every tap.
+  const manifest=JSON.parse(read('media/palette-scenes/manifest.json'));
+  assert.equal(manifest.length,8);
+  assert.deepEqual(manifest.map(x=>x.id).sort(),ids.slice().sort());
+  for(const scene of manifest){
+    assert.match(scene.path,/^media\/palette-scenes\/[a-z]+\.webp$/);
+    const raw=fs.readFileSync(path.join(root,scene.path));
+    assert.equal(raw.subarray(0,4).toString('ascii'),'RIFF');
+    assert.equal(raw.subarray(8,12).toString('ascii'),'WEBP');
+    assert.equal(raw.length,scene.size);
+    assert.equal(require('node:crypto').createHash('sha256').update(raw).digest('hex'),scene.sha256);
+  }
+  assert.match(read('palette-world.js'),/\.\/media\/palette-scenes\//);
 });
 test('natural shape marks move subtly, freeze when paused, and preserve mark input',()=>{
   const win={};load('world-art.js',{window:win});
