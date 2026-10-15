@@ -125,6 +125,31 @@ const server=http.createServer(async(req,res)=>{
     assert.equal(lonely.props.length,1,'Furniture must stay editable after landscape switch');
     assert.equal(lonely.marks.length,1,'Object mode must not paint; brush must paint over furniture');
     assert.equal(lonely.customScene,false,'Reset should restore the independent mood preset');
+    // A full 24-layer editable backup must survive a real browser file round trip.
+    // Mutate another emotion before import to prove import restores, not just exports.
+    await page.locator('[data-mood="安靜"]').click();
+    await page.locator('[data-world-tab="brush"]').click();
+    await page.locator('[data-brush="pencil"]').click();
+    await stage.scrollIntoViewIfNeeded();
+    const editBox=await stage.boundingBox();
+    await page.mouse.move(editBox.x+editBox.width*.3,editBox.y+editBox.height*.3);
+    await page.mouse.down();
+    await page.mouse.move(editBox.x+editBox.width*.5,editBox.y+editBox.height*.4,{steps:6});
+    await page.mouse.up();
+    page.once('dialog',dialog=>dialog.accept());
+    await page.locator('#worldImportFile').setInputFiles({
+      name:'editable-palette.json',mimeType:'application/json',
+      buffer:Buffer.from(JSON.stringify(backup),'utf8')
+    });
+    await page.waitForFunction(()=>document.querySelector('#worldBackupStatus')
+      ?.textContent.includes('匯入成功'));
+    const [roundTripDownload]=await Promise.all([
+      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+    ]);
+    const roundTrip=JSON.parse(await fs.readFile(await roundTripDownload.path(),'utf8'));
+    assert.deepEqual(roundTrip.canvases,backup.canvases,
+      'JSON import must restore all 24 canvases exactly, including the selected landscape');
+    assert.equal(roundTrip.activeMood,backup.activeMood,'Active emotion must be restored');
     // Actual branch-rendered scene screenshots are the visual review source.
     // Unlike concept art, these contain exactly what the draft canvas displays.
     if(scenario.engine===chromium){
