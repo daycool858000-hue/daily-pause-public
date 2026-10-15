@@ -86,10 +86,10 @@ test('draft indoor scenes remain standalone and correctly match indoor labels',(
  assert.equal(names.size,4,'Indoor scenes must remain visually independent');
  const palette=read('palette-world.js');
  for(const [scene,file] of [
-   ['room','palette-morning-bedroom-v1.webp'],
-   ['living','palette-warm-living-room-v1.webp'],
-   ['rain','palette-rain-window-v1.webp'],
-   ['library','palette-quiet-study-v1.webp']]){
+   ['room','palette-morning-bedroom-sr-v2.webp'],
+   ['living','palette-warm-living-room-sr-v2.webp'],
+   ['rain','palette-rain-window-sr-v2.webp'],
+   ['library','palette-quiet-study-sr-v2.webp']]){
    assert.ok(palette.includes(scene+':\'./media/generated/'+file+'\''));
  }
 });
