@@ -1,4 +1,4 @@
-name: Draft Mood Art License Search
+name: Draft Mood Art Curated Alternatives
 on:
   push:
     branches: [feature/companion-garden-palette-20261014]
@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install image inspection packages
         run: python -m pip install --disable-pip-version-check pillow requests
-      - name: Search and source-check CC0-only emotional scene candidates
-        run: python tools/palette/find-mood-photographs.py
+      - name: Generate selected full-frame, provenance-verified art candidates
+        run: python tools/palette/find-mood-photographs.py --curated
       - name: Preserve review contact sheet and thumbnails away from live media
         shell: bash
         run: |
@@ -25,7 +25,7 @@ jobs:
           cp art-review/mood-photo-search/* art-review/mood-round3/
           git add art-review/mood-round3/
           if ! git diff --cached --quiet; then
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive CC0-only mood photo selection contact"
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive individually licensed mood image art studies"
             git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
           fi
       - uses: actions/upload-artifact@v4

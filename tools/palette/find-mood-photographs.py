@@ -124,4 +124,62 @@ def main():
   if len(metadata["candidates"])==0:
     raise RuntimeError("No verified CC0 matches. Do not use unlicensed photographs.")
 
-if __name__=="__main__":main()
+
+def build_curated():
+  """Two individually sourced full-resolution composition candidates, kept offsite."""
+  from PIL import ImageEnhance
+  choices=(
+    ("fear","Sequoia Trees at Sequoia National Park.jpg"),
+    ("courage","Sunrise Bettmerhorn snowy mountains (Unsplash).jpg"),
+  )
+  items=[]
+  for mood,filename in choices:
+    result=api({"action":"query","prop":"imageinfo","iiprop":"url|size|extmetadata",
+      "iiurlwidth":2500,"titles":"File:"+filename})
+    pages=result.get("query",{}).get("pages",[])
+    if len(pages)!=1 or "imageinfo" not in pages[0]:
+      raise RuntimeError("Missing official photograph source: "+filename)
+    valid=eligible(pages[0])
+    if valid is None:raise RuntimeError("Not an explicitly verified full-resolution CC0 image: "+filename)
+    info,meta,url=valid
+    data=SESSION.get(url,timeout=60)
+    data.raise_for_status()
+    if len(data.content)<100000:raise RuntimeError("Image download too small: "+filename)
+    with Image.open(io.BytesIO(data.content)) as photo:
+      image=ImageOps.exif_transpose(photo).convert("RGB")
+    if min(image.size)<1500:raise RuntimeError("Image source has insufficient native pixels")
+    image=ImageOps.fit(image,(1920,1260),method=Image.Resampling.LANCZOS,centering=(.50,.50))
+    image=ImageEnhance.Color(image).enhance(.88 if mood=="fear" else .92)
+    image=ImageEnhance.Contrast(image).enhance(.97 if mood=="fear" else 1.035)
+    if mood=="fear":
+      # Preserve a visible, navigable forest corridor: dim but not pitch black.
+      image=ImageEnhance.Brightness(image).enhance(.93)
+    else:
+      image=ImageEnhance.Brightness(image).enhance(1.08)
+    output=OUT/f"palette-mood-{mood}-independent-v2.webp"
+    output.parent.mkdir(parents=True,exist_ok=True)
+    image.save(output,"WEBP",quality=91,method=6)
+    items.append({
+      "mood":mood,"file":output.name,
+      "checksum_sha256":hashlib.sha256(output.read_bytes()).hexdigest(),
+      "source_title":filename,
+      "source_page":"https://commons.wikimedia.org/wiki/"+quote("File:"+filename.replace(" ","_"),safe=":()"),
+      "source_license":meta.get("LicenseShortName",{}).get("value"),
+      "source_license_url":meta.get("LicenseUrl",{}).get("value"),
+      "original_dimensions":[info["width"],info["height"]],
+      "author_html":meta.get("Artist",{}).get("value",""),
+      "authorship":"third-party photography, NOT original AI generation",
+      "approval":"draft only, manually validate scene suitability",
+      "output_dimensions":[1920,1260],"exif_gps":"not exported"
+    })
+    print("CURATED",mood,output.stat().st_size,flush=True)
+  manifest={"license_verified_at_source":True,
+    "warning":"These are CC0 images, not new user-owned generative photo-realistic art.",
+    "state":"art review only, not published",
+    "items":items}
+  (OUT/"curated-source-manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
+if __name__=="__main__":
+  import sys
+  if "--curated" in sys.argv:build_curated()
+  else:main()
