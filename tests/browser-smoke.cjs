@@ -83,8 +83,10 @@ const server=http.createServer(async(req,res)=>{
     }))));
     assert.ok(files.every(Boolean),'Independent paper images must load at their native resolution');
 
+    assert.equal(await page.locator('#worldExportEditable').isVisible(),false,
+      'The bulk backup button should no longer appear in the palette');
     await page.locator('[data-world-tab="scene"]').click();
-    await page.locator('[data-scene="paper-02"]').click();
+    await page.locator('[data-scene="ocean"]').click();
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
@@ -129,12 +131,12 @@ const server=http.createServer(async(req,res)=>{
     await page.mouse.move(draw.x+Math.min(38,bounds.width*.1),draw.y+12,{steps:8});
     await page.mouse.up();
     await page.locator('[data-world-tab="scene"]').click();
-    await page.locator('[data-scene="paper-03"]').click();
-    assert.equal(await page.locator('[data-scene="paper-03"]').getAttribute('aria-pressed'),'true');
+    await page.locator('[data-scene="forest"]').click();
+    assert.equal(await page.locator('[data-scene="forest"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-scene-default]').click();
     assert.equal(await page.locator('[data-scene-default]').getAttribute('aria-pressed'),'true');
     const [backupDownload]=await Promise.all([
-      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+      page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
     ]);
     const backup=JSON.parse(await fs.readFile(await backupDownload.path(),'utf8'));
     assert.equal(backup.canvases.length,24);
@@ -161,7 +163,7 @@ const server=http.createServer(async(req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#worldBackupStatus')
       ?.textContent.includes('匯入成功'));
     const [roundTripDownload]=await Promise.all([
-      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+      page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
     ]);
     const roundTrip=JSON.parse(await fs.readFile(await roundTripDownload.path(),'utf8'));
     assert.deepEqual(roundTrip.canvases,backup.canvases,
@@ -182,7 +184,7 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('#worldUndo').click();
     const [undoDownload]=await Promise.all([
-      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+      page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
     ]);
     const postUndo=JSON.parse(await fs.readFile(await undoDownload.path(),'utf8'));
     assert.equal(postUndo.canvases.find(m=>m.mood==='安靜').marks.length,0,
@@ -200,7 +202,8 @@ const server=http.createServer(async(req,res)=>{
         await fs.writeFile(path.join(__dirname,'screenshots',filename),
           Buffer.from(base64,'base64'));
       };
-      const sceneNames=Array.from({length:24},(_,i)=>'paper-'+String(i+1).padStart(2,'0'));
+      const sceneNames=['forest','ocean','room','living','cafe','park','street'];
+      assert.equal(await page.locator('#worldScenes [data-scene]').count(),7);
       for(const sceneName of sceneNames){
         await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
@@ -213,9 +216,9 @@ const server=http.createServer(async(req,res)=>{
         await page.waitForTimeout(350);
         return stage.evaluate(canvas=>canvas.toDataURL('image/png'));
       }
-      const roomFirst=await selectedScenePixels('paper-01');
-      const seaPixels=await selectedScenePixels('paper-03');
-      const roomReturn=await selectedScenePixels('paper-01');
+      const roomFirst=await selectedScenePixels('forest');
+      const seaPixels=await selectedScenePixels('ocean');
+      const roomReturn=await selectedScenePixels('forest');
       assert.notEqual(roomFirst,seaPixels,'Cached layers must show the newly chosen scenery');
       assert.equal(roomReturn,roomFirst,
         'Returning to the same scene must not retain the previously cached photograph');
@@ -255,7 +258,7 @@ const server=http.createServer(async(req,res)=>{
       }
       const exportCanvas=async()=>{
         const [download]=await Promise.all([
-          page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+          page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
         ]);
         const state=JSON.parse(await fs.readFile(await download.path(),'utf8'));
         return state.canvases.find(x=>x.mood==='疲倦');
@@ -317,7 +320,7 @@ const server=http.createServer(async(req,res)=>{
     await stage.scrollIntoViewIfNeeded();
     await stage.click({position:{x:180,y:115}});
     const [shapeDownload]=await Promise.all([
-      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+      page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
     ]);
     const shapeRecord=JSON.parse(await fs.readFile(await shapeDownload.path(),'utf8'))
       .canvases.find(x=>x.mood==='好奇');
@@ -327,7 +330,7 @@ const server=http.createServer(async(req,res)=>{
     assert.equal(shapeRecord.marks[1].type,'pencil');
     await page.locator('#worldUndo').click();
     const [stampUndoDownload]=await Promise.all([
-      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+      page.waitForEvent('download'),page.evaluate(()=>document.getElementById('worldExportEditable').click())
     ]);
     const afterStampUndo=JSON.parse(await fs.readFile(await stampUndoDownload.path(),'utf8'))
       .canvases.find(x=>x.mood==='好奇');
