@@ -324,7 +324,8 @@
       for(let i=-2;i<=2;i++)line(ctx,[0,-10,i*11,17],'#f6e6d7',2);
     }else if(type==='pebble'){
       ellipse(ctx,0,0,30,20,color,.12);
-      ellipse(ctx,-10,-6,11,4,'rgba(255,255,255,.22)');
+      ctx.save();ctx.globalAlpha=.12+.10*(1+slow)*.5;
+      ellipse(ctx,-10,-6,11,4,'#fff9e6');ctx.restore();
     }else if(type==='lantern'){
       ctx.rotate(wiggle*.075);
       rounded(ctx,-24,-35,48,72,8,'#bd8e6e','#816d61');
