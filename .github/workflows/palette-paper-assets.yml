@@ -59,7 +59,7 @@ jobs:
                   manifest.append({'number':n,'path':'media/palette-paper/'+f'{n:02}.webp',
                                    'width':1548,'height':1016,'sha256':sha})
           assert len({item['sha256'] for item in manifest})==24
-          (path/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          (path/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
           print('Verified 24 unique independent paper backgrounds; article images untouched.')
           PY
       - name: Check palette and prior-feature regression tests
