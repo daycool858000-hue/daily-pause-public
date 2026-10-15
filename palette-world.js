@@ -74,6 +74,10 @@
       sea:'./media/generated/scene-02.webp',
       // A planted stone-and-moss courtyard is a garden; scene-04 is open wildflowers.
       garden:'./media/generated/scene-08.webp',
+      island:'./media/generated/palette-island-v1.webp',
+      balcony:'./media/generated/palette-balcony-v1.webp',
+      cloud:'./media/generated/palette-cloud-v1.webp',
+      sunrise:'./media/generated/palette-sunrise-v1.webp',
       hill:'./media/generated/scene-01.webp',
       lake:'./media/generated/scene-10.webp',
       night:'./media/generated/scene-07.webp'
