@@ -164,6 +164,11 @@ function livingRoomUrl(){
 // Site-owned AI-generated scenes already in the repository. Assign at most
 // one photograph per emotion: never swap labels onto the same photo.
 const realisticMoodScenes=Object.freeze({
+  // Distinct first-pass interiors; no two moods are assigned the same photograph.
+  '安靜':'./media/generated/palette-morning-bedroom-v1.webp',
+  '想被陪著':'./media/generated/palette-warm-living-room-v1.webp',
+  '想哭':'./media/generated/palette-rain-window-v1.webp',
+  '想躲起來':'./media/generated/palette-quiet-study-v1.webp',
   '孤單':'./media/generated/scene-07.webp',
   '想念':'./media/generated/scene-01.webp',
   '希望':'./media/generated/scene-10.webp',
