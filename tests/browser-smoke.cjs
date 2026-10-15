@@ -87,6 +87,12 @@ const server=http.createServer(async(req,res)=>{
       'The bulk backup button should no longer appear in the palette');
     await page.locator('[data-world-tab="scene"]').click();
     await page.locator('[data-scene="ocean"]').click();
+    // Reproduce the user's repeated-scene-switch complaint on desktop and mobile.
+    for(const place of ['forest','cafe','park','street','room','living','ocean']){
+      await page.locator('[data-scene="'+place+'"]').click({timeout:10000});
+    }
+    assert.equal(await page.locator('[data-scene="ocean"]').getAttribute('aria-pressed'),'true',
+      'Rapid landscape switching must leave the last selected place active');
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
