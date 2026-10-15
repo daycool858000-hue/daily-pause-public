@@ -8,6 +8,9 @@ const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const loaded={};
 const load=(name,context)=>vm.runInNewContext(read(name),context,{filename:name,timeout:5000});
+// Artistic proof requires human review. This regexp only verifies that the
+// app references real bundled files, including the image studies and 2x crops.
+const bundledArtwork=/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2)|palette-mood-[a-z-]+-study-v1)\.webp$/;
 
 test('new modules parse and site branding stays unchanged',()=>{
  for(const name of ['mood-scenery.js','mood-atmospheres.js','palette-world.js',
@@ -40,7 +43,7 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
    assert.ok(markup.length>1800,name+' is missing meaningful environment layers');
    const url=scenes.imageUrl(name);
    assert.ok(url.startsWith('data:image/svg+xml;charset=utf-8,')||
-      /^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/.test(url),
+      bundledArtwork.test(url),
       name+' must use an authored SVG or a bundled generated WebP scene');
    if(url.startsWith('./')){
      assert.ok(fs.existsSync(path.join(root,url.slice(2))),name+' scene file missing: '+url);
@@ -54,13 +57,13 @@ test('all photograph-backed emotions have distinct existing local assets',()=>{
  const win={};load('mood-scenery.js',{window:win});
  const art=win.PauseMoodScenes.realisticMoodScenes;
  const urls=Object.values(art);
- assert.ok(urls.length>=13,'Expected at least thirteen distinct photo-backed moods');
+ assert.equal(urls.length,24,'Each of the 24 emotions needs its own mapped image');
  assert.equal(new Set(urls).size,urls.length,
    'Different emotions must not silently reuse the same photograph');
  assert.equal(art['心裡很滿'],'./media/generated/scene-04.webp');
  assert.equal(art['想慢一點'],'./media/generated/scene-06.webp');
  for(const url of urls){
-   assert.match(url,/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/);
+   assert.match(url,bundledArtwork);
    assert.ok(fs.existsSync(path.join(root,url.slice(2))),url+' missing');
  }
 });
@@ -68,10 +71,10 @@ test('all photograph-backed emotions have distinct existing local assets',()=>{
 test('draft indoor scenes remain standalone and correctly match indoor labels',()=>{
  const win={};load('mood-scenery.js',{window:win});
  const mappings=[
-   ['安靜','palette-morning-bedroom-v1.webp'],
-   ['想被陪著','palette-warm-living-room-v1.webp'],
-   ['想哭','palette-rain-window-v1.webp'],
-   ['想躲起來','palette-quiet-study-v1.webp']
+   ['安靜','palette-morning-bedroom-sr-v2.webp'],
+   ['想被陪著','palette-warm-living-room-sr-v2.webp'],
+   ['想哭','palette-rain-window-sr-v2.webp'],
+   ['想躲起來','palette-quiet-study-sr-v2.webp']
  ];
  const names=new Set();
  for(const [mood,file] of mappings){
@@ -91,16 +94,22 @@ test('draft indoor scenes remain standalone and correctly match indoor labels',(
  }
 });
 
-test('mood photo assignments never mislabel an exterior as an indoor room',()=>{
+test('new mood art studies are traceable and never substitute missing files',()=>{
  const win={};
  load('mood-scenery.js',{window:win});
  const scenes=win.PauseMoodScenes;
- // No photograph of a garden, flower or greenhouse can stand in for a
- // room, study or the unique fern trail promised by its composition.
+ const manifest=JSON.parse(read('docs/PALETTE_MOOD_STUDIES_MANIFEST_20261015.json'));
+ assert.equal(manifest.scenes.length,11);
+ const trace=new Map(manifest.scenes.map(item=>[item.mood,item]));
  for(const name of ['安心','溫柔','想重新開始','好奇']){
-   assert.ok(scenes.imageUrl(name).startsWith('data:image/svg+xml;charset=utf-8,'),
-     name+' must await matching original scenery rather than use a mislabeled photo');
+   const entry=trace.get(name);
+   assert.ok(entry,name+' is missing source provenance');
+   const filename=entry.file.split('/').at(-1);
+   assert.equal(scenes.imageUrl(name),'./media/generated/'+filename);
+   assert.ok(fs.existsSync(path.join(root,scenes.imageUrl(name))));
+   assert.ok(entry.sha256&&entry.sha256.length===64,name+' missing image checksum');
  }
+ // Original, distinct outdoor photos remain linked to their own identities.
  for(const name of ['孤單','想念','想看海','想接近自然']){
    assert.match(scenes.imageUrl(name),/^\.\/media\/generated\/scene-\d{2}\.webp$/);
  }
