@@ -1,7 +1,7 @@
 // 今日一息：只快取網站程式與使用者主動選擇的離線聲音。
 // Never touch localStorage, IndexedDB or the Holding Place's private records.
 'use strict';
-const VERSION='20261015-14';
+const VERSION='20261015-15';
 const SHELL='todaypause-shell-'+VERSION;
 const MEDIA='todaypause-audio-v1';
 const CORE=[
@@ -25,11 +25,11 @@ const CORE=[
   "./daily-content.js?v=20261013-2",
   "./reading-20261013.js?v=20261013-2",
   "./palette-history.js?v=20261013-1",
-  "./world-art.js?v=20261015-2",
+  "./world-art.js?v=20261015-3",
   "./mood-scenery.js?v=20261015-6",
   "./mood-atmospheres.js?v=20261014-1",
-  "./palette-place-scenes.js?v=20261015-2",
-  "./palette-world.js?v=20261015-10",
+  "./palette-place-scenes.js?v=20261015-3",
+  "./palette-world.js?v=20261015-11",
   "./photo-rotation.js?v=20261013-1",
   "./offline-audio.js?v=20261014-1",
   "./soundscape.js?v=20261014-2",
@@ -53,6 +53,14 @@ const CORE=[
   "./media/generated/scene-10.webp",
   "./media/generated/scene-11.webp",
   "./icons/today-pause-192.png",
+  "./media/palette-scenes/forest.webp",
+  "./media/palette-scenes/ocean.webp",
+  "./media/palette-scenes/room.webp",
+  "./media/palette-scenes/living.webp",
+  "./media/palette-scenes/cafe.webp",
+  "./media/palette-scenes/park.webp",
+  "./media/palette-scenes/street.webp",
+  "./media/palette-scenes/mountain.webp",
   "./icons/today-pause-512.png"
 ];
 const scopeURL=new URL(self.registration.scope);
