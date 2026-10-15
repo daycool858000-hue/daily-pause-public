@@ -86,6 +86,55 @@ test('old studies remain archived, but never used as new canvas backgrounds',()=
   for(const image of report.scenes)assert.equal(typeof image.sha256,'string');
 });
 
+test('eight distinct painterly scenery backgrounds have ink, pigment and layered depth',()=>{
+  const win={};load('palette-place-scenes.js',{window:win});
+  const scenes=win.PausePlaceScenes;
+  assert.equal(scenes.items.length,8);
+  const ids=scenes.items.map(item=>item[0]);
+  assert.equal(new Set(ids).size,8);
+  const urls=ids.map(id=>scenes.imageUrl(id));
+  assert.equal(new Set(urls).size,8,'Scenery must never reuse one composite picture');
+  for(const id of ids){
+    const svg=scenes.svg(id);
+    assert.match(svg,/viewBox="0 0 960 630"/);
+    assert.match(svg,/filter="url\(#pigment\)"/);
+    assert.match(svg,/id="grain"/);
+    assert.match(svg,/id="glaze"/);
+    assert.ok(svg.length>12000,id+' must contain a painted environment');
+    assert.ok(urls[ids.indexOf(id)].startsWith('data:image/svg+xml;charset=utf-8,'));
+  }
+  assert.match(scenes.svg('mountain'),/url\(#lake\)/);
+  assert.match(scenes.svg('street'),/url\(#evening\)/);
+});
+test('natural shape marks move subtly, freeze when paused, and preserve mark input',()=>{
+  const win={};load('world-art.js',{window:win});
+  const brushes=win.PauseWorldArt;
+  function trace(type,time,still=false){
+    const calls=[],target={};
+    const ctx=new Proxy(target,{
+      set(o,key,value){o[key]=value;calls.push(['style',key,String(value)]);return true;},
+      get(o,key){
+        if(key in o)return o[key];
+        if(key==='createRadialGradient'||key==='createLinearGradient')
+          return (...args)=>{calls.push([key,...args]);return {addColorStop(){}}};
+        return (...args)=>{calls.push([key,...args]);};
+      }
+    });
+    const mark={kind:'element',type,x:400,y:300,color:'#a6b88d',size:39,seed:.4,speed:.85};
+    const before=JSON.stringify(mark);
+    brushes.drawElement(ctx,mark,time,still);
+    assert.equal(JSON.stringify(mark),before,'Animation must not mutate saved artwork');
+    return JSON.stringify(calls);
+  }
+  const animated=['tree','wave','leaf','cloud','petal','flower','star','rain','ripples',
+    'moon','sun','grass','bird','steam','butterfly','fish','shell','lantern',
+    'dandelion','firefly','paper'];
+  for(const type of animated){
+    assert.notEqual(trace(type,0),trace(type,2600),type+' lacks visible animated drawing');
+    assert.equal(trace(type,0,true),trace(type,2600,true),
+      type+' must freeze under pause/reduced motion');
+  }
+});
 test('five worlds have correct geographic visual references',()=>{
  const win={};load('garden-scenes.js',{window:win});
  const sketch=win.PauseGardenScenes;
