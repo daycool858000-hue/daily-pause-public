@@ -1,7 +1,7 @@
 // 今日一息：只快取網站程式與使用者主動選擇的離線聲音。
 // Never touch localStorage, IndexedDB or the Holding Place's private records.
 'use strict';
-const VERSION='20261015-07';
+const VERSION='20261015-08';
 const SHELL='todaypause-shell-'+VERSION;
 const MEDIA='todaypause-audio-v1';
 const CORE=[
@@ -26,9 +26,9 @@ const CORE=[
   "./reading-20261013.js?v=20261013-2",
   "./palette-history.js?v=20261013-1",
   "./world-art.js?v=20261013-3",
-  "./mood-scenery.js?v=20261015-3",
+  "./mood-scenery.js?v=20261015-5",
   "./mood-atmospheres.js?v=20261014-1",
-  "./palette-world.js?v=20261015-4",
+  "./palette-world.js?v=20261015-6",
   "./photo-rotation.js?v=20261013-1",
   "./offline-audio.js?v=20261014-1",
   "./soundscape.js?v=20261014-2",
@@ -59,6 +59,25 @@ const CORE=[
   "./media/generated/palette-balcony-v1.webp",
   "./media/generated/palette-cloud-v1.webp",
   "./media/generated/palette-sunrise-v1.webp",
+  "./media/generated/palette-morning-bedroom-sr-v2.webp",
+  "./media/generated/palette-warm-living-room-sr-v2.webp",
+  "./media/generated/palette-rain-window-sr-v2.webp",
+  "./media/generated/palette-quiet-study-sr-v2.webp",
+  "./media/generated/palette-island-sr-v2.webp",
+  "./media/generated/palette-balcony-sr-v2.webp",
+  "./media/generated/palette-cloud-sr-v2.webp",
+  "./media/generated/palette-sunrise-sr-v2.webp",
+  "./media/generated/palette-mood-fatigue-study-v1.webp",
+  "./media/generated/palette-mood-stifled-study-v1.webp",
+  "./media/generated/palette-mood-confusion-study-v1.webp",
+  "./media/generated/palette-mood-irritation-study-v1.webp",
+  "./media/generated/palette-mood-fear-study-v1.webp",
+  "./media/generated/palette-mood-curiosity-study-v1.webp",
+  "./media/generated/palette-mood-reassurance-study-v1.webp",
+  "./media/generated/palette-mood-tenderness-study-v1.webp",
+  "./media/generated/palette-mood-renewal-study-v1.webp",
+  "./media/generated/palette-mood-courage-study-v1.webp",
+  "./media/generated/palette-mood-warmth-study-v1.webp",
   "./icons/today-pause-192.png",
   "./icons/today-pause-512.png"
 ];

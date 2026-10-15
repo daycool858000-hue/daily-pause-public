@@ -164,18 +164,19 @@ function livingRoomUrl(){
 // Site-owned AI-generated scenes already in the repository. Assign at most
 // one photograph per emotion: never swap labels onto the same photo.
 const realisticMoodScenes=Object.freeze({
-  // Distinct first-pass interiors; no two moods are assigned the same photograph.
-  '安靜':'./media/generated/palette-morning-bedroom-v1.webp',
-  '想被陪著':'./media/generated/palette-warm-living-room-v1.webp',
-  '想哭':'./media/generated/palette-rain-window-v1.webp',
-  '想躲起來':'./media/generated/palette-quiet-study-v1.webp',
-  '放空':'./media/generated/palette-cloud-v1.webp',
+  // Original low-resolution conceptual art is preserved; these eight mappings
+  // select reversible FSRCNN-x2 restoration candidates, still awaiting art approval.
+  '安靜':'./media/generated/palette-morning-bedroom-sr-v2.webp',
+  '想被陪著':'./media/generated/palette-warm-living-room-sr-v2.webp',
+  '想哭':'./media/generated/palette-rain-window-sr-v2.webp',
+  '想躲起來':'./media/generated/palette-quiet-study-sr-v2.webp',
+  '放空':'./media/generated/palette-cloud-sr-v2.webp',
   '心裡很滿':'./media/generated/scene-04.webp',
   '想慢一點':'./media/generated/scene-06.webp',
   '孤單':'./media/generated/scene-07.webp',
   '想念':'./media/generated/scene-01.webp',
-  '希望':'./media/generated/palette-sunrise-v1.webp',
-  '期待':'./media/generated/palette-balcony-v1.webp',
+  '希望':'./media/generated/palette-sunrise-sr-v2.webp',
+  '期待':'./media/generated/palette-balcony-sr-v2.webp',
   // Distinct reviewed-at-source artwork *studies* derived from in-repo assets.
   // These are draft photo-composites, NOT newly generated standalone originals.
   '疲倦':'./media/generated/palette-mood-fatigue-study-v1.webp',

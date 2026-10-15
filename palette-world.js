@@ -66,18 +66,18 @@
     // geography is accurate; never show a mountain for a room or an ocean for a library.
     // Dedicated artwork for all 24 emotions and all indoor scenes remains to be produced.
     const landscapeArt={
-      // First-pass standalone indoor studies; no UI, still awaiting full-resolution art approval.
-      room:'./media/generated/palette-morning-bedroom-v1.webp',
-      living:'./media/generated/palette-warm-living-room-v1.webp',
-      rain:'./media/generated/palette-rain-window-v1.webp',
-      library:'./media/generated/palette-quiet-study-v1.webp',
+      // Reversible FSRCNN-x2 restored drafts, not separately regenerated new scenes.
+      room:'./media/generated/palette-morning-bedroom-sr-v2.webp',
+      living:'./media/generated/palette-warm-living-room-sr-v2.webp',
+      rain:'./media/generated/palette-rain-window-sr-v2.webp',
+      library:'./media/generated/palette-quiet-study-sr-v2.webp',
       sea:'./media/generated/scene-02.webp',
       // A planted stone-and-moss courtyard is a garden; scene-04 is open wildflowers.
       garden:'./media/generated/scene-08.webp',
-      island:'./media/generated/palette-island-v1.webp',
-      balcony:'./media/generated/palette-balcony-v1.webp',
-      cloud:'./media/generated/palette-cloud-v1.webp',
-      sunrise:'./media/generated/palette-sunrise-v1.webp',
+      island:'./media/generated/palette-island-sr-v2.webp',
+      balcony:'./media/generated/palette-balcony-sr-v2.webp',
+      cloud:'./media/generated/palette-cloud-sr-v2.webp',
+      sunrise:'./media/generated/palette-sunrise-sr-v2.webp',
       hill:'./media/generated/scene-01.webp',
       lake:'./media/generated/scene-10.webp',
       night:'./media/generated/scene-07.webp'
@@ -338,7 +338,7 @@
       // Scene thumbnails preview the bundled scene itself, never an unrelated mood.
       const sceneThumbnail=id=>{
         const src=landscapeArt[id];
-        return typeof src==='string'&&/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/.test(src)
+        return typeof src==='string'&&/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2))\.webp$/.test(src)
           ? ' style="background-image:url('+src+');background-size:cover;background-position:center"' : '';
       };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
