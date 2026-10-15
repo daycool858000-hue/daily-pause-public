@@ -1,0 +1,39 @@
+name: Draft Independent Licensed Photo Candidates
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - tools/palette/build_licensed_candidates.py
+      - .github/workflows/palette-licensed-candidates.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  photo-candidates-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image compositor
+        run: python -m pip install --disable-pip-version-check pillow requests
+      - name: Retrieve eight independent license-verified photographs
+        run: python tools/palette/build_licensed_candidates.py
+      - name: Archive candidates only on private development branch
+        if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp art-review/licensed-photo-candidates/palette-photo-*.webp media/generated/
+          cp art-review/licensed-photo-candidates/source-manifest.json docs/PALETTE_LICENSED_PHOTO_CANDIDATES_20261015.json
+          git add media/generated/palette-photo-*.webp docs/PALETTE_LICENSED_PHOTO_CANDIDATES_20261015.json
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive eight independent licensed-photo candidates"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - name: Preserve candidate set temporarily
+        uses: actions/upload-artifact@v4
+        with:
+          name: palette-eight-licensed-photo-candidates-draft
+          path: art-review/licensed-photo-candidates/
+          retention-days: 7
+          if-no-files-found: error
