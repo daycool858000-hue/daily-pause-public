@@ -45,5 +45,22 @@
       ],
       "exif_gps": "not exported"
     }
+  ],
+  "rejected": [
+    {
+      "mood": "warmth",
+      "file": "Cozy living room with a view of the lake and trees in the background at midday.jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Cozy living room with a view of the lake and trees in the background at midday.jpg"
+    },
+    {
+      "mood": "reassurance",
+      "file": "Cozy reading corner with vintage decor and modern lighting in a sunlit living space.jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Cozy reading corner with vintage decor and modern lighting in a sunlit living space.jpg"
+    },
+    {
+      "mood": "fatigue",
+      "file": "Bedroom window (Unsplash).jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Bedroom window (Unsplash).jpg"
+    }
   ]
 }
