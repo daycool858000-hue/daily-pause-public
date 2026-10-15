@@ -108,7 +108,7 @@ test('eight distinct painterly scenery backgrounds have ink, pigment and layered
   // Final browser paints are rasterized once and bundled, never recomputed on every tap.
   const manifest=JSON.parse(read('media/palette-scenes/manifest.json'));
   assert.equal(manifest.length,8);
-  assert.deepEqual(manifest.map(x=>x.id).sort(),ids.slice().sort());
+  assert.deepEqual(manifest.map(x=>x.id).sort(),Array.from(ids).sort());
   for(const scene of manifest){
     assert.match(scene.path,/^media\/palette-scenes\/[a-z]+\.webp$/);
     const raw=fs.readFileSync(path.join(root,scene.path));
