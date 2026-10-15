@@ -67,11 +67,11 @@ def main():
         if license_name not in ("CC0","CC0 1.0") and "publicdomain/zero" not in license_url:
             raise ValueError("Not confirmed CC0 by official API: "+title+" "+license_name)
         src=info.get("thumburl") or info.get("url")
-        if not src or not src.startswith("https://upload.wikimedia.org/"):
-            from urllib.parse import urlsplit
-            raise ValueError("Untrusted download source for "+title+
-                             " (hostname="+str(urlsplit(src).hostname)+
-                             ", prefix="+repr(src[:90])+")")
+        from urllib.parse import urlsplit
+        parsed = urlsplit(src)
+        if parsed.scheme != "https" or parsed.hostname not in {"upload.wikimedia.org","thumb.wikimedia.org"}:
+            raise ValueError("Unexpected official Wikimedia image host for "+title+
+                             ": "+str(parsed.hostname))
         res=SESSION.get(src,timeout=75)
         res.raise_for_status()
         with Image.open(io.BytesIO(res.content)) as loaded:
