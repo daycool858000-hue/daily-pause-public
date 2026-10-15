@@ -1,0 +1,37 @@
+name: Draft Palette Six Independently Photographed Scene Options
+on:
+  push:
+    branches:
+      - feature/companion-garden-palette-20261014
+    paths:
+      - tools/palette/scene-options-round2.py
+      - .github/workflows/palette-scene-options.yml
+permissions:
+  contents: write
+jobs:
+  make-review-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow requests
+      - name: Validate CC0 licensing and prepare six independent photographs
+        run: python tools/palette/scene-options-round2.py
+      - name: Preserve unapproved imagery in review-only folder, not live art directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p art-review/round2
+          cp art-review/alternative-rooms/palette-review-*.webp art-review/round2/
+          cp art-review/alternative-rooms/manifest.json art-review/round2/
+          git add art-review/round2
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): preserve six license-tracked independent photo options for review"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: palette-independent-scene-options
+          path: art-review/alternative-rooms/
+          retention-days: 7
