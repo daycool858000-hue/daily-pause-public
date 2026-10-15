@@ -1,0 +1,26 @@
+name: Draft Emotion Palette Artwork Only
+on:
+  pull_request:
+    paths:
+      - 'tools/palette/build_mood_art.py'
+      - '.github/workflows/palette-artwork-build.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  produce-artwork:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare image compositor
+        run: python -m pip install --disable-pip-version-check pillow numpy
+      - name: Compose draft imagery from existing site's original art
+        run: python tools/palette/build_mood_art.py
+      - name: Package 11 draft backgrounds for quality inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: mood-landscapes-not-for-publication
+          path: art-review/mood-scenes/
+          if-no-files-found: error
+          retention-days: 7
