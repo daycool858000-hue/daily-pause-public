@@ -138,8 +138,8 @@ def build_curated():
   items=[]
   rejected=[]
   for mood,filename in choices:
-      try:
-        result=api({"action":"query","prop":"imageinfo","iiprop":"url|size|extmetadata",
+    try:
+      result=api({"action":"query","prop":"imageinfo","iiprop":"url|size|extmetadata",
         "iiurlwidth":2500,"titles":"File:"+filename})
       pages=result.get("query",{}).get("pages",[])
       if len(pages)!=1 or "imageinfo" not in pages[0]:
