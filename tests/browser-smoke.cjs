@@ -210,6 +210,14 @@ const server=http.createServer(async(req,res)=>{
       };
       const sceneNames=['forest','ocean','room','living','cafe','park','street','mountain'];
       assert.equal(await page.locator('#worldScenes [data-scene]').count(),8);
+      const scenicImages=await page.evaluate(async ids=>Promise.all(ids.map(async id=>{
+        const picture=new Image();
+        picture.src='./media/palette-scenes/'+id+'.webp';
+        await picture.decode();
+        return [id,picture.naturalWidth,picture.naturalHeight];
+      })),sceneNames);
+      assert.ok(scenicImages.every(([,width,height])=>width===960&&height===630),
+        'Eight original painterly scenes must decode to valid local WebP files');
       for(const sceneName of sceneNames){
         await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
