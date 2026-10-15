@@ -68,7 +68,10 @@ def main():
             raise ValueError("Not confirmed CC0 by official API: "+title+" "+license_name)
         src=info.get("thumburl") or info.get("url")
         if not src or not src.startswith("https://upload.wikimedia.org/"):
-            raise ValueError("Untrusted download source for "+title)
+            from urllib.parse import urlsplit
+            raise ValueError("Untrusted download source for "+title+
+                             " (hostname="+str(urlsplit(src).hostname)+
+                             ", prefix="+repr(src[:90])+")")
         res=SESSION.get(src,timeout=75)
         res.raise_for_status()
         with Image.open(io.BytesIO(res.content)) as loaded:
