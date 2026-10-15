@@ -302,6 +302,38 @@ const server=http.createServer(async(req,res)=>{
       assert.equal(background[3],255,
         'Canvas must remain opaque after erasing; scenery is still rendered');
     }
+    // Explicit regression: a shape stamp is separate from a brush stroke, even after switching tabs.
+    await page.locator('[data-mood="好奇"]').click();
+    await page.locator('[data-world-tab="element"]').click();
+    await page.locator('[data-element="flower"]').click();
+    assert.equal(await page.locator('[data-element="flower"]').getAttribute('aria-pressed'),
+      'true','Shape button must activate the flower stamp');
+    await stage.scrollIntoViewIfNeeded();
+    await stage.click({position:{x:120,y:90}});
+    await page.locator('[data-world-tab="brush"]').click();
+    await page.locator('[data-brush="pencil"]').click();
+    assert.equal(await page.locator('[data-brush="pencil"]').getAttribute('aria-pressed'),
+      'true','Brush button must take over without altering the existing shape');
+    await stage.scrollIntoViewIfNeeded();
+    await stage.click({position:{x:180,y:115}});
+    const [shapeDownload]=await Promise.all([
+      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+    ]);
+    const shapeRecord=JSON.parse(await fs.readFile(await shapeDownload.path(),'utf8'))
+      .canvases.find(x=>x.mood==='好奇');
+    assert.deepEqual(shapeRecord.marks.map(x=>x.kind),['element','stroke'],
+      'Shape and brush must remain independently editable');
+    assert.equal(shapeRecord.marks[0].type,'flower');
+    assert.equal(shapeRecord.marks[1].type,'pencil');
+    await page.locator('#worldUndo').click();
+    const [stampUndoDownload]=await Promise.all([
+      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+    ]);
+    const afterStampUndo=JSON.parse(await fs.readFile(await stampUndoDownload.path(),'utf8'))
+      .canvases.find(x=>x.mood==='好奇');
+    assert.deepEqual(afterStampUndo.marks.map(x=>x.kind),['element'],
+      'Undo must remove only the brush, leaving the existing stamp');
+
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
       'The garden must share the existing playback and offline sound controls');
