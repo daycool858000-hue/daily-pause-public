@@ -128,21 +128,25 @@
       for(let j=0;j<90;j++)ctx.fillRect((j*139.7)%W,(j*187.1)%H,1.1,1.1);
       ctx.restore();
     }
+    function landscapeState(scene){
+      const src=landscapeArt[scene];if(!src)return null;
+      if(landscapeCache.has(scene))return landscapeCache.get(scene);
+      const img=new Image();img.decoding='async';
+      const asset={img,ready:false,error:false};
+      landscapeCache.set(scene,asset);
+      trimCache(landscapeCache,7,scene);
+      img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
+      img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
+      img.src=src;
+      return asset;
+    }
     function drawLandscape(scene,t){
-      const src=landscapeArt[scene];
-      // A removed legacy scene never revives old landscape photography.
-      if(!src){drawBlankPaper();return;}
-      let asset=landscapeCache.get(scene);
-      if(!asset){
-        const img=new Image();
-        asset={img,ready:false,error:false};
-        landscapeCache.set(scene,asset);
-        trimCache(landscapeCache,5,scene);
-        img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
-        img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
-        img.src=src;
-      }
-      if(!asset.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
+      const asset=landscapeState(scene);
+      if(!asset?.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
+    }
+    function primeScenePreviews(){
+      // Warm seven small self-contained SVG scenery assets before the scene panel opens.
+      placeScenes.forEach(([id],index)=>setTimeout(()=>landscapeState(id),160+index*120));
     }
 
     // 480px previews decode before interaction: no 1.5MP decode on every mood switch.
@@ -745,7 +749,7 @@
     window.addEventListener('palette-view-change',onVisible);
     window.addEventListener('resize',onVisible);
     if('ResizeObserver' in window)new ResizeObserver(onVisible).observe(wrap);
-    renderChoices();primeMoodPreviews();updateSelections();sizeCanvas();schedule();
+    renderChoices();primeMoodPreviews();primeScenePreviews();updateSelections();sizeCanvas();schedule();
   }
   window.setupPaletteNew=init;
 })();
