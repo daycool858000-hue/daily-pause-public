@@ -89,23 +89,37 @@
     photoSurface.width=W; photoSurface.height=H;
     const photoCtx=photoSurface.getContext('2d',{alpha:false});
     let lastScaledPhoto=null;
+    let lastScaledPhotoSrc='';
     let renderingExport=false;
     function drawCoverPhoto(image){
       if(!image?.naturalWidth||!image?.naturalHeight)return false;
       const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
       const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
-      // On high-resolution PNG export, keep the remaining SVG moods sharp;
-      // the regular animated preview still benefits from the cached bitmap.
-      if(renderingExport && image.src.startsWith('data:image/svg+xml')){
+      // Export directly from the original 1920×1260 landscape bitmap.
+      // Never magnify the cached 960px preview into the exported PNG.
+      if(renderingExport){
         ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
         return true;
       }
       if(photoCtx){
-        if(lastScaledPhoto!==image){
-          photoCtx.setTransform(1,0,0,1,0,0);
+        // Keep the cached surface at the actual display resolution, capped
+        // at the 1920px source. Avoid a needless full-size texture on phones.
+        const resolution=Math.min(2,Math.max(1,canvas.width/W,canvas.height/H));
+        const tw=Math.round(W*resolution),th=Math.round(H*resolution);
+        if(photoSurface.width!==tw||photoSurface.height!==th){
+          photoSurface.width=tw;photoSurface.height=th;
+          lastScaledPhoto=null;
+          lastScaledPhotoSrc='';
+        }
+        // The same Image object can have its src replaced by a fallback.
+        // Compare the decoded source too, or a stale scene stays on canvas.
+        const identity=(image.currentSrc||image.src)+'#'+image.naturalWidth+'x'+image.naturalHeight;
+        if(lastScaledPhoto!==image||lastScaledPhotoSrc!==identity){
+          photoCtx.setTransform(resolution,0,0,resolution,0,0);
           photoCtx.clearRect(0,0,W,H);
           photoCtx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
           lastScaledPhoto=image;
+          lastScaledPhotoSrc=identity;
         }
         ctx.drawImage(photoSurface,0,0,W,H);
       }else{
