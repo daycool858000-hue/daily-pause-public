@@ -1,0 +1,110 @@
+{
+  "scope": "draft photograph candidates for manual visual inspection only",
+  "note": "Third-party CC0 images, NOT original AI-generated scenes. All EXIF/GPS removed.",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "time_utc": "2026-10-15T04:11:11.030504+00:00",
+  "photos": [
+    {
+      "slot": "room-a",
+      "filename": "palette-review-room-a.webp",
+      "sha256": "f22abc16ee794c3b7bb733bf613ab079c900d9d0c41140f8487365970386d42f",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Warsaw_Sunrise_(Unsplash).jpg",
+      "author": "Sylwia Pietruszka <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@pietruszka\">pietruszka</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 6016,
+      "src_height": 4016,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    },
+    {
+      "slot": "room-b",
+      "filename": "palette-review-room-b.webp",
+      "sha256": "cf74f01793f57251ce57ffdaf2351f5763f8a7b766cd69b2796dfe4049a5f0b3",
+      "source_page": "https://commons.wikimedia.org/wiki/File:NY_loft_bedroom_(Unsplash).jpg",
+      "author": "Gabriel Beaudry <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@gbeaudry\">gbeaudry</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 5184,
+      "src_height": 3456,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    },
+    {
+      "slot": "living-a",
+      "filename": "palette-review-living-a.webp",
+      "sha256": "ea1cae37b4e4f42596f2ee075c5412cc51191cd8d69f149443d73c563d470334",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Furnished_living_room._(Unsplash).jpg",
+      "author": "Stephen Di Donato <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@sdidonato\">sdidonato</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 3024,
+      "src_height": 4032,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    },
+    {
+      "slot": "living-b",
+      "filename": "palette-review-living-b.webp",
+      "sha256": "f2a0ec451573da0221a4488c555a807ed5cccb7095cf2cc42c1d2ef2d4910c91",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Living_room_(Unsplash).jpg",
+      "author": "Jarosław Ceborski <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@jarson\">jarson</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 5346,
+      "src_height": 3568,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    },
+    {
+      "slot": "rain-a",
+      "filename": "palette-review-rain-a.webp",
+      "sha256": "50f299a0a50eaac52aaa842d60239908464883a096e35c309199cd67257b2c67",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Rainy_window_and_table_book_(Unsplash).jpg",
+      "author": "Rosalind Chang <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@rosalindjchang\">rosalindjchang</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 4288,
+      "src_height": 2848,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    },
+    {
+      "slot": "study-a",
+      "filename": "palette-review-study-a.webp",
+      "sha256": "59914c0467a26bd261c957f1b593e9765eeceb2cb48b9234fcf8aa8c06b79505",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Reading_room_(Unsplash).jpg",
+      "author": "Samuel Zeller <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@samuelzeller\">samuelzeller</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "src_width": 6000,
+      "src_height": 4000,
+      "output": [
+        1920,
+        1260
+      ],
+      "rights_status": "Commons lists CC0; independent photographic work",
+      "review_status": "pending visual approval"
+    }
+  ]
+}
