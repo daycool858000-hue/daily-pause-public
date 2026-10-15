@@ -22,6 +22,8 @@
     const number=String(i+1).padStart(2,'0');
     return ['paper-'+number,'畫布 '+number,'可以自由創作的紙質背景'];
   });
+  // The landscape selector is separate from the 24 original paper canvas defaults.
+  const placeScenes=window.PausePlaceScenes?.items||[];
   const elements=[
     ['tree','樹木','♧'],['wave','海浪','≈'],['cloud','雲','☁'],['leaf','葉片','♧'],
     ['flower','小花','✿'],['petal','飄落花瓣','❀'],['star','星光','✧'],['rain','細雨','☂'],
@@ -63,7 +65,8 @@
     // The old landscape/image-restoration drafts are retired from all palette choices.
     // All 24 choices below use the standalone paper WebP files, never article art.
     const landscapeArt=Object.freeze(Object.fromEntries(
-      scenes.map(([id],i)=>[id,'./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp'])
+      [...scenes.map(([id],i)=>[id,'./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp']),
+        ...placeScenes.map(([id])=>[id,window.PausePlaceScenes.imageUrl(id)])]
     ));
     // Reuse one scaled photograph surface across frames. Photos are otherwise
     // resampled at every animation tick on high-DPI iPhones, even while untouched.
@@ -111,6 +114,14 @@
       return true;
     }
     const landscapeCache=new Map();
+    const trimCache=(cache,limit,keep)=>{
+      if(cache.size<=limit)return;
+      for(const key of cache.keys()){
+        if(key===keep)continue;
+        cache.delete(key);
+        if(cache.size<=limit)break;
+      }
+    };
     function drawBlankPaper(){
       ctx.fillStyle='#f8f5ee';ctx.fillRect(0,0,W,H);
       ctx.save();ctx.globalAlpha=.13;ctx.fillStyle='#b7a997';
@@ -126,6 +137,7 @@
         const img=new Image();
         asset={img,ready:false,error:false};
         landscapeCache.set(scene,asset);
+        trimCache(landscapeCache,5,scene);
         img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
         img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
         img.src=src;
@@ -141,8 +153,9 @@
       const image=new Image();
       const state={image,ready:false,failed:false};
       moodImageCache.set(name,state);
+      trimCache(moodImageCache,4,name);
       image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
-      // Missing paper art stays a plain canvas: never resurrect old scenery.
+      // Failed loads never revive retired images or disturb saved brush strokes.
       image.onerror=()=>{state.failed=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
       image.src=src;return state;
     }
@@ -315,13 +328,18 @@
     }
     const schedule=()=>{
       if(pointer||frames!==null||document.hidden||$('palette').hidden||model.paused||reduce)return;
-      frames=requestAnimationFrame(t=>{frames=null;if(t-lastMoment>32){paint(t);lastMoment=t}schedule()});
+      // Keep the large canvas responsive on phones, even while scenes animate.
+      const interval=(matchMedia('(max-width: 920px)').matches?90:55);
+      frames=requestAnimationFrame(t=>{frames=null;if(t-lastMoment>=interval){paint(t);lastMoment=t}schedule()});
     };
     const stop=()=>{if(frames!==null){cancelAnimationFrame(frames);frames=null}};
     function sizeCanvas(){
       const bounds=canvas.getBoundingClientRect();if(!bounds.width||!bounds.height)return;
-      const dpr=Math.min(window.devicePixelRatio||1,1.6);
-      canvas.width=Math.round(bounds.width*dpr);canvas.height=Math.round(bounds.height*dpr);
+      const dpr=Math.min(window.devicePixelRatio||1,1.5);
+      const w=Math.round(bounds.width*dpr),h=Math.round(bounds.height*dpr);
+      // Assigning canvas.width unconditionally clears the entire bitmap and state.
+      if(canvas.width===w&&canvas.height===h)return;
+      canvas.width=w;canvas.height=h;
       paint(performance.now(),true);
     }
     function renderChoices(){
@@ -333,8 +351,8 @@
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
       ).join('');
-      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>預設畫布</strong><small>回到這張情緒畫布原本的紙張背景</small></button>'+
-        scenes.map(([id,name,description])=>
+      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>原本畫布</strong><small>回到這張畫布原本的底圖</small></button>'+
+        placeScenes.map(([id,name,description])=>
         '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"'+sceneThumbnail(id)+'></span><strong>'+name+'</strong><small>'+description+'</small></button>'
       ).join('');
       $('worldElements').innerHTML=elements.map(([id,name,symbol])=>'<button type="button" data-element="'+id+'" aria-pressed="false"><span>'+symbol+'</span>'+name+'</button>').join('');
@@ -396,6 +414,15 @@
       model.marks.push(mark);return mark;
     }
     const canMark=()=>model.marks.length<500;
+    // Merge rapid touchmove events into a single render per animation frame.
+    let pendingPointerPaint=null;
+    const requestPointerPaint=()=>{
+      if(pendingPointerPaint!==null)return;
+      pendingPointerPaint=requestAnimationFrame(()=>{
+        pendingPointerPaint=null;
+        if(!document.hidden)paint(performance.now(),true);
+      });
+    };
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
       const p=screenPosition(e);// Furniture is draggable only while editing objects, so drawing over a sofa
@@ -445,9 +472,14 @@
           pointer.last=p;
         }
       }
-      paint(performance.now(),true);
+      requestPointerPaint();
     });
-    const release=e=>{if(pointer?.id===e.pointerId){pointer=null;try{canvas.releasePointerCapture(e.pointerId)}catch(_){}updateSelections();schedule()}};
+    const release=e=>{if(pointer?.id===e.pointerId){
+      pointer=null;
+      if(pendingPointerPaint!==null){cancelAnimationFrame(pendingPointerPaint);pendingPointerPaint=null;}
+      try{canvas.releasePointerCapture(e.pointerId)}catch(_){}
+      paint(performance.now(),true);updateSelections();schedule();
+    }};
     canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
     function addProp(type){
       if(model.props.length>=45){return}
@@ -519,7 +551,7 @@
     const validColor=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
     const finite=(x,min,max)=>Number.isFinite(x)&&x>=min&&x<=max;
     const moodNames=new Set(moods.map(x=>x[0]));
-    const sceneNames=new Set(scenes.map(x=>x[0]));
+    const sceneNames=new Set([...scenes.map(x=>x[0]),...placeScenes.map(x=>x[0])]);
     // Older editable JSON files remain readable; preserve strokes and objects.
     const legacySceneNames=new Set(['room','living','sea','rain','garden','night','island',
       'balcony','hill','lake','library','cloud','sunrise','blank']);
