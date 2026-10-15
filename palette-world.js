@@ -66,7 +66,11 @@
     // geography is accurate; never show a mountain for a room or an ocean for a library.
     // Dedicated artwork for all 24 emotions and all indoor scenes remains to be produced.
     const landscapeArt={
-      living:window.PauseMoodScenes?.livingRoomUrl()||null,
+      // First-pass standalone indoor studies; no UI, still awaiting full-resolution art approval.
+      room:'./media/generated/palette-morning-bedroom-v1.webp',
+      living:'./media/generated/palette-warm-living-room-v1.webp',
+      rain:'./media/generated/palette-rain-window-v1.webp',
+      library:'./media/generated/palette-quiet-study-v1.webp',
       sea:'./media/generated/scene-02.webp',
       // A planted stone-and-moss courtyard is a garden; scene-04 is open wildflowers.
       garden:'./media/generated/scene-08.webp',
