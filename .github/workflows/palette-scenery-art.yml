@@ -1,0 +1,40 @@
+name: Draft Painted Scenery Asset Build
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - 'palette-place-scenes.js'
+      - 'tools/render-palette-scenes.cjs'
+      - '.github/workflows/palette-scenery-art.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: painted-scenes-draft
+  cancel-in-progress: true
+jobs:
+  render-painted-scenes:
+    if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install rendering browser only
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Render eight independent self-authored art backgrounds
+        run: node tools/render-palette-scenes.cjs
+      - name: Save WebP assets to development Draft branch only
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = "feature/companion-garden-palette-20261014"
+          test "$(find media/palette-scenes -maxdepth 1 -name '*.webp' | wc -l)" -eq 8
+          git add media/palette-scenes/
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive eight independently painted scenic WebP images"
+            git push origin HEAD:refs/heads/feature/companion-garden-palette-20261014
+          fi
