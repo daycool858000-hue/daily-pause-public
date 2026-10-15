@@ -1,0 +1,47 @@
+name: Draft Palette Neural Restoration
+on:
+  push:
+    branches:
+      - feature/companion-garden-palette-20261014
+    paths:
+      - tools/palette/upscale_studies.py
+      - .github/workflows/palette-visual-restoration.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore-original-cropped-studies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare licensed upscaling dependencies
+        run: python -m pip install --disable-pip-version-check "opencv-contrib-python-headless>=4.9,<5" "numpy>=1.26,<3" "pillow>=10,<13"
+      - name: Retrieve open-source pretrained EDSR x2 model
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p art-review/weights
+          curl --fail --location --retry 3 --max-time 150 --output art-review/weights/EDSR_x2.pb https://raw.githubusercontent.com/Saafke/EDSR_Tensorflow/master/models/EDSR_x2.pb
+          test "$(wc -c < art-review/weights/EDSR_x2.pb)" -gt 1000000
+      - name: Create eight restoration candidates without touching originals
+        run: python tools/palette/upscale_studies.py
+      - name: Preserve 8 image candidates on development branch only
+        if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp art-review/restored-landscapes/*-sr-v2.webp media/generated/
+          cp art-review/restored-landscapes/source-manifest.json docs/PALETTE_RESTORATION_MANIFEST_20261015.json
+          git add media/generated/*-sr-v2.webp docs/PALETTE_RESTORATION_MANIFEST_20261015.json
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): preserve eight neural restoration candidates"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - name: Keep short-lived restore review package
+        uses: actions/upload-artifact@v4
+        with:
+          name: palette-eight-neural-restoration-candidates
+          path: art-review/restored-landscapes/
+          retention-days: 7
+          if-no-files-found: error
