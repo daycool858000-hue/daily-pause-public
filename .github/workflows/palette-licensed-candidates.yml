@@ -20,9 +20,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp art-review/licensed-photo-candidates/palette-photo-*.webp media/generated/
+          mkdir -p art-review/cc0-photography
+          cp art-review/licensed-photo-candidates/palette-photo-*.webp art-review/cc0-photography/
           cp art-review/licensed-photo-candidates/source-manifest.json docs/PALETTE_CC0_PHOTO_ALTERNATIVES_20261015.json
-          git add media/generated/palette-photo-*.webp docs/PALETTE_CC0_PHOTO_ALTERNATIVES_20261015.json
+          git add art-review/cc0-photography/palette-photo-*.webp docs/PALETTE_CC0_PHOTO_ALTERNATIVES_20261015.json
           if ! git diff --cached --quiet; then
             git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive licensed CC0 photo alternatives for visual review only"
             git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
