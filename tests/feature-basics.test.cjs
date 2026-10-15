@@ -10,7 +10,7 @@ const loaded={};
 const load=(name,context)=>vm.runInNewContext(read(name),context,{filename:name,timeout:5000});
 // Artistic proof requires human review. This regexp only verifies that the
 // app references real bundled files, including the image studies and 2x crops.
-const bundledArtwork=/^\\.\\/media\\/palette-paper\\/\\d{2}\\.webp$/;
+const bundledArtwork=/^\.\/media\/palette-paper\/\d{2}\.webp$/;
 
 test('new modules parse and site branding stays unchanged',()=>{
  for(const name of ['mood-scenery.js','mood-atmospheres.js','palette-world.js',
@@ -70,7 +70,8 @@ test('24 different numbered paper artworks, never legacy photography',()=>{
   assert.equal(manifest.length,24);
   assert.equal(new Set(manifest.map(item=>item.sha256)).size,24);
   for(const item of manifest){
-    assert.match(item.path,/^media\\/palette-paper\\/\\d{2}\\.webp$/);
+
+    assert.match(item.path,/^media\/palette-paper\/\d{2}\.webp$/);
     const sum=require('node:crypto').createHash('sha256').update(
       fs.readFileSync(path.join(root,item.path))).digest('hex');
     assert.equal(sum,item.sha256);
