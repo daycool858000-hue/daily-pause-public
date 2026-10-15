@@ -50,6 +50,32 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
 });
 
 
+test('draft indoor scenes remain standalone and correctly match indoor labels',()=>{
+ const win={};load('mood-scenery.js',{window:win});
+ const mappings=[
+   ['安靜','palette-morning-bedroom-v1.webp'],
+   ['想被陪著','palette-warm-living-room-v1.webp'],
+   ['想哭','palette-rain-window-v1.webp'],
+   ['想躲起來','palette-quiet-study-v1.webp']
+ ];
+ const names=new Set();
+ for(const [mood,file] of mappings){
+   const url=win.PauseMoodScenes.imageUrl(mood);
+   assert.equal(url,'./media/generated/'+file);
+   assert.ok(fs.existsSync(path.join(root,'media/generated',file)),mood+' background asset missing');
+   names.add(url);
+ }
+ assert.equal(names.size,4,'Indoor scenes must remain visually independent');
+ const palette=read('palette-world.js');
+ for(const [scene,file] of [
+   ['room','palette-morning-bedroom-v1.webp'],
+   ['living','palette-warm-living-room-v1.webp'],
+   ['rain','palette-rain-window-v1.webp'],
+   ['library','palette-quiet-study-v1.webp']]){
+   assert.ok(palette.includes(scene+':\'./media/generated/'+file+'\''));
+ }
+});
+
 test('mood photo assignments never mislabel an exterior as an indoor room',()=>{
  const win={};
  load('mood-scenery.js',{window:win});
