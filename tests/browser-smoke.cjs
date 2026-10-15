@@ -89,6 +89,23 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
     assert.ok(png.startsWith('data:image/png;base64,'));
+    if(scenario.engine===chromium){
+      // Actual file download must use native high resolution on small viewports
+      // without changing the canvas being edited afterward.
+      const beforePixels=await page.locator('#worldCanvas')
+        .evaluate(c=>[c.width,c.height]);
+      const [exportDownload]=await Promise.all([
+        page.waitForEvent('download'),page.locator('#worldDownload').click()
+      ]);
+      const imageBytes=await fs.readFile(await exportDownload.path());
+      assert.equal(imageBytes.subarray(1,4).toString('ascii'),'PNG');
+      assert.equal(imageBytes.readUInt32BE(16),1920);
+      assert.equal(imageBytes.readUInt32BE(20),1260);
+      const afterPixels=await page.locator('#worldCanvas')
+        .evaluate(c=>[c.width,c.height]);
+      assert.deepEqual(afterPixels,beforePixels,
+        'PNG export must restore the editable canvas resolution');
+    }
 
     // Palette editing regression: object mode must never create a brush stroke;
     // brush mode must draw even over an existing furniture hitbox.
