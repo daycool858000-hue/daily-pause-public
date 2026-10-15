@@ -150,6 +150,28 @@ const server=http.createServer(async(req,res)=>{
     assert.deepEqual(roundTrip.canvases,backup.canvases,
       'JSON import must restore all 24 canvases exactly, including the selected landscape');
     assert.equal(roundTrip.activeMood,backup.activeMood,'Active emotion must be restored');
+    // Undo after mood switching must affect only the current canvas.
+    await page.locator('[data-mood="安靜"]').click();
+    if((await page.locator('[data-world-tab="brush"]').getAttribute('aria-selected'))!=='true')
+      await page.locator('[data-world-tab="brush"]').click();
+    await page.locator('[data-brush="pencil"]').click();
+    await stage.scrollIntoViewIfNeeded();
+    const quietBounds=await stage.boundingBox();
+    await page.mouse.move(quietBounds.x+quietBounds.width*.2,quietBounds.y+quietBounds.height*.3);
+    await page.mouse.down();
+    await page.mouse.move(quietBounds.x+quietBounds.width*.4,quietBounds.y+quietBounds.height*.4,{steps:6});
+    await page.mouse.up();
+    await page.locator('[data-mood="孤單"]').click();
+    await page.locator('[data-mood="安靜"]').click();
+    await page.locator('#worldUndo').click();
+    const [undoDownload]=await Promise.all([
+      page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+    ]);
+    const postUndo=JSON.parse(await fs.readFile(await undoDownload.path(),'utf8'));
+    assert.equal(postUndo.canvases.find(m=>m.mood==='安靜').marks.length,0,
+      'Undo should remove only the new stroke on the current mood canvas');
+    assert.equal(postUndo.canvases.find(m=>m.mood==='孤單').marks.length,1,
+      'Undo must leave the other emotion canvas untouched');
     // Actual branch-rendered scene screenshots are the visual review source.
     // Unlike concept art, these contain exactly what the draft canvas displays.
     if(scenario.engine===chromium){
