@@ -211,6 +211,52 @@ const server=http.createServer(async(req,res)=>{
         await stage.screenshot({path:path.join(__dirname,'screenshots',
           'palette-mood-'+String(moodIndex+1).padStart(2,'0')+'.png')});
       }
+      // Seven distinct brush tools and the eighth eraser must work with both
+      // current photos and legacy SVGs; the eraser must never remove scenery.
+      await page.locator('[data-mood="疲倦"]').click();
+      await page.locator('[data-world-tab="brush"]').click();
+      const brushes=['pencil','ink','wash','crayon','pastel','marker','glow'];
+      const baseline=await stage.evaluate(c=>{
+        const pixel=c.getContext('2d').getImageData(
+          Math.floor(c.width*.36),Math.floor(c.height*.16),1,1).data;
+        return [...pixel];
+      });
+      await stage.scrollIntoViewIfNeeded();
+      const brushRect=await stage.boundingBox();
+      for(let k=0;k<brushes.length;k++){
+        await page.locator('[data-brush="'+brushes[k]+'"]').click();
+        const y=brushRect.y+brushRect.height*(.16+k*.09);
+        await page.mouse.move(brushRect.x+brushRect.width*.2,y);
+        await page.mouse.down();
+        await page.mouse.move(brushRect.x+brushRect.width*.52,y,{steps:9});
+        await page.mouse.up();
+      }
+      const exportCanvas=async()=>{
+        const [download]=await Promise.all([
+          page.waitForEvent('download'),page.locator('#worldExportEditable').click()
+        ]);
+        const state=JSON.parse(await fs.readFile(await download.path(),'utf8'));
+        return state.canvases.find(x=>x.mood==='疲倦');
+      };
+      const drawn=await exportCanvas();
+      assert.deepEqual(drawn.marks.map(x=>x.type),brushes,
+        'Seven brushes must create independently editable stroke types');
+      await page.locator('[data-brush="eraser"]').click();
+      const eraseY=brushRect.y+brushRect.height*.16;
+      await page.mouse.move(brushRect.x+brushRect.width*.36,eraseY);
+      await page.mouse.down();
+      await page.mouse.up();
+      const erased=await exportCanvas();
+      for(const brush of brushes.slice(1))
+        assert.ok(erased.marks.some(x=>x.type===brush),
+          'Erasing a pencil section must not delete the '+brush+' stroke');
+      const background=await stage.evaluate(c=>{
+        const pixel=c.getContext('2d').getImageData(
+          Math.floor(c.width*.36),Math.floor(c.height*.16),1,1).data;
+        return [...pixel];
+      });
+      assert.deepEqual(background,baseline,
+        'Erasing paint must reveal the original scene without altering the background');
     }
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
