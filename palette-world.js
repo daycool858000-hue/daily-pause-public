@@ -346,7 +346,8 @@
       // Use the exact same numbered paper images as the creation canvas.
       const sceneThumbnail=id=>{
         const src=landscapeArt[id];if(!src)return '';
-        return ' style="background-image:url('+src+');background-size:cover;background-position:center"';
+        const safeSrc=src.replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/'/g,'%27');
+        return ' style="background-image:url('+safeSrc+');background-size:cover;background-position:center"';
       };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
