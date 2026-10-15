@@ -194,13 +194,18 @@ const server=http.createServer(async(req,res)=>{
     if(scenario.engine===chromium){
       // Import restores canvas layers, not the currently open tool tab.
       await page.locator('[data-world-tab="scene"]').click();
+      const saveRawCanvas=async filename=>{
+        // Only canvas pixels: no floating toolbar, scene picker or page labels.
+        const base64=await stage.evaluate(c=>c.toDataURL('image/png').split(',')[1]);
+        await fs.writeFile(path.join(__dirname,'screenshots',filename),
+          Buffer.from(base64,'base64'));
+      };
       const sceneNames=['room','living','sea','rain','garden','night','island',
         'balcony','hill','lake','library','cloud','sunrise','blank'];
       for(const sceneName of sceneNames){
         await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
-        await stage.screenshot({path:path.join(__dirname,'screenshots',
-          'palette-scene-'+sceneName+'.png')});
+        await saveRawCanvas('palette-scene-'+sceneName+'.png');
       }
       // The cached bitmap must not accidentally reuse a previously selected
       // scene. Returning to an existing image must restore identical pixels.
@@ -225,8 +230,7 @@ const server=http.createServer(async(req,res)=>{
         if((await page.locator('[data-scene-default]').getAttribute('aria-pressed'))!=='true')
           await page.locator('[data-scene-default]').click();
         await page.waitForTimeout(180);
-        await stage.screenshot({path:path.join(__dirname,'screenshots',
-          'palette-mood-'+String(moodIndex+1).padStart(2,'0')+'.png')});
+        await saveRawCanvas('palette-mood-'+String(moodIndex+1).padStart(2,'0')+'.png');
       }
       // Seven distinct brush tools and the eighth eraser must work with both
       // current photos and legacy SVGs; the eraser must never remove scenery.
