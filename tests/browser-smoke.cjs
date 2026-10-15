@@ -214,6 +214,14 @@ const server=http.createServer(async(req,res)=>{
       // Seven distinct brush tools and the eighth eraser must work with both
       // current photos and legacy SVGs; the eraser must never remove scenery.
       await page.locator('[data-mood="疲倦"]').click();
+      // SVG data images load asynchronously, initially showing the scenery
+      // fallback. Wait until decoding finishes before sampling background RGB.
+      await page.evaluate(async()=>{
+        const image=new Image();
+        image.src=window.PauseMoodScenes.imageUrl('疲倦');
+        await image.decode();
+      });
+      await page.waitForTimeout(350);
       await page.locator('[data-world-tab="brush"]').click();
       const brushes=['pencil','ink','wash','crayon','pastel','marker','glow'];
       const baseline=await stage.evaluate(c=>{
