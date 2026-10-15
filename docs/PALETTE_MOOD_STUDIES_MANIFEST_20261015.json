@@ -1,0 +1,115 @@
+{
+  "build": "2026-10-15",
+  "pixel_size": [
+    1920,
+    1260
+  ],
+  "artist_note": "Photographic composites derived from in-repository original generated site artworks. Preview only; source-rights and visual approval pending.",
+  "scenes": [
+    {
+      "mood": "疲倦",
+      "file": "art-review/mood-scenes/palette-mood-fatigue-study-v1.webp",
+      "source_images": [
+        "palette-morning-bedroom-v1.webp",
+        "palette-rain-window-v1.webp"
+      ],
+      "notes": "Soft bedroom from different framing with a cool rainlight window",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "悶住",
+      "file": "art-review/mood-scenes/palette-mood-stifled-study-v1.webp",
+      "source_images": [
+        "scene-11.webp"
+      ],
+      "notes": "Tight planted glasshouse with condensation; very distinct from room",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "混亂",
+      "file": "art-review/mood-scenes/palette-mood-confusion-study-v1.webp",
+      "source_images": [
+        "scene-10.webp",
+        "scene-01.webp"
+      ],
+      "notes": "Mountainous winding route in two depths with mist",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "煩躁",
+      "file": "art-review/mood-scenes/palette-mood-irritation-study-v1.webp",
+      "source_images": [
+        "palette-balcony-v1.webp",
+        "scene-12.webp"
+      ],
+      "notes": "Balcony golden hour with distinct seaside city in distant opening",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "害怕",
+      "file": "art-review/mood-scenes/palette-mood-fear-study-v1.webp",
+      "source_images": [
+        "palette-morning-bedroom-v1.webp",
+        "scene-07.webp"
+      ],
+      "notes": "Same kind of shelter but a unique night composition; no horror content",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "好奇",
+      "file": "art-review/mood-scenes/palette-mood-curiosity-study-v1.webp",
+      "source_images": [
+        "scene-05.webp"
+      ],
+      "notes": "Distinct woodland stream with fox, unambiguously nature",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "安心",
+      "file": "art-review/mood-scenes/palette-mood-reassurance-study-v1.webp",
+      "source_images": [
+        "palette-quiet-study-v1.webp",
+        "scene-08.webp"
+      ],
+      "notes": "Wooden bookshelves, warm interior light, outside a calm courtyard",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "溫柔",
+      "file": "art-review/mood-scenes/palette-mood-tenderness-study-v1.webp",
+      "source_images": [
+        "scene-09.webp"
+      ],
+      "notes": "Close butterfly on yellow flower with soft background",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "想重新開始",
+      "file": "art-review/mood-scenes/palette-mood-renewal-study-v1.webp",
+      "source_images": [
+        "scene-08.webp"
+      ],
+      "notes": "Fresh morning in a moss garden with water and stone paths",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "需要勇氣",
+      "file": "art-review/mood-scenes/palette-mood-courage-study-v1.webp",
+      "source_images": [
+        "scene-10.webp"
+      ],
+      "notes": "Alpine ridge and lake framed by forests, sense of scale",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    },
+    {
+      "mood": "想暖一點",
+      "file": "art-review/mood-scenes/palette-mood-warmth-study-v1.webp",
+      "source_images": [
+        "palette-warm-living-room-v1.webp",
+        "scene-12.webp"
+      ],
+      "notes": "Warm living corner with golden light and distinct bright window view",
+      "status": "original-site-art-derived-study; not standalone generated photograph"
+    }
+  ]
+}
