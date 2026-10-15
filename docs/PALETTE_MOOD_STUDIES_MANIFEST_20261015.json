@@ -10,9 +10,9 @@
       "mood": "疲倦",
       "file": "art-review/mood-scenes/palette-mood-fatigue-study-v1.webp",
       "source_images": [
-        "palette-morning-bedroom-v1.webp",
-        "palette-rain-window-v1.webp"
+        "palette-morning-bedroom-v1.webp"
       ],
+      "sha256": "86d3a9e27d04449da84dfab83b2a8037aed528bb34b668e2e6ab7b406fd74384",
       "notes": "Soft bedroom from different framing with a cool rainlight window",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -22,6 +22,7 @@
       "source_images": [
         "scene-11.webp"
       ],
+      "sha256": "3f1b62ff2f90c3424d8c9119071588cfca022c9206c8a2e2aa500b2f7bf44378",
       "notes": "Tight planted glasshouse with condensation; very distinct from room",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -32,6 +33,7 @@
         "scene-10.webp",
         "scene-01.webp"
       ],
+      "sha256": "b4d34b9e231cdf0161795574d5c9472c0ecb552eac1b1d8f3924311520badf4d",
       "notes": "Mountainous winding route in two depths with mist",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -39,9 +41,9 @@
       "mood": "煩躁",
       "file": "art-review/mood-scenes/palette-mood-irritation-study-v1.webp",
       "source_images": [
-        "palette-balcony-v1.webp",
-        "scene-12.webp"
+        "palette-balcony-v1.webp"
       ],
+      "sha256": "e0618fb82425bba29ba78ed0950d70349da8617596bdf41b38cf317bc879616a",
       "notes": "Balcony golden hour with distinct seaside city in distant opening",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -49,9 +51,9 @@
       "mood": "害怕",
       "file": "art-review/mood-scenes/palette-mood-fear-study-v1.webp",
       "source_images": [
-        "palette-morning-bedroom-v1.webp",
-        "scene-07.webp"
+        "palette-morning-bedroom-v1.webp"
       ],
+      "sha256": "45f971f38cd639ba265c84989f06d2ce8b1bf18a00da598000e52020c82b1017",
       "notes": "Same kind of shelter but a unique night composition; no horror content",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -61,6 +63,7 @@
       "source_images": [
         "scene-05.webp"
       ],
+      "sha256": "ff00263bc1964b969f0db0e3eed7ead60f5f4e35185ca77115264044d33451c1",
       "notes": "Distinct woodland stream with fox, unambiguously nature",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -68,9 +71,9 @@
       "mood": "安心",
       "file": "art-review/mood-scenes/palette-mood-reassurance-study-v1.webp",
       "source_images": [
-        "palette-quiet-study-v1.webp",
-        "scene-08.webp"
+        "palette-quiet-study-v1.webp"
       ],
+      "sha256": "62ba5943cd382fba652d86b2d5a3ac50c8004d28c2ae72722a8944396be8762e",
       "notes": "Wooden bookshelves, warm interior light, outside a calm courtyard",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -80,6 +83,7 @@
       "source_images": [
         "scene-09.webp"
       ],
+      "sha256": "385afa07be2315c4c5473e82d77feb2618ab2452500574f9217ed6d5021bbdb2",
       "notes": "Close butterfly on yellow flower with soft background",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -89,6 +93,7 @@
       "source_images": [
         "scene-08.webp"
       ],
+      "sha256": "269b41508243fe9638ed9d3758ac1e411300789b6d76ba5b203cda80e232c73f",
       "notes": "Fresh morning in a moss garden with water and stone paths",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -98,6 +103,7 @@
       "source_images": [
         "scene-10.webp"
       ],
+      "sha256": "29f22211365659453a7de32f304dbeb1c55a7c3bfed9e6cc9de7357ddb708ae1",
       "notes": "Alpine ridge and lake framed by forests, sense of scale",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     },
@@ -105,9 +111,9 @@
       "mood": "想暖一點",
       "file": "art-review/mood-scenes/palette-mood-warmth-study-v1.webp",
       "source_images": [
-        "palette-warm-living-room-v1.webp",
-        "scene-12.webp"
+        "palette-warm-living-room-v1.webp"
       ],
+      "sha256": "3197601e55594a9a4f7842047742362fda2e47beea501bffeb87ac735b696f5e",
       "notes": "Warm living corner with golden light and distinct bright window view",
       "status": "original-site-art-derived-study; not standalone generated photograph"
     }
