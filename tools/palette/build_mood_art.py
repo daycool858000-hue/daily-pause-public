@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageEnhance, ImageChops
 import math
 import random
 import json
+import hashlib
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'media' / 'generated'
@@ -132,14 +133,16 @@ def save(key,mood,im,inputs,notes):
     im=im.filter(ImageFilter.UnsharpMask(radius=1.25,percent=65,threshold=5))
     im.save(path,'WEBP',quality=91,method=6)
     scenes.append({'mood':mood,'file':str(path.relative_to(ROOT)),
-                   'source_images':[original[z] for z in inputs],'notes':notes,
+                   'source_images':[original[z] for z in inputs],
+                   'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+                   'notes':notes,
                    'status':'original-site-art-derived-study; not standalone generated photograph'})
 
 # 02 fatigue: soft lived-in room after rain, with changed outdoors in window.
 a=cover('room',1.15,.22,.45)
 a=rain_window(shade(a,.86,.74,blue=.55,warmth=.12),count=140)
 a=haze(a,(217,225,226),.13,.58,(.68,.26))
-save('fatigue','疲倦',atmos(a,tint=(216,227,222),strength=.055,grain=1.2,seed=2),['room','rain'],'Soft bedroom from different framing with a cool rainlight window')
+save('fatigue','疲倦',atmos(a,tint=(216,227,222),strength=.055,grain=1.2,seed=2),['room'],'Soft bedroom from different framing with a cool rainlight window')
 
 # 03 bottled-up: glasshouse vegetation, tight framing, diffused glass moisture.
 a=cover('11',1.25,.33,.34)
@@ -156,13 +159,13 @@ save('confusion','混亂',atmos(a,tint=(223,225,214),strength=.03,seed=4),['10',
 # 09 irritation: wide foreground balcony, wind against distant saturated evening coast.
 a=cover('balcony',1.27,.65,.47)
 a=shade(a,.92,.91,contrast=1.05,warmth=.22)
-save('irritation','煩躁',atmos(a,tint=(244,222,211),strength=.04,seed=9),['balcony','12'],'Balcony golden hour with distinct seaside city in distant opening')
+save('irritation','煩躁',atmos(a,tint=(244,222,211),strength=.04,seed=9),['balcony'],'Balcony golden hour with distinct seaside city in distant opening')
 
 # 10 fear: recognizable safe room and closed night view, not horror or threat.
 a=cover('room',1.23,.67,.4)
 a=shade(a,.72,.70,blue=.48)
 a=haze(a,(220,226,222),.09,.54,(.43,.54))
-save('fear','害怕',atmos(a,tint=(102,121,130),strength=.075,seed=10),['room','07'],'Same kind of shelter but a unique night composition; no horror content')
+save('fear','害怕',atmos(a,tint=(102,121,130),strength=.075,seed=10),['room'],'Same kind of shelter but a unique night composition; no horror content')
 
 # 16 curiosity: a fox resting near a living forest stream, clear subject & depth.
 a=cover('05',1.06,.5,.47)
@@ -172,7 +175,7 @@ save('curiosity','好奇',atmos(a,tint=(231,225,197),strength=.018,grain=.85,see
 # 17 reassurance: quiet study with peaceful garden visible through window.
 a=cover('study',1.18,.55,.38)
 a=shade(a,1.01,.87,warmth=.36)
-save('reassurance','安心',atmos(a,tint=(249,235,206),strength=.05,seed=17),['study','08'],'Wooden bookshelves, warm interior light, outside a calm courtyard')
+save('reassurance','安心',atmos(a,tint=(249,235,206),strength=.05,seed=17),['study'],'Wooden bookshelves, warm interior light, outside a calm courtyard')
 
 # 18 tenderness: macro butterfly and soft wildflower bokeh; no GUI.
 a=cover('09',1.08,.39,.5)
@@ -195,7 +198,7 @@ save('courage','需要勇氣',atmos(a,tint=(237,220,197),strength=.033,seed=22),
 a=cover('living',1.24,.18,.45)
 a=shade(a,1.07,.95,contrast=1.04,warmth=.65)
 a=haze(a,(255,214,164),.12,.52,(.3,.38))
-save('warmth','想暖一點',atmos(a,tint=(255,225,191),strength=.036,seed=24),['living','12'],'Warm living corner with golden light and distinct bright window view')
+save('warmth','想暖一點',atmos(a,tint=(255,225,191),strength=.036,seed=24),['living'],'Warm living corner with golden light and distinct bright window view')
 
 with (OUTPUT/'source-manifest.json').open('w',encoding='utf8') as f:
     json.dump({'build':'2026-10-15','pixel_size':list(SIZE),
