@@ -140,7 +140,7 @@ test('natural shape marks move subtly, freeze when paused, and preserve mark inp
     return JSON.stringify(calls);
   }
   const animated=['tree','wave','leaf','cloud','petal','flower','star','rain','ripples',
-    'moon','sun','grass','bird','steam','butterfly','fish','shell','lantern',
+    'moon','sun','grass','bird','steam','butterfly','fish','shell','pebble','lantern',
     'dandelion','firefly','paper'];
   for(const type of animated){
     assert.notEqual(trace(type,0),trace(type,2600),type+' lacks visible animated drawing');
