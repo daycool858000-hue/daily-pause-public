@@ -1,0 +1,66 @@
+[
+  {
+    "id": "forest",
+    "path": "media/palette-scenes/forest.webp",
+    "sha256": "015e244077bfe260efdca32557d130e2b7925dddbb13b4a83c4e3ccdfc2dee77",
+    "size": 14428,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "ocean",
+    "path": "media/palette-scenes/ocean.webp",
+    "sha256": "e503c49ce7b34eb2d3c18c9f2bc0719eaf7a8c876bdd3c3d15dde1a1f25bca90",
+    "size": 10016,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "room",
+    "path": "media/palette-scenes/room.webp",
+    "sha256": "3969d685836385dfe708fa20b05154513b8e924984836f3201271f71ab973d2e",
+    "size": 9642,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "living",
+    "path": "media/palette-scenes/living.webp",
+    "sha256": "2e99aab4bb3dd44ca32a67d04c0805a87fe6c5cba377f13b7cce25c0b864a541",
+    "size": 10458,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "cafe",
+    "path": "media/palette-scenes/cafe.webp",
+    "sha256": "04b730d7dfe16ed2a1a6ae7aa925e1c9b676944bdbbf81c5c86497c005bc27ad",
+    "size": 11666,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "park",
+    "path": "media/palette-scenes/park.webp",
+    "sha256": "b430c9457569af4c19fc7e966c91b8918afc2f4ced62cbe78bbd1b7ebe40e9ce",
+    "size": 15366,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "street",
+    "path": "media/palette-scenes/street.webp",
+    "sha256": "ff4a4c22636fe09cad0e8543db7f588ecd1024de09c72d606971a698e9ec8e6b",
+    "size": 14124,
+    "width": 960,
+    "height": 630
+  },
+  {
+    "id": "mountain",
+    "path": "media/palette-scenes/mountain.webp",
+    "sha256": "3f2024623dd21170b72d211b0eef47614a0bbadd7513d4cb60efab82d9932e5d",
+    "size": 11734,
+    "width": 960,
+    "height": 630
+  }
+]
