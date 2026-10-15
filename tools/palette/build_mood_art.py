@@ -137,8 +137,8 @@ def save(key,mood,im,inputs,notes):
 
 # 02 fatigue: soft lived-in room after rain, with changed outdoors in window.
 a=cover('room',1.15,.22,.45)
-a=window_replace(a,cover('rain',1.16,.6,.25), (1170,30,1830,565),blend=.38)
-a=rain_window(shade(a,.77,.68,blue=.8,warmth=.2),count=170)
+a=rain_window(shade(a,.86,.74,blue=.55,warmth=.12),count=140)
+a=haze(a,(217,225,226),.13,.58,(.68,.26))
 save('fatigue','疲倦',atmos(a,tint=(216,227,222),strength=.055,grain=1.2,seed=2),['room','rain'],'Soft bedroom from different framing with a cool rainlight window')
 
 # 03 bottled-up: glasshouse vegetation, tight framing, diffused glass moisture.
@@ -155,14 +155,12 @@ save('confusion','混亂',atmos(a,tint=(223,225,214),strength=.03,seed=4),['10',
 
 # 09 irritation: wide foreground balcony, wind against distant saturated evening coast.
 a=cover('balcony',1.27,.65,.47)
-a=window_replace(a,cover('12',1.25,.58,.2),(1135,105,1870,675),blend=.24)
-a=shade(a,.93,.9,contrast=1.05,warmth=.28)
+a=shade(a,.92,.91,contrast=1.05,warmth=.22)
 save('irritation','煩躁',atmos(a,tint=(244,222,211),strength=.04,seed=9),['balcony','12'],'Balcony golden hour with distinct seaside city in distant opening')
 
 # 10 fear: recognizable safe room and closed night view, not horror or threat.
 a=cover('room',1.23,.67,.4)
-a=window_replace(a,cover('07',1.22,.56,.38),(1200,35,1870,600),blend=.77)
-a=shade(a,.55,.64,blue=.55)
+a=shade(a,.72,.70,blue=.48)
 a=haze(a,(220,226,222),.09,.54,(.43,.54))
 save('fear','害怕',atmos(a,tint=(102,121,130),strength=.075,seed=10),['room','07'],'Same kind of shelter but a unique night composition; no horror content')
 
@@ -173,8 +171,7 @@ save('curiosity','好奇',atmos(a,tint=(231,225,197),strength=.018,grain=.85,see
 
 # 17 reassurance: quiet study with peaceful garden visible through window.
 a=cover('study',1.18,.55,.38)
-a=window_replace(a,cover('08',1.09,.47,.24),(1310,95,1840,650),blend=.37)
-a=shade(a,.93,.87,warmth=.31)
+a=shade(a,1.01,.87,warmth=.36)
 save('reassurance','安心',atmos(a,tint=(249,235,206),strength=.05,seed=17),['study','08'],'Wooden bookshelves, warm interior light, outside a calm courtyard')
 
 # 18 tenderness: macro butterfly and soft wildflower bokeh; no GUI.
@@ -183,10 +180,10 @@ a=haze(shade(a,.99,.87,warmth=.12), (245,235,215), .13, .48, (.63,.35))
 save('tenderness','溫柔',atmos(a,tint=(250,227,211),strength=.05,seed=18),['09'],'Close butterfly on yellow flower with soft background')
 
 # 19 begin again: greenhouse with clear opening and young green plants, fresh rays.
-a=cover('11',1.02,.47,.34)
-a=shade(a,1.08,.85,warmth=.22)
+a=cover('08',1.13,.27,.45)
+a=shade(a,1.10,.90,warmth=.22)
 a=haze(a,(255,241,196),.23,.54,(.48,.16))
-save('renewal','想重新開始',atmos(a,tint=(255,238,204),strength=.022,seed=19),['11'],'New growth, airy greenhouse and soft first light')
+save('renewal','想重新開始',atmos(a,tint=(255,238,204),strength=.022,seed=19),['08'],'Fresh morning in a moss garden with water and stone paths')
 
 # 22 courage: strong mountain ridgeline with small pines, natural landscape.
 a=cover('10',1.14,.5,.45)
@@ -196,8 +193,7 @@ save('courage','需要勇氣',atmos(a,tint=(237,220,197),strength=.033,seed=22),
 
 # 24 warmth: distinct tighter indoor frame and Mediterranean sun beyond window.
 a=cover('living',1.24,.18,.45)
-a=window_replace(a,cover('12',1.24,.55,.33),(1260,35,1875,610),blend=.48)
-a=shade(a,1.03,.92,contrast=1.04,warmth=.65)
+a=shade(a,1.07,.95,contrast=1.04,warmth=.65)
 a=haze(a,(255,214,164),.12,.52,(.3,.38))
 save('warmth','想暖一點',atmos(a,tint=(255,225,191),strength=.036,seed=24),['living','12'],'Warm living corner with golden light and distinct bright window view')
 
