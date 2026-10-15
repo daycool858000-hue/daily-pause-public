@@ -223,5 +223,27 @@ function svg(id){
 }
 const cache=new Map();
 function imageUrl(id){if(!cache.has(id)){const art=svg(id);if(!art)return '';cache.set(id,'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(art));}return cache.get(id);}
-window.PausePlaceScenes=Object.freeze({items,svg,imageUrl});
+// Tiny distinct hints for the picker: no expensive full-scene watercolor filters in eight DOM thumbnails.
+const thumbs={
+forest:['#d7e4db','#698c77','<path d="M0 85Q65 45 120 80T240 65V126H0Z" fill="#6e977f"/><g fill="#436f61"><ellipse cx="25" cy="42" rx="39" ry="42"/><ellipse cx="216" cy="32" rx="46" ry="45"/></g>'],
+mountain:['#e7ece3','#88a7a1','<path d="M0 92L58 32L91 75L145 14L206 87L240 59V126H0Z" fill="#89a59d"/><path d="M0 106Q80 90 150 105T240 95V126H0Z" fill="#aac9c3"/>'],
+ocean:['#dfebec','#78b2b9','<rect y="62" width="240" height="64" fill="#83b4c0"/><path d="M0 103Q70 89 141 105T240 91V126H0Z" fill="#f0d8b6"/><path d="M0 103Q76 92 141 106T240 92" fill="none" stroke="#fff8e9" stroke-width="6"/>'],
+room:['#f1e5d5','#bca78f','<rect y="90" width="240" height="36" fill="#baa088"/><rect x="25" y="17" width="96" height="72" fill="#b0c8bb" stroke="#fff4df" stroke-width="8"/><rect x="132" y="77" width="96" height="30" rx="9" fill="#e8d5ba"/>'],
+living:['#efe4d5','#b69f8b','<rect x="18" y="15" width="86" height="63" fill="#bfd4c5" stroke="#fff2dc" stroke-width="7"/><rect x="99" y="65" width="128" height="42" rx="12" fill="#99afa2"/><rect y="109" width="240" height="17" fill="#b69b82"/>'],
+cafe:['#e9d4bb','#9b816a','<rect x="13" y="12" width="92" height="90" fill="#bcd4c9" stroke="#efe1c8" stroke-width="7"/><rect x="111" y="74" width="115" height="12" fill="#9b7757"/><rect x="134" y="46" width="37" height="30" fill="#f5e2ce"/><ellipse cx="164" cy="22" rx="29" ry="15" fill="#dcc6a4"/>'],
+park:['#dce8d8','#87a48d','<path d="M0 87Q98 35 240 79V126H0Z" fill="#95b69a"/><ellipse cx="66" cy="38" rx="68" ry="50" fill="#6f937c"/><rect x="156" y="80" width="53" height="10" rx="3" fill="#9b8166"/><rect x="165" y="91" width="7" height="23" fill="#9b8166"/>'],
+street:['#e6d4c9','#a4a2a4','<path d="M0 114V21L73 8V126H0Z" fill="#ad8b80"/><path d="M170 0L240 22V126H171Z" fill="#9f9690"/><path d="M0 126L99 70L131 70L240 126Z" fill="#a2a4ab"/><path d="M115 118L128 84L138 118" stroke="#f3c897" stroke-width="4" fill="none"/>']
+};
+const thumbsCache=new Map();
+function thumbnailUrl(id){
+ if(thumbsCache.has(id))return thumbsCache.get(id);
+ const info=thumbs[id];if(!info)return '';
+ const art='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 126" width="240" height="126">'+
+ '<defs><linearGradient id="t" x2="0" y2="1"><stop stop-color="'+info[0]+'"/><stop offset="1" stop-color="'+info[1]+'"/></linearGradient></defs>'+
+ '<rect width="240" height="126" fill="url(#t)"/>'+info[2]+
+ '<rect width="240" height="126" fill="#fff5e7" opacity=".16"/></svg>';
+ const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(art);
+ thumbsCache.set(id,url);return url;
+}
+window.PausePlaceScenes=Object.freeze({items,svg,imageUrl,thumbnailUrl});
 })();
