@@ -88,7 +88,7 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-world-tab="scene"]').click();
     await page.locator('[data-scene="ocean"]').click();
     // Reproduce the user's repeated-scene-switch complaint on desktop and mobile.
-    for(const place of ['forest','cafe','park','street','room','living','ocean']){
+    for(const place of ['forest','cafe','park','street','room','living','mountain','ocean']){
       await page.locator('[data-scene="'+place+'"]').click({timeout:10000});
     }
     assert.equal(await page.locator('[data-scene="ocean"]').getAttribute('aria-pressed'),'true',
@@ -208,8 +208,8 @@ const server=http.createServer(async(req,res)=>{
         await fs.writeFile(path.join(__dirname,'screenshots',filename),
           Buffer.from(base64,'base64'));
       };
-      const sceneNames=['forest','ocean','room','living','cafe','park','street'];
-      assert.equal(await page.locator('#worldScenes [data-scene]').count(),7);
+      const sceneNames=['forest','ocean','room','living','cafe','park','street','mountain'];
+      assert.equal(await page.locator('#worldScenes [data-scene]').count(),8);
       for(const sceneName of sceneNames){
         await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
