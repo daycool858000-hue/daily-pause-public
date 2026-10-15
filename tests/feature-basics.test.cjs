@@ -54,9 +54,11 @@ test('all photograph-backed emotions have distinct existing local assets',()=>{
  const win={};load('mood-scenery.js',{window:win});
  const art=win.PauseMoodScenes.realisticMoodScenes;
  const urls=Object.values(art);
- assert.ok(urls.length>=11,'Existing photo-backed emotions unexpectedly lost');
+ assert.ok(urls.length>=13,'Expected at least thirteen distinct photo-backed moods');
  assert.equal(new Set(urls).size,urls.length,
    'Different emotions must not silently reuse the same photograph');
+ assert.equal(art['心裡很滿'],'./media/generated/scene-04.webp');
+ assert.equal(art['想慢一點'],'./media/generated/scene-06.webp');
  for(const url of urls){
    assert.match(url,/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/);
    assert.ok(fs.existsSync(path.join(root,url.slice(2))),url+' missing');
