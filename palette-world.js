@@ -649,29 +649,68 @@
       const file=e.target.files?.[0];if(file)importEditable(file);
       e.target.value='';
     });
-    const downloadWorld=()=>{
-      // Export at a stable, detailed 2x canvas size on both phones and desktops.
-      // Restore the interactive canvas's exact pixel dimensions immediately;
-      // changing backing resolution does not modify strokes or saved workspaces.
-      const originalSelection=model.selected;
-      const originalWidth=canvas.width,originalHeight=canvas.height;
-      model.selected=null;
+    // Resolve the chosen mood or free-scenery bitmap before capture.
+    // Slow mobile image decoding must never silently export the SVG preview.
+    function awaitBackdropReady(){
+      if(model.scene==='blank')return Promise.resolve(true);
+      if(model.customScene)drawLandscape(model.scene,0);
+      const state=model.customScene?landscapeCache.get(model.scene):moodImageState(model.mood);
+      if(!state||state.ready||state.failed||state.error)return Promise.resolve(true);
+      const image=state.image||state.img;
+      if(!image)return Promise.resolve(true);
+      return new Promise(resolve=>{
+        let settled=false;
+        let timer;
+        const finish=ok=>{
+          if(settled)return;
+          settled=true;clearTimeout(timer);
+          image.removeEventListener('load',check);
+          image.removeEventListener('error',check);
+          resolve(ok);
+        };
+        const check=()=>{
+          // Loading an original image or SVG after a failed restoration may
+          // require a second event. Do not resolve on that first error event.
+          if(state.ready||state.failed||state.error)finish(true);
+        };
+        image.addEventListener('load',check);
+        image.addEventListener('error',check);
+        timer=setTimeout(()=>finish(false),12000);
+        check();
+      });
+    }
+    let exportingWorld=false;
+    const downloadWorld=async()=>{
+      if(exportingWorld)return;
+      exportingWorld=true;
+      const expectedMood=model.mood,expectedScene=model.scene,expectedCustom=model.customScene;
       try{
-        const captureTime=lastMoment||performance.now();
-        canvas.width=W*2;
-        canvas.height=H*2;
-        renderingExport=true;
-        paint(captureTime,false,true);
-        const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
-        a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
+        if(!await awaitBackdropReady()){
+          stampMessage('景觀圖片尚未載入完成，請稍後再儲存。');
+          return;
+        }
+        // A different mood may be selected while a slow bitmap loads.
+        if(expectedMood!==model.mood||expectedScene!==model.scene||expectedCustom!==model.customScene)return;
+        const originalSelection=model.selected;
+        const originalWidth=canvas.width,originalHeight=canvas.height;
+        model.selected=null;
+        try{
+          const captureTime=lastMoment||performance.now();
+          canvas.width=W*2;
+          canvas.height=H*2;
+          renderingExport=true;
+          paint(captureTime,false,true);
+          const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
+          a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
+        }finally{
+          renderingExport=false;
+          canvas.width=originalWidth;
+          canvas.height=originalHeight;
+          model.selected=originalSelection;
+          paint(lastMoment||performance.now());
+        }
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
-      finally{
-        renderingExport=false;
-        canvas.width=originalWidth;
-        canvas.height=originalHeight;
-        model.selected=originalSelection;
-        paint(lastMoment||performance.now());
-      }
+      finally{exportingWorld=false;}
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
