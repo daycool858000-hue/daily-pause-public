@@ -40,7 +40,7 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
    assert.ok(markup.length>1800,name+' is missing meaningful environment layers');
    const url=scenes.imageUrl(name);
    assert.ok(url.startsWith('data:image/svg+xml;charset=utf-8,')||
-      /^\.\/media\/generated\/scene-\d{2}\.webp$/.test(url),
+      /^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/.test(url),
       name+' must use an authored SVG or a bundled generated WebP scene');
    if(url.startsWith('./')){
      assert.ok(fs.existsSync(path.join(root,url.slice(2))),name+' scene file missing: '+url);
