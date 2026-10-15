@@ -153,6 +153,8 @@ const server=http.createServer(async(req,res)=>{
     // Actual branch-rendered scene screenshots are the visual review source.
     // Unlike concept art, these contain exactly what the draft canvas displays.
     if(scenario.engine===chromium){
+      // Import restores canvas layers, not the currently open tool tab.
+      await page.locator('[data-world-tab="scene"]').click();
       const sceneNames=['room','living','sea','rain','garden','night','island',
         'balcony','hill','lake','library','cloud','sunrise','blank'];
       for(const sceneName of sceneNames){
