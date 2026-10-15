@@ -24,7 +24,18 @@ function svg(id){
  const inner=art[id];
  const indoor=['room','living','cafe'].includes(id);
  const horizon=indoor?'#efe7d8':'#c7ded7';
- return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630" width="960" height="630"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="'+(indoor?'#efe3d4':'#a9d0d5')+'"/><stop offset="1" stop-color="'+horizon+'"/></linearGradient><radialGradient id="light"><stop stop-color="#fff7d9" stop-opacity=".35"/><stop offset="1" stop-color="#fff7d9" stop-opacity="0"/></radialGradient></defs><rect width="960" height="630" fill="url(#sky)"/>'+inner+'<ellipse cx="730" cy="185" rx="400" ry="320" fill="url(#light)"/></svg>';
+ // Atmospheric veil and softened edge contrast: the landscape stays behind visitors' drawings.
+ // These remain lightweight original prototypes, not photographs or falsely claimed real locations.
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 630" width="960" height="630"><defs>'+
+ '<linearGradient id="sky" x2="0" y2="1"><stop stop-color="'+(indoor?'#efe3d4':'#a9d0d5')+'"/><stop offset="1" stop-color="'+horizon+'"/></linearGradient>'+
+ '<radialGradient id="light"><stop stop-color="#fff6df" stop-opacity=".52"/><stop offset="1" stop-color="#fff6df" stop-opacity="0"/></radialGradient>'+
+ '<linearGradient id="veil" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#f9f1e3" stop-opacity=".28"/><stop offset=".54" stop-color="#f3f1ea" stop-opacity=".17"/><stop offset="1" stop-color="#dce5df" stop-opacity=".18"/></linearGradient>'+
+ '<radialGradient id="depth"><stop offset=".3" stop-color="#fffaf0" stop-opacity="0"/><stop offset="1" stop-color="#f8f1e8" stop-opacity=".31"/></radialGradient>'+
+ '<filter id="soft"><feGaussianBlur stdDeviation="1.8"/></filter></defs>'+
+ '<rect width="960" height="630" fill="url(#sky)"/><g filter="url(#soft)">'+inner+'</g>'+
+ '<rect width="960" height="630" fill="url(#veil)"/>'+
+ '<ellipse cx="700" cy="178" rx="450" ry="360" fill="url(#light)"/>'+
+ '<rect width="960" height="630" fill="url(#depth)"/></svg>';
 }
 const urlCache=new Map();
 function imageUrl(id){if(!urlCache.has(id)){const art=svg(id);if(!art)return '';urlCache.set(id,'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(art));}return urlCache.get(id)}
