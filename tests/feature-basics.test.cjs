@@ -10,7 +10,7 @@ const loaded={};
 const load=(name,context)=>vm.runInNewContext(read(name),context,{filename:name,timeout:5000});
 // Artistic proof requires human review. This regexp only verifies that the
 // app references real bundled files, including the image studies and 2x crops.
-const bundledArtwork=/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2)|palette-mood-[a-z-]+-(?:study-v1|independent-v2))\.webp$/;
+const bundledArtwork=/^\\.\\/media\\/palette-paper\\/\\d{2}\\.webp$/;
 
 test('new modules parse and site branding stays unchanged',()=>{
  for(const name of ['mood-scenery.js','mood-atmospheres.js','palette-world.js',
@@ -53,66 +53,36 @@ test('24 independent authored backgrounds correspond to 24 dynamic effects',()=>
 });
 
 
-test('all photograph-backed emotions have distinct existing local assets',()=>{
- const win={};load('mood-scenery.js',{window:win});
- const art=win.PauseMoodScenes.realisticMoodScenes;
- const urls=Object.values(art);
- assert.equal(urls.length,24,'Each of the 24 emotions needs its own mapped image');
- assert.equal(new Set(urls).size,urls.length,
-   'Different emotions must not silently reuse the same photograph');
- assert.equal(art['心裡很滿'],'./media/generated/scene-04.webp');
- assert.equal(art['想慢一點'],'./media/generated/scene-06.webp');
- for(const url of urls){
-   assert.match(url,bundledArtwork);
-   assert.ok(fs.existsSync(path.join(root,url.slice(2))),url+' missing');
- }
+test('24 different numbered paper artworks, never legacy photography',()=>{
+  const win={};load('mood-scenery.js',{window:win});
+  const art=win.PauseMoodScenes.realisticMoodScenes;
+  const names=win.PauseMoodScenes.entries.map(x=>x[0]);
+  const urls=Object.values(art);
+  assert.equal(urls.length,24);
+  assert.equal(new Set(urls).size,24);
+  names.forEach((name,i)=>{
+    const expected='./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp';
+    assert.equal(win.PauseMoodScenes.imageUrl(name),expected);
+    assert.ok(fs.existsSync(path.join(root,expected.slice(2))),expected+' missing');
+    assert.ok(!expected.includes('generated/'),'Old scenery must stay retired');
+  });
+  const manifest=JSON.parse(read('media/palette-paper/manifest.json'));
+  assert.equal(manifest.length,24);
+  assert.equal(new Set(manifest.map(item=>item.sha256)).size,24);
+  for(const item of manifest){
+    assert.match(item.path,/^media\\/palette-paper\\/\\d{2}\\.webp$/);
+    const sum=require('node:crypto').createHash('sha256').update(
+      fs.readFileSync(path.join(root,item.path))).digest('hex');
+    assert.equal(sum,item.sha256);
+  }
+  const palette=read('palette-world.js');
+  assert.ok(!palette.includes('palette-morning-bedroom-sr-v2'));
+  assert.ok(!palette.includes("room:'./media/generated/"));
 });
-
-test('draft indoor scenes remain standalone and correctly match indoor labels',()=>{
- const win={};load('mood-scenery.js',{window:win});
- const mappings=[
-   ['安靜','palette-morning-bedroom-sr-v2.webp'],
-   ['想被陪著','palette-warm-living-room-sr-v2.webp'],
-   ['想哭','palette-rain-window-sr-v2.webp'],
-   ['想躲起來','palette-quiet-study-sr-v2.webp']
- ];
- const names=new Set();
- for(const [mood,file] of mappings){
-   const url=win.PauseMoodScenes.imageUrl(mood);
-   assert.equal(url,'./media/generated/'+file);
-   assert.ok(fs.existsSync(path.join(root,'media/generated',file)),mood+' background asset missing');
-   names.add(url);
- }
- assert.equal(names.size,4,'Indoor scenes must remain visually independent');
- const palette=read('palette-world.js');
- for(const [scene,file] of [
-   ['room','palette-morning-bedroom-sr-v2.webp'],
-   ['living','palette-warm-living-room-sr-v2.webp'],
-   ['rain','palette-rain-window-sr-v2.webp'],
-   ['library','palette-quiet-study-sr-v2.webp']]){
-   assert.ok(palette.includes(scene+':\'./media/generated/'+file+'\''));
- }
-});
-
-test('new mood art studies are traceable and never substitute missing files',()=>{
- const win={};
- load('mood-scenery.js',{window:win});
- const scenes=win.PauseMoodScenes;
- const manifest=JSON.parse(read('docs/PALETTE_MOOD_STUDIES_MANIFEST_20261015.json'));
- assert.equal(manifest.scenes.length,11);
- const trace=new Map(manifest.scenes.map(item=>[item.mood,item]));
- for(const name of ['安心','溫柔','想重新開始','好奇']){
-   const entry=trace.get(name);
-   assert.ok(entry,name+' is missing source provenance');
-   const filename=entry.file.split('/').at(-1);
-   assert.equal(scenes.imageUrl(name),'./media/generated/'+filename);
-   assert.ok(fs.existsSync(path.join(root,scenes.imageUrl(name))));
-   assert.ok(entry.sha256&&entry.sha256.length===64,name+' missing image checksum');
- }
- // Original, distinct outdoor photos remain linked to their own identities.
- for(const name of ['孤單','想念','想看海','想接近自然']){
-   assert.match(scenes.imageUrl(name),/^\.\/media\/generated\/scene-\d{2}\.webp$/);
- }
+test('old studies remain archived, but never used as new canvas backgrounds',()=>{
+  const report=JSON.parse(read('docs/PALETTE_MOOD_STUDIES_MANIFEST_20261015.json'));
+  assert.equal(report.scenes.length,11);
+  for(const image of report.scenes)assert.equal(typeof image.sha256,'string');
 });
 
 test('five worlds have correct geographic visual references',()=>{

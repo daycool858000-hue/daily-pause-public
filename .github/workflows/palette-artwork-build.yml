@@ -1,17 +1,6 @@
 name: Draft Emotion Palette Artwork Only
 on:
-  push:
-    branches:
-      - feature/companion-garden-palette-20261014
-    paths:
-      - 'mood-scenery.js'
-      - 'palette-world.js'
-      - 'tools/palette/build_mood_art.py'
-      - '.github/workflows/palette-artwork-build.yml'
-  pull_request:
-    paths:
-      - 'tools/palette/build_mood_art.py'
-      - '.github/workflows/palette-artwork-build.yml'
+  # Retire automatic legacy scenery generation; leave prior studies untouched.
   workflow_dispatch:
 permissions:
   contents: write

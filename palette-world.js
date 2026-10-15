@@ -17,13 +17,11 @@
     ['想接近自然','garden','把目光借給一棵樹。','♧','#88a18d'],['需要勇氣','hill','路很長，也有停下的地方。','△','#c0aa93'],
     ['想慢一點','lake','湖面有自己的速度。','〜','#9ebbb7'],['想暖一點','room','有一盞燈為你亮著。','☀','#d2a780']
   ];
-  const scenes=[
-    ['room','晨光房間','窗光、茶與植物'],['living','溫暖客廳','沙發、地毯、桌燈與綠植'],['sea','海邊','潮線與海風'],['rain','窗邊雨天','雨線與木桌'],
-    ['garden','小花園','草葉與細花'],['night','月光夜晚','夜色與微燈'],['island','慢慢的小島','海面與山影'],
-    ['balcony','黃昏陽台','藤椅與遠方'],['hill','霧中的山坡','山線與老樹'],
-    ['lake','湖邊','水面與山影'],['library','安靜書房','閱讀與溫熱茶氣'],
-    ['cloud','雲上','柔軟的空氣'],['sunrise','初醒時','窗與第一道光'],['blank','空白畫布','暖白紙張，自由創作']
-  ];
+  // Background numbers are purely visual choices; none assigns a prescribed emotion.
+  const scenes=Array.from({length:24},(_,i)=>{
+    const number=String(i+1).padStart(2,'0');
+    return ['paper-'+number,'畫布 '+number,'可以自由創作的紙質背景'];
+  });
   const elements=[
     ['tree','樹木','♧'],['wave','海浪','≈'],['cloud','雲','☁'],['leaf','葉片','♧'],
     ['flower','小花','✿'],['petal','飄落花瓣','❀'],['star','星光','✧'],['rain','細雨','☂'],
@@ -51,7 +49,7 @@
     const art=window.PauseWorldArt; if(!art)return;
     const W=art.W,H=art.H, motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
     let reduce=motionPreference.matches;
-    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null,customScene:false};
+    const model={mood:'安靜',scene:'paper-01',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null,customScene:false};
     const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
       'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
     let activeTab='brush',pointer=null,frames=null,lastMoment=0;
@@ -62,26 +60,11 @@
     ];
     const brushTypes=new Set(brushTools.map(x=>x[0]));
     const brushName=type=>brushTools.find(x=>x[0]===type)?.[1] || elements.find(x=>x[0]===type)?.[1] || type;
-    // Existing AI-generated images already published on this site. Only use where the
-    // geography is accurate; never show a mountain for a room or an ocean for a library.
-    // Dedicated artwork for all 24 emotions and all indoor scenes remains to be produced.
-    const landscapeArt={
-      // Reversible FSRCNN-x2 restored drafts, not separately regenerated new scenes.
-      room:'./media/generated/palette-morning-bedroom-sr-v2.webp',
-      living:'./media/generated/palette-warm-living-room-sr-v2.webp',
-      rain:'./media/generated/palette-rain-window-sr-v2.webp',
-      library:'./media/generated/palette-quiet-study-sr-v2.webp',
-      sea:'./media/generated/scene-02.webp',
-      // A planted stone-and-moss courtyard is a garden; scene-04 is open wildflowers.
-      garden:'./media/generated/scene-08.webp',
-      island:'./media/generated/palette-island-sr-v2.webp',
-      balcony:'./media/generated/palette-balcony-sr-v2.webp',
-      cloud:'./media/generated/palette-cloud-sr-v2.webp',
-      sunrise:'./media/generated/palette-sunrise-sr-v2.webp',
-      hill:'./media/generated/scene-01.webp',
-      lake:'./media/generated/scene-10.webp',
-      night:'./media/generated/scene-07.webp'
-    };
+    // The old landscape/image-restoration drafts are retired from all palette choices.
+    // All 24 choices below use the standalone paper WebP files, never article art.
+    const landscapeArt=Object.freeze(Object.fromEntries(
+      scenes.map(([id],i)=>[id,'./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp'])
+    ));
     // Reuse one scaled photograph surface across frames. Photos are otherwise
     // resampled at every animation tick on high-DPI iPhones, even while untouched.
     // Atmosphere and visitor-created layers are still rendered live on top.
@@ -95,7 +78,7 @@
       if(!image?.naturalWidth||!image?.naturalHeight)return false;
       const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
       const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
-      // Export directly from the original 1920×1260 landscape bitmap.
+      // PNG export renders the source 1548×1016 paper image into a 1920×1260 canvas.
       // Never magnify the cached 960px preview into the exported PNG.
       if(renderingExport){
         ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
@@ -103,7 +86,7 @@
       }
       if(photoCtx){
         // Keep the cached surface at the actual display resolution, capped
-        // at the 1920px source. Avoid a needless full-size texture on phones.
+        // at 2x display resolution. Avoid a needless full-size texture on phones.
         const resolution=Math.min(2,Math.max(1,canvas.width/W,canvas.height/H));
         const tw=Math.round(W*resolution),th=Math.round(H*resolution);
         if(photoSurface.width!==tw||photoSurface.height!==th){
@@ -128,35 +111,26 @@
       return true;
     }
     const landscapeCache=new Map();
+    function drawBlankPaper(){
+      ctx.fillStyle='#f8f5ee';ctx.fillRect(0,0,W,H);
+      ctx.save();ctx.globalAlpha=.13;ctx.fillStyle='#b7a997';
+      for(let j=0;j<90;j++)ctx.fillRect((j*139.7)%W,(j*187.1)%H,1.1,1.1);
+      ctx.restore();
+    }
     function drawLandscape(scene,t){
       const src=landscapeArt[scene];
-      if(!src){art.drawScene(ctx,scene,t);return;}
+      // A removed legacy scene never revives old landscape photography.
+      if(!src){drawBlankPaper();return;}
       let asset=landscapeCache.get(scene);
       if(!asset){
         const img=new Image();
         asset={img,ready:false,error:false};
         landscapeCache.set(scene,asset);
-        img.onload=()=>{asset.ready=true;if(model.scene===scene)paint(performance.now(),true)};
-        img.onerror=()=>{
-          // If the 2x restoration fails, use the ORIGINAL site-made crop
-          // before reverting to the existing procedural scene.
-          if(!asset.restorationFallbackTried&&src.endsWith('-sr-v2.webp')){
-            asset.restorationFallbackTried=true;
-            img.src=src.replace(/-sr-v2\.webp$/,'-v1.webp');
-            return;
-          }
-          asset.error=true;
-        };
+        img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
+        img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
         img.src=src;
       }
-      if(!asset.ready){art.drawScene(ctx,scene,t);return;}
-      if(!drawCoverPhoto(asset.img)){art.drawScene(ctx,scene,t);return;}
-      // Small animated light cues sit behind the visitor's marks.
-      const a=.04+(Math.sin(t*.00035)+1)*.015;
-      const fog=ctx.createLinearGradient(0,0,W,H);
-      fog.addColorStop(0,'rgba(249,236,221,'+a+')');
-      fog.addColorStop(1,'rgba(99,127,126,0)');
-      ctx.fillStyle=fog;ctx.fillRect(0,0,W,H);
+      if(!asset.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
     }
 
     const moodImageCache=new Map();
@@ -168,21 +142,8 @@
       const state={image,ready:false,failed:false};
       moodImageCache.set(name,state);
       image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
-      image.onerror=()=>{
-        // Prefer the original 960px matching composition if a 2x restoration
-        // cannot load; keep the per-emotion SVG as the final local fallback.
-        if(!state.restorationFallbackTried && src.endsWith('-sr-v2.webp')){
-          state.restorationFallbackTried=true;
-          image.src=src.replace(/-sr-v2\.webp$/,'-v1.webp');
-          return;
-        }
-        if(!state.svgFallbackTried && window.PauseMoodScenes?.svg){
-          state.svgFallbackTried=true;
-          const fallback=window.PauseMoodScenes.svg(name);
-          if(fallback){image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(fallback);return;}
-        }
-        state.failed=true;
-      };
+      // Missing paper art stays a plain canvas: never resurrect old scenery.
+      image.onerror=()=>{state.failed=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
       image.src=src;return state;
     }
     function drawMoodBackground(name,t){
@@ -222,7 +183,7 @@
       if(!entry)return;
       workspaces.set(model.mood,snapshot());
       const next=workspaces.get(name) || {
-        scene:entry[1],customScene:false,marks:[],props:[],color:entry[4],size:1
+        scene:'paper-01',customScene:false,marks:[],props:[],color:entry[4],size:1
       };
       Object.assign(model,{...next,mood:name,selected:null});
       if(!histories.has(name))histories.set(name,createHistory());
@@ -364,19 +325,15 @@
       paint(performance.now(),true);
     }
     function renderChoices(){
-      // Scene thumbnails preview the bundled scene itself, never an unrelated mood.
+      // Use the exact same numbered paper images as the creation canvas.
       const sceneThumbnail=id=>{
-        const src=landscapeArt[id];
-        if(typeof src!=='string'||!/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2))\.webp$/.test(src))return '';
-        // Keep thumbnails lightweight: the 960px source has the SAME layout
-        // as the 1920px full-frame restoration and loads much faster on phones.
-        const preview=src.replace(/-sr-v2\.webp$/,'-v1.webp');
-        return ' style="background-image:url('+preview+');background-size:cover;background-position:center"';
+        const src=landscapeArt[id];if(!src)return '';
+        return ' style="background-image:url('+src+');background-size:cover;background-position:center"';
       };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
       ).join('');
-      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>情緒預設景觀</strong><small>回到這種心情原本的畫面</small></button>'+
+      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>預設畫布</strong><small>回到這張情緒畫布原本的紙張背景</small></button>'+
         scenes.map(([id,name,description])=>
         '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"'+sceneThumbnail(id)+'></span><strong>'+name+'</strong><small>'+description+'</small></button>'
       ).join('');
@@ -521,7 +478,7 @@
         switchMood(name);
         stampMessage(moodFor()[2]);return;
       }
-      if(b.dataset.sceneDefault){change(()=>{model.scene=moodFor()[1];model.customScene=false;});return;}
+      if(b.dataset.sceneDefault){change(()=>{model.scene='paper-01';model.customScene=false;});return;}
       if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;model.customScene=true;});return;}
       if(b.dataset.element){selectTool(b.dataset.element);return;}
       if(b.dataset.brush){selectTool(b.dataset.brush);return;}
@@ -563,11 +520,14 @@
     const finite=(x,min,max)=>Number.isFinite(x)&&x>=min&&x<=max;
     const moodNames=new Set(moods.map(x=>x[0]));
     const sceneNames=new Set(scenes.map(x=>x[0]));
+    // Older editable JSON files remain readable; preserve strokes and objects.
+    const legacySceneNames=new Set(['room','living','sea','rain','garden','night','island',
+      'balcony','hill','lake','library','cloud','sunrise','blank']);
     const elementNames=new Set(elements.map(x=>x[0]));
     const propNames=new Set(props.map(x=>x[0]));
     const strokeNames=new Set(brushTools.filter(x=>x[0]!=='eraser').map(x=>x[0]));
     function cleanCanvas(raw){
-      if(!raw||typeof raw!=='object'||!sceneNames.has(raw.scene)||
+      if(!raw||typeof raw!=='object'||!(sceneNames.has(raw.scene)||legacySceneNames.has(raw.scene))||
         !Array.isArray(raw.marks)||raw.marks.length>500||
         !Array.isArray(raw.props)||raw.props.length>45||
         !validColor(raw.color)||!finite(raw.size,.5,2.4))throw Error('invalid canvas');
@@ -599,7 +559,9 @@
         return {id:p.id,type:p.type,x:p.x,y:p.y,scale:p.scale,angle:p.angle,z:p.z};
       });
       if(new Set(cleanProps.map(p=>p.id)).size!==cleanProps.length)throw Error('duplicate objects');
-      return {scene:raw.scene,customScene:typeof raw.customScene==='boolean'?raw.customScene:true,marks,props:cleanProps,color:raw.color,size:raw.size};
+      return {scene:sceneNames.has(raw.scene)?raw.scene:'paper-01',
+        customScene:sceneNames.has(raw.scene)&&raw.customScene===true,
+        marks,props:cleanProps,color:raw.color,size:raw.size};
     }
     function exportEditable(){
       try{
@@ -607,7 +569,7 @@
         all.set(model.mood,snapshot());
         const canvases=moods.map(([name])=>
           ({mood:name,...cleanCanvas(all.get(name)||{
-            scene:moods.find(x=>x[0]===name)[1],customScene:false,marks:[],props:[],
+            scene:'paper-01',customScene:false,marks:[],props:[],
             color:moods.find(x=>x[0]===name)[4],size:1
           })}));
         const doc={format:'today-pause-editable-palette',version:1,

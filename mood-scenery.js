@@ -161,43 +161,11 @@ function livingRoomSvg(){
 function livingRoomUrl(){
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(livingRoomSvg());
 }
-// Site-owned AI-generated scenes already in the repository. Assign at most
+// Paper-based canvas sources; historical scene sketches below remain only for backup compatibility.
 // one photograph per emotion: never swap labels onto the same photo.
-const realisticMoodScenes=Object.freeze({
-  // Original low-resolution conceptual art is preserved; these eight mappings
-  // select reversible FSRCNN-x2 restoration candidates, still awaiting art approval.
-  '安靜':'./media/generated/palette-morning-bedroom-sr-v2.webp',
-  '想被陪著':'./media/generated/palette-warm-living-room-sr-v2.webp',
-  '想哭':'./media/generated/palette-rain-window-sr-v2.webp',
-  '想躲起來':'./media/generated/palette-quiet-study-sr-v2.webp',
-  '放空':'./media/generated/palette-cloud-sr-v2.webp',
-  '心裡很滿':'./media/generated/scene-04.webp',
-  '想慢一點':'./media/generated/scene-06.webp',
-  '孤單':'./media/generated/scene-07.webp',
-  '想念':'./media/generated/scene-01.webp',
-  '希望':'./media/generated/palette-sunrise-sr-v2.webp',
-  '期待':'./media/generated/palette-balcony-sr-v2.webp',
-  // Distinct reviewed-at-source artwork *studies* derived from in-repo assets.
-  // These are draft photo-composites, NOT newly generated standalone originals.
-  '疲倦':'./media/generated/palette-mood-fatigue-study-v1.webp',
-  '悶住':'./media/generated/palette-mood-stifled-study-v1.webp',
-  '混亂':'./media/generated/palette-mood-confusion-study-v1.webp',
-  '煩躁':'./media/generated/palette-mood-irritation-study-v1.webp',
-  // CC0 photograph, independent image source: see art-review/mood-round3/curated-source-manifest.json.
-  '害怕':'./media/generated/palette-mood-fear-independent-v2.webp',
-  '好奇':'./media/generated/palette-mood-curiosity-study-v1.webp',
-  '安心':'./media/generated/palette-mood-reassurance-study-v1.webp',
-  '溫柔':'./media/generated/palette-mood-tenderness-study-v1.webp',
-  '想重新開始':'./media/generated/palette-mood-renewal-study-v1.webp',
-  '需要勇氣':'./media/generated/palette-mood-courage-independent-v2.webp',
-  '想暖一點':'./media/generated/palette-mood-warmth-study-v1.webp',
-  // Indoor moods stay on their matching room/library compositions until
-  // independently usable indoor image assets have been reviewed.
-  // Do not present garden photographs or flower close-ups as living rooms.
-  // '好奇' similarly awaits its fern-path scene rather than a greenhouse photo.
-  '想看海':'./media/generated/scene-02.webp',
-  '想接近自然':'./media/generated/scene-03.webp'
-});
+const realisticMoodScenes=Object.freeze(Object.fromEntries(
+  entries.map(([name],index)=>[name,'./media/palette-paper/'+String(index+1).padStart(2,'0')+'.webp'])
+));
 const cache=new Map();
 function imageUrl(name){
  if(realisticMoodScenes[name])return realisticMoodScenes[name];

@@ -69,22 +69,22 @@ const server=http.createServer(async(req,res)=>{
       image.onerror=()=>resolve(false);
       image.src=window.PauseMoodScenes.imageUrl('安靜');
     }));
-    assert.ok(rendered,'SVG mood illustration must load as a real image');
+    assert.ok(rendered,'New paper mood image must load as a real image');
     await fs.mkdir(path.join(__dirname,'screenshots'),{recursive:true});
     const screenshotId=scenario.name.toLowerCase().replace(/[^a-z]+/g,'-');
     await page.locator('#worldCanvas').screenshot({
       path:path.join(__dirname,'screenshots',screenshotId+'-mood-canvas.png')
     });
-    const living=await page.evaluate(()=>new Promise(resolve=>{
-      const image=new Image();
-      image.onload=()=>resolve({ok:image.naturalWidth===960,distinct:
-        window.PauseMoodScenes.livingRoomSvg()!==window.PauseMoodScenes.svg('安靜')});
-      image.onerror=()=>resolve({ok:false,distinct:false});
-      image.src=window.PauseMoodScenes.livingRoomUrl();
-    }));
-    assert.ok(living.ok&&living.distinct,'Living room must render separately from the bedroom');
+    const files=await page.evaluate(()=>Promise.all([1,2,24].map(i=>new Promise(resolve=>{
+      const img=new Image();
+      img.onload=()=>resolve(img.naturalWidth===1548&&img.naturalHeight===1016);
+      img.onerror=()=>resolve(false);
+      img.src='./media/palette-paper/'+String(i).padStart(2,'0')+'.webp';
+    }))));
+    assert.ok(files.every(Boolean),'Independent paper images must load at their native resolution');
+
     await page.locator('[data-world-tab="scene"]').click();
-    await page.locator('[data-scene="living"]').click();
+    await page.locator('[data-scene="paper-02"]').click();
     await page.locator('[data-mood="安靜"]').click();
     await page.locator('[data-mood="孤單"]').click();
     const png=await page.locator('#worldCanvas').evaluate(c=>c.toDataURL('image/png'));
@@ -129,7 +129,7 @@ const server=http.createServer(async(req,res)=>{
     await page.mouse.move(draw.x+Math.min(38,bounds.width*.1),draw.y+12,{steps:8});
     await page.mouse.up();
     await page.locator('[data-world-tab="scene"]').click();
-    await page.locator('[data-scene="sea"]').click();
+    await page.locator('[data-scene="paper-03"]').click();
     assert.equal(await page.locator('[data-scene="sea"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-scene-default]').click();
     assert.equal(await page.locator('[data-scene-default]').getAttribute('aria-pressed'),'true');
@@ -200,8 +200,7 @@ const server=http.createServer(async(req,res)=>{
         await fs.writeFile(path.join(__dirname,'screenshots',filename),
           Buffer.from(base64,'base64'));
       };
-      const sceneNames=['room','living','sea','rain','garden','night','island',
-        'balcony','hill','lake','library','cloud','sunrise','blank'];
+      const sceneNames=Array.from({length:24},(_,i)=>'paper-'+String(i+1).padStart(2,'0'));
       for(const sceneName of sceneNames){
         await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
@@ -214,8 +213,8 @@ const server=http.createServer(async(req,res)=>{
         await page.waitForTimeout(350);
         return stage.evaluate(canvas=>canvas.toDataURL('image/png'));
       }
-      const roomFirst=await selectedScenePixels('room');
-      const seaPixels=await selectedScenePixels('sea');
+      const roomFirst=await selectedScenePixels('paper-01');
+      const seaPixels=await selectedScenePixels('paper-03');
       const roomReturn=await selectedScenePixels('room');
       assert.notEqual(roomFirst,seaPixels,'Cached layers must show the newly chosen scenery');
       assert.equal(roomReturn,roomFirst,
@@ -232,8 +231,7 @@ const server=http.createServer(async(req,res)=>{
         await page.waitForTimeout(180);
         await saveRawCanvas('palette-mood-'+String(moodIndex+1).padStart(2,'0')+'.png');
       }
-      // Seven distinct brush tools and the eighth eraser must work with both
-      // current photos and legacy SVGs; the eraser must never remove scenery.
+      // Seven distinct brush tools and the eighth eraser must preserve paper backgrounds.
       await page.locator('[data-mood="疲倦"]').click();
       // SVG data images load asynchronously, initially showing the scenery
       // fallback. Wait until decoding finishes before sampling background RGB.
