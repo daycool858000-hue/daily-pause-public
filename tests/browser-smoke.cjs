@@ -185,6 +185,19 @@ const server=http.createServer(async(req,res)=>{
         await stage.screenshot({path:path.join(__dirname,'screenshots',
           'palette-scene-'+sceneName+'.png')});
       }
+      // Preserve 24 distinct default-composition screenshots for a visual
+      // review that can identify unresolved SVGs without altering the main site.
+      const moodNames=await page.locator('#worldMoods [data-mood]')
+        .evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-mood')));
+      assert.equal(moodNames.length,24);
+      for(let moodIndex=0;moodIndex<moodNames.length;moodIndex++){
+        await page.locator('[data-mood="'+moodNames[moodIndex]+'"]').click();
+        if((await page.locator('[data-scene-default]').getAttribute('aria-pressed'))!=='true')
+          await page.locator('[data-scene-default]').click();
+        await page.waitForTimeout(180);
+        await stage.screenshot({path:path.join(__dirname,'screenshots',
+          'palette-mood-'+String(moodIndex+1).padStart(2,'0')+'.png')});
+      }
     }
     await page.locator('[data-view="garden"]').click();
     assert.equal(await page.locator('#garden .pause-soundbar').count(),1,
