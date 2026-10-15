@@ -130,7 +130,7 @@ const server=http.createServer(async(req,res)=>{
     await page.mouse.up();
     await page.locator('[data-world-tab="scene"]').click();
     await page.locator('[data-scene="paper-03"]').click();
-    assert.equal(await page.locator('[data-scene="sea"]').getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('[data-scene="paper-03"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-scene-default]').click();
     assert.equal(await page.locator('[data-scene-default]').getAttribute('aria-pressed'),'true');
     const [backupDownload]=await Promise.all([
