@@ -66,7 +66,7 @@
     // All 24 choices below use the standalone paper WebP files, never article art.
     const landscapeArt=Object.freeze(Object.fromEntries(
       [...scenes.map(([id],i)=>[id,'./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp']),
-        ...placeScenes.map(([id])=>[id,window.PausePlaceScenes.imageUrl(id)])]
+        ...placeScenes.map(([id])=>[id,'./media/palette-scenes/'+id+'.webp'])]
     ));
     // Reuse one scaled photograph surface across frames. Photos are otherwise
     // resampled at every animation tick on high-DPI iPhones, even while untouched.
