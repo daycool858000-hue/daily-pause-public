@@ -304,7 +304,7 @@
       // Scene thumbnails preview the bundled scene itself, never an unrelated mood.
       const sceneThumbnail=id=>{
         const src=landscapeArt[id];
-        return typeof src==='string'&&/^\.\/media\/generated\/scene-\d{2}\.webp$/.test(src)
+        return typeof src==='string'&&/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-v1)\.webp$/.test(src)
           ? ' style="background-image:url('+src+');background-size:cover;background-position:center"' : '';
       };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
