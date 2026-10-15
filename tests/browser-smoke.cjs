@@ -265,9 +265,18 @@ const server=http.createServer(async(req,res)=>{
       const drawn=await exportCanvas();
       assert.deepEqual(drawn.marks.map(x=>x.type),brushes,
         'Seven brushes must create independently editable stroke types');
+      const pencilStroke=drawn.marks.find(x=>x.type==='pencil');
+      assert.ok(pencilStroke.coords.length>1,'Pencil must record continuous coordinates');
+      const pencilMid=pencilStroke.coords[Math.floor(pencilStroke.coords.length/2)];
       await page.locator('[data-brush="eraser"]').click();
-      const eraseY=brushRect.y+brushRect.height*.16;
-      await page.mouse.move(brushRect.x+brushRect.width*.36,eraseY);
+      assert.equal(await page.locator('[data-brush="eraser"]').getAttribute('aria-pressed'),
+        'true','The eraser must be the active tool');
+      await stage.scrollIntoViewIfNeeded();
+      const eraseRect=await stage.boundingBox();
+      await page.mouse.move(
+        eraseRect.x+(pencilMid[0]/960)*eraseRect.width,
+        eraseRect.y+(pencilMid[1]/630)*eraseRect.height
+      );
       await page.mouse.down();
       await page.mouse.up();
       const erased=await exportCanvas();
@@ -280,7 +289,7 @@ const server=http.createServer(async(req,res)=>{
         'Eraser must never reset the mood background preference');
       assert.equal(erased.props.length,drawn.props.length,
         'Eraser should not delete unrelated movable objects');
-      const centerX=960*.36,centerY=630*.16;
+      const [centerX,centerY]=pencilMid;
       const centerWasCleared=erased.marks
         .filter(x=>x.type==='pencil')
         .every(mark=>mark.coords.every(([x,y])=>
