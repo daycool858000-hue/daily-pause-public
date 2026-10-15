@@ -134,7 +134,7 @@
       const img=new Image();img.decoding='async';
       const asset={img,ready:false,error:false};
       landscapeCache.set(scene,asset);
-      trimCache(landscapeCache,7,scene);
+      trimCache(landscapeCache,8,scene);
       img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
       img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
       img.src=src;
@@ -376,7 +376,7 @@
     function renderChoices(){
       // Use the exact same numbered paper images as the creation canvas.
       const sceneThumbnail=id=>{
-        const src=landscapeArt[id];if(!src)return '';
+        const src=window.PausePlaceScenes?.thumbnailUrl?.(id)||landscapeArt[id];if(!src)return '';
         const safeSrc=src.replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/'/g,'%27');
         return ' style="background-image:url('+safeSrc+');background-size:cover;background-position:center"';
       };
