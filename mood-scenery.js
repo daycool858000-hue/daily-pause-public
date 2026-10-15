@@ -176,6 +176,19 @@ const realisticMoodScenes=Object.freeze({
   '想念':'./media/generated/scene-01.webp',
   '希望':'./media/generated/palette-sunrise-v1.webp',
   '期待':'./media/generated/palette-balcony-v1.webp',
+  // Distinct reviewed-at-source artwork *studies* derived from in-repo assets.
+  // These are draft photo-composites, NOT newly generated standalone originals.
+  '疲倦':'./media/generated/palette-mood-fatigue-study-v1.webp',
+  '悶住':'./media/generated/palette-mood-stifled-study-v1.webp',
+  '混亂':'./media/generated/palette-mood-confusion-study-v1.webp',
+  '煩躁':'./media/generated/palette-mood-irritation-study-v1.webp',
+  '害怕':'./media/generated/palette-mood-fear-study-v1.webp',
+  '好奇':'./media/generated/palette-mood-curiosity-study-v1.webp',
+  '安心':'./media/generated/palette-mood-reassurance-study-v1.webp',
+  '溫柔':'./media/generated/palette-mood-tenderness-study-v1.webp',
+  '想重新開始':'./media/generated/palette-mood-renewal-study-v1.webp',
+  '需要勇氣':'./media/generated/palette-mood-courage-study-v1.webp',
+  '想暖一點':'./media/generated/palette-mood-warmth-study-v1.webp',
   // Indoor moods stay on their matching room/library compositions until
   // independently usable indoor image assets have been reviewed.
   // Do not present garden photographs or flower close-ups as living rooms.

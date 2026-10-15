@@ -145,7 +145,15 @@
       const state={image,ready:false,failed:false};
       moodImageCache.set(name,state);
       image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
-      image.onerror=()=>{state.failed=true;};
+      image.onerror=()=>{
+        // Art integration only: failed WebP never erases the emotion's own SVG scene.
+        if(!state.svgFallbackTried && window.PauseMoodScenes?.svg){
+          state.svgFallbackTried=true;
+          const fallback=window.PauseMoodScenes.svg(name);
+          if(fallback){image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(fallback);return;}
+        }
+        state.failed=true;
+      };
       image.src=src;return state;
     }
     function drawMoodBackground(name,t){

@@ -1,22 +1,45 @@
 name: Draft Emotion Palette Artwork Only
 on:
+  push:
+    branches:
+      - feature/companion-garden-palette-20261014
+    paths:
+      - 'mood-scenery.js'
+      - 'palette-world.js'
+      - 'tools/palette/build_mood_art.py'
+      - '.github/workflows/palette-artwork-build.yml'
   pull_request:
     paths:
       - 'tools/palette/build_mood_art.py'
       - '.github/workflows/palette-artwork-build.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   produce-artwork:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - name: Prepare image compositor
         run: python -m pip install --disable-pip-version-check pillow numpy
       - name: Compose draft imagery from existing site's original art
         run: python tools/palette/build_mood_art.py
+      - name: Preserve artwork provenance and install studies on development branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p media/generated docs
+          cp art-review/mood-scenes/palette-mood-*-study-v1.webp media/generated/
+          cp art-review/mood-scenes/source-manifest.json docs/PALETTE_MOOD_STUDIES_MANIFEST_20261015.json
+          git add media/generated/palette-mood-*-study-v1.webp docs/PALETTE_MOOD_STUDIES_MANIFEST_20261015.json
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive 11 traceable mood image studies"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
       - name: Package 11 draft backgrounds for quality inspection
         uses: actions/upload-artifact@v4
         with:
