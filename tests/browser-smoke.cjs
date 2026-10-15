@@ -180,7 +180,7 @@ const server=http.createServer(async(req,res)=>{
       const sceneNames=['room','living','sea','rain','garden','night','island',
         'balcony','hill','lake','library','cloud','sunrise','blank'];
       for(const sceneName of sceneNames){
-        await page.locator('[data-scene="'+sceneName+'"]').click();
+        await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(220); // leave time for local WebP decoding
         await stage.screenshot({path:path.join(__dirname,'screenshots',
           'palette-scene-'+sceneName+'.png')});
@@ -188,7 +188,7 @@ const server=http.createServer(async(req,res)=>{
       // The cached bitmap must not accidentally reuse a previously selected
       // scene. Returning to an existing image must restore identical pixels.
       async function selectedScenePixels(sceneName){
-        await page.locator('[data-scene="'+sceneName+'"]').click();
+        await page.locator('#worldScenes button[data-scene="'+sceneName+'"]').click();
         await page.waitForTimeout(350);
         return stage.evaluate(canvas=>canvas.toDataURL('image/png'));
       }
