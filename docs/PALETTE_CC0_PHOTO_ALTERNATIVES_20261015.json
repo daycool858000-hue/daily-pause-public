@@ -1,0 +1,178 @@
+{
+  "status": "Unapproved third-party CC0 photography candidates; NOT original AI imagery.",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "Wikimedia Commons official imageinfo API and individual file pages",
+  "generated_utc": "2026-10-15T03:55:22.970029+00:00",
+  "usage": "Don't deploy without reviewing visual match and provenance",
+  "output": "1920x1260 WebP with no EXIF metadata",
+  "photos": [
+    {
+      "scene": "room",
+      "source_title": "Photographer's Bedroom (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Photographer%27s_Bedroom_%28Unsplash%29.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "80725ff5ba82b173d0394225bb235225e29622f5f6908ca1bafa1279931b5a6e",
+      "candidate": "palette-photo-room-v1.webp",
+      "candidate_sha256": "16d5c9be0115124d976d02b85cf2dbc44b44e0c67c1c231a75995acd81463e20",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        4719,
+        3146
+      ],
+      "source_photographer_metadata": "Caryle Barton <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@carylenicole\">carylenicole</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "living",
+      "source_title": "Cozy interior with a sofa (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Cozy_interior_with_a_sofa_%28Unsplash%29.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "7fc9d5a0568c349ee49852618a64cbeed4c5d2ef4a5a4670ab98e786fa6864cc",
+      "candidate": "palette-photo-living-v1.webp",
+      "candidate_sha256": "945104b0020b6e929f29373c98dd892330b649f748c8cc1bd49f898ff99288ac",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        7360,
+        4912
+      ],
+      "source_photographer_metadata": "Breather <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@breather\">breather</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "rain",
+      "source_title": "RaindropsOnWindow.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:RaindropsOnWindow.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "493033bc666e0baa1077bf0f794fb3138ce94961843115ceff48efe99515266e",
+      "candidate": "palette-photo-rain-v1.webp",
+      "candidate_sha256": "69fb9144bf3466a5ab9241dae6375259f4fb0aaab752e80b68b18a57f9d0b274",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        4928,
+        3264
+      ],
+      "source_photographer_metadata": "<a href=\"//commons.wikimedia.org/wiki/User:Raysonho\" title=\"User:Raysonho\">Raysonho @ Open Grid Scheduler / Grid Engine</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "study",
+      "source_title": "Study Room, Malacañang of the North, Paoay, Ilocos Norte.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Study_Room%2C_Malaca%C3%B1ang_of_the_North%2C_Paoay%2C_Ilocos_Norte.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "6dba8667b4bb581361b0c309a61de969b325e19408516bd1d274c468deab83cd",
+      "candidate": "palette-photo-study-v1.webp",
+      "candidate_sha256": "4c92483bed9e74d1d7ad52946e3c8bbd1a4c3727356a1a6b7e7128be91f9bc55",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        4896,
+        3264
+      ],
+      "source_photographer_metadata": "<a href=\"//commons.wikimedia.org/wiki/User:Luzviminda7641\" title=\"User:Luzviminda7641\">Luzviminda7641</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "island",
+      "source_title": "Maldives tropical island (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Maldives_tropical_island_%28Unsplash%29.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "25fcf23c00f9f7b933684d77186a46530f07808bb351bfdd2f6f8f9f3cf26634",
+      "candidate": "palette-photo-island-v1.webp",
+      "candidate_sha256": "ad0ca1359d298f9e4e16ffb31e854af0e391579f14c3381007a6cfb53bf92cf9",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        3992,
+        2242
+      ],
+      "source_photographer_metadata": "Ishan @seefromthesky <a rel=\"mw:ExtLink nofollow\" href=\"https://unsplash.com/@seefromthesky\" class=\"external text\">seefromthesky</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "balcony",
+      "source_title": "Sunset over Rio de Janeiro seen from a balcony, Brazil.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sunset_over_Rio_de_Janeiro_seen_from_a_balcony%2C_Brazil.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "e0cb66a8a54cede8dbd4446fcaded32c50d171e5512249033984de1deb57c353",
+      "candidate": "palette-photo-balcony-v1.webp",
+      "candidate_sha256": "b00176a8b009d6d090a4b7e4fb95d2ceae4e8d3b8e9e06c41055170cc80f6c7e",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        6843,
+        5154
+      ],
+      "source_photographer_metadata": "<a href=\"//commons.wikimedia.org/wiki/User:Wilfredor\" class=\"mw-redirect\" title=\"User:Wilfredor\">Wilfredor</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "cloud",
+      "source_title": "Sea of clouds (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sea_of_clouds_%28Unsplash%29.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "31ed7ad0570ea5d89ffad3f20fcf86d737fa6cf1a2ca00a2126cdb51704877a7",
+      "candidate": "palette-photo-cloud-v1.webp",
+      "candidate_sha256": "0f36264c5423053e712032dd638b64c35758fa74a23bbd19f8908871741bc583",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        5472,
+        3648
+      ],
+      "source_photographer_metadata": "liu qiaojun <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@mrjunjun\">mrjunjun</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    },
+    {
+      "scene": "sunrise",
+      "source_title": "Sunrise over the mountains.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sunrise_over_the_mountains.jpg",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source_sha256": "a8554e72398c5505c2f4faec5c6969438a7f663a99961edb43bace98e7dc41ab",
+      "candidate": "palette-photo-sunrise-v1.webp",
+      "candidate_sha256": "3c60285358bba9644fe05974a9b386985cbad40e8ebadb139ad084a116a82c08",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "original_size": [
+        5616,
+        3744
+      ],
+      "source_photographer_metadata": "Kevin Delvecchio <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@kevindelvecchio\">kevindelvecchio</a>",
+      "source_not_original_ai_art": true,
+      "exif_removed": true
+    }
+  ]
+}
