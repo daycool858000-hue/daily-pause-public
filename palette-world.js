@@ -89,10 +89,17 @@
     photoSurface.width=W; photoSurface.height=H;
     const photoCtx=photoSurface.getContext('2d',{alpha:false});
     let lastScaledPhoto=null;
+    let renderingExport=false;
     function drawCoverPhoto(image){
       if(!image?.naturalWidth||!image?.naturalHeight)return false;
       const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
       const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
+      // On high-resolution PNG export, keep the remaining SVG moods sharp;
+      // the regular animated preview still benefits from the cached bitmap.
+      if(renderingExport && image.src.startsWith('data:image/svg+xml')){
+        ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+        return true;
+      }
       if(photoCtx){
         if(lastScaledPhoto!==image){
           photoCtx.setTransform(1,0,0,1,0,0);
@@ -613,11 +620,13 @@
         const captureTime=lastMoment||performance.now();
         canvas.width=W*2;
         canvas.height=H*2;
+        renderingExport=true;
         paint(captureTime,false,true);
         const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
         a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
       finally{
+        renderingExport=false;
         canvas.width=originalWidth;
         canvas.height=originalHeight;
         model.selected=originalSelection;
