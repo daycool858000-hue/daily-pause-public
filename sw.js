@@ -1,7 +1,7 @@
 // 今日一息：只快取網站程式與使用者主動選擇的離線聲音。
 // Never touch localStorage, IndexedDB or the Holding Place's private records.
 'use strict';
-const VERSION='20261015-04';
+const VERSION='20261015-05';
 const SHELL='todaypause-shell-'+VERSION;
 const MEDIA='todaypause-audio-v1';
 const CORE=[
@@ -42,9 +42,12 @@ const CORE=[
   "./garden-decor.js?v=20261014-1",
   "./garden-sprites.js?v=20261015-1",
   "./garden.js?v=20261015-2",
+  "./media/generated/scene-01.webp",
   "./media/generated/scene-02.webp",
   "./media/generated/scene-03.webp",
+  "./media/generated/scene-07.webp",
   "./media/generated/scene-08.webp",
+  "./media/generated/scene-10.webp",
   "./media/generated/scene-11.webp",
   "./media/generated/palette-morning-bedroom-v1.webp",
   "./media/generated/palette-warm-living-room-v1.webp",
