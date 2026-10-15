@@ -145,25 +145,52 @@
       if(!asset.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
     }
 
+    // 480px previews decode before interaction: no 1.5MP decode on every mood switch.
+    // Full-resolution originals are loaded only when the user saves a PNG.
     const moodImageCache=new Map();
+    const exportMoodCache=new Map();
     function moodImageState(name){
       if(!window.PauseMoodScenes?.imageUrl)return null;
       if(moodImageCache.has(name))return moodImageCache.get(name);
-      const src=window.PauseMoodScenes.imageUrl(name);if(!src)return null;
-      const image=new Image();
+      const original=window.PauseMoodScenes.imageUrl(name);if(!original)return null;
+      const src=original.replace('/media/palette-paper/','/media/palette-preview/');
+      const image=new Image();image.decoding='async';
       const state={image,ready:false,failed:false};
       moodImageCache.set(name,state);
-      trimCache(moodImageCache,4,name);
       image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
-      // Failed loads never revive retired images or disturb saved brush strokes.
       image.onerror=()=>{state.failed=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
       image.src=src;return state;
     }
+    function exportMoodState(name){
+      if(exportMoodCache.has(name))return exportMoodCache.get(name);
+      const src=window.PauseMoodScenes?.imageUrl(name);
+      if(!src)return null;
+      const image=new Image();image.decoding='async';
+      const state={image,ready:false,failed:false};
+      exportMoodCache.set(name,state);
+      trimCache(exportMoodCache,2,name);
+      state.promise=new Promise(resolve=>{
+        image.onload=()=>{state.ready=true;resolve(true)};
+        image.onerror=()=>{state.failed=true;resolve(false)};
+      });
+      image.src=src;
+      return state;
+    }
     function drawMoodBackground(name,t){
-      const state=moodImageState(name);
-      if(!state||state.failed){drawLandscape(model.scene,t);return;}
-      if(!state.ready){drawLandscape(model.scene,t);return;}
-      if(!drawCoverPhoto(state.image))drawLandscape(model.scene,t);
+      const preview=moodImageState(name);
+      const original=renderingExport?exportMoodCache.get(name):null;
+      if(original?.ready&&drawCoverPhoto(original.image))return;
+      if(preview?.ready&&drawCoverPhoto(preview.image))return;
+      drawBlankPaper();
+    }
+    function primeMoodPreviews(){
+      // Small staggered requests avoid UI/network contention while keeping every mood warm.
+      let next=0;
+      const batch=()=>{
+        for(let n=0;n<6&&next<moods.length;n++,next++)moodImageState(moods[next][0]);
+        if(next<moods.length)setTimeout(batch,95);
+      };
+      batch();
     }
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
@@ -646,32 +673,25 @@
     });
     // Resolve the chosen mood or free-scenery bitmap before capture.
     // Slow mobile image decoding must never silently export the SVG preview.
-    function awaitBackdropReady(){
-      if(model.scene==='blank')return Promise.resolve(true);
-      if(model.customScene)drawLandscape(model.scene,0);
-      const state=model.customScene?landscapeCache.get(model.scene):moodImageState(model.mood);
-      if(!state||state.ready||state.failed||state.error)return Promise.resolve(true);
-      const image=state.image||state.img;
-      if(!image)return Promise.resolve(true);
+    async function awaitBackdropReady(){
+      if(model.scene==='blank')return true;
+      if(!model.customScene){
+        const state=exportMoodState(model.mood);
+        if(!state||state.failed)return false;
+        if(state.ready)return true;
+        return Promise.race([state.promise,new Promise(resolve=>setTimeout(()=>resolve(false),12000))]);
+      }
+      drawLandscape(model.scene,0);
+      const state=landscapeCache.get(model.scene);
+      if(!state||state.error)return false;
+      if(state.ready)return true;
       return new Promise(resolve=>{
-        let settled=false;
-        let timer;
-        const finish=ok=>{
-          if(settled)return;
-          settled=true;clearTimeout(timer);
-          image.removeEventListener('load',check);
-          image.removeEventListener('error',check);
-          resolve(ok);
-        };
-        const check=()=>{
-          // Loading an original image or SVG after a failed restoration may
-          // require a second event. Do not resolve on that first error event.
-          if(state.ready||state.failed||state.error)finish(true);
-        };
-        image.addEventListener('load',check);
-        image.addEventListener('error',check);
-        timer=setTimeout(()=>finish(false),12000);
-        check();
+        const image=state.img;
+        const done=ok=>{clearTimeout(timer);image.removeEventListener('load',onload);image.removeEventListener('error',onerror);resolve(ok)};
+        const onload=()=>done(true),onerror=()=>done(false);
+        image.addEventListener('load',onload);image.addEventListener('error',onerror);
+        const timer=setTimeout(()=>done(false),12000);
+        if(state.ready)done(true);
       });
     }
     let exportingWorld=false;
@@ -725,7 +745,7 @@
     window.addEventListener('palette-view-change',onVisible);
     window.addEventListener('resize',onVisible);
     if('ResizeObserver' in window)new ResizeObserver(onVisible).observe(wrap);
-    renderChoices();updateSelections();sizeCanvas();schedule();
+    renderChoices();primeMoodPreviews();updateSelections();sizeCanvas();schedule();
   }
   window.setupPaletteNew=init;
 })();
