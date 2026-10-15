@@ -4,7 +4,7 @@ No external photographs, stock art, source textures, models or image generators.
 Blender native shaders, authored terrain and lighting only.
 This is a development art candidate, not a completed/approved production image.
 """
-import bpy,math,random,json
+import bpy,math,random,json,os
 from mathutils import Vector
 from mathutils.noise import noise_vector,noise as sample_noise
 
@@ -26,7 +26,7 @@ S.render.resolution_y=1260
 S.render.resolution_percentage=100
 S.render.image_settings.file_format="PNG"
 S.render.film_transparent=False
-S.render.filepath="//art-review/original-3d/palette-cloud-original-v1.png"
+S.render.filepath=os.path.abspath("art-review/original-3d/palette-cloud-original-v1.png")
 S.view_settings.view_transform="Filmic"
 S.view_settings.look="Medium High Contrast"
 S.view_settings.exposure=.35
@@ -78,7 +78,6 @@ def volume_cloud(name,density=.04,noise_scale=1.3):
  ramp.color_ramp.elements[0].color=(0,0,0,1)
  ramp.color_ramp.elements[1].position=.72
  ramp.color_ramp.elements[1].color=(.3,.3,.3,1)
- m.world_tree_links=[] if False else None
  mult=ns.new("ShaderNodeMath");mult.operation='MULTIPLY';mult.inputs[1].default_value=density*8
  links=m.node_tree.links
  links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
@@ -163,6 +162,6 @@ fill.data.size=65
 fill.rotation_euler=(Vector((0,20,4))-fill.location).to_track_quat('-Z','Y').to_euler()
 
 S.camera.data.dof.use_dof=False
-bpy.ops.wm.save_as_mainfile(filepath="//art-review/original-3d/palette-cloud-source.blend")
+bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath("art-review/original-3d/palette-cloud-source.blend"))
 bpy.ops.render.render(write_still=True)
 print("PROCEDURAL_ORIGINAL",S.render.filepath,flush=True)
