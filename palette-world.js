@@ -123,7 +123,16 @@
         asset={img,ready:false,error:false};
         landscapeCache.set(scene,asset);
         img.onload=()=>{asset.ready=true;if(model.scene===scene)paint(performance.now(),true)};
-        img.onerror=()=>{asset.error=true};
+        img.onerror=()=>{
+          // If the 2x restoration fails, use the ORIGINAL site-made crop
+          // before reverting to the existing procedural scene.
+          if(!asset.restorationFallbackTried&&src.endsWith('-sr-v2.webp')){
+            asset.restorationFallbackTried=true;
+            img.src=src.replace(/-sr-v2\.webp$/,'-v1.webp');
+            return;
+          }
+          asset.error=true;
+        };
         img.src=src;
       }
       if(!asset.ready){art.drawScene(ctx,scene,t);return;}
@@ -146,7 +155,13 @@
       moodImageCache.set(name,state);
       image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
       image.onerror=()=>{
-        // Art integration only: failed WebP never erases the emotion's own SVG scene.
+        // Prefer the original 960px matching composition if a 2x restoration
+        // cannot load; keep the per-emotion SVG as the final local fallback.
+        if(!state.restorationFallbackTried && src.endsWith('-sr-v2.webp')){
+          state.restorationFallbackTried=true;
+          image.src=src.replace(/-sr-v2\.webp$/,'-v1.webp');
+          return;
+        }
         if(!state.svgFallbackTried && window.PauseMoodScenes?.svg){
           state.svgFallbackTried=true;
           const fallback=window.PauseMoodScenes.svg(name);
@@ -338,8 +353,11 @@
       // Scene thumbnails preview the bundled scene itself, never an unrelated mood.
       const sceneThumbnail=id=>{
         const src=landscapeArt[id];
-        return typeof src==='string'&&/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2))\.webp$/.test(src)
-          ? ' style="background-image:url('+src+');background-size:cover;background-position:center"' : '';
+        if(typeof src!=='string'||!/^\.\/media\/generated\/(?:scene-\d{2}|palette-[a-z-]+-(?:v1|sr-v2))\.webp$/.test(src))return '';
+        // Keep thumbnails lightweight: the 960px source has the SAME layout
+        // as the 1920px full-frame restoration and loads much faster on phones.
+        const preview=src.replace(/-sr-v2\.webp$/,'-v1.webp');
+        return ' style="background-image:url('+preview+');background-size:cover;background-position:center"';
       };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
