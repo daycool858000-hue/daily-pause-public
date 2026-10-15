@@ -1,0 +1,153 @@
+{
+  "source": "Wikimedia Commons official API imageinfo, explicit CC0 verification",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "status": "thumbnail contact selection only; NOT approved new art",
+  "created": "2026-10-15T04:15:06.126564+00:00",
+  "candidates": [
+    {
+      "slot": "confusion-1",
+      "mood": "confusion",
+      "query": "fog mountain lake",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Mountains_in_fog_near_Bled_lake.jpg",
+      "source_name": "File:Mountains in fog near Bled lake.jpg",
+      "photographer_html": "<a href=\"//commons.wikimedia.org/wiki/User:FedorObCopenhagen\" title=\"User:FedorObCopenhagen\">FedorObCopenhagen</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        4080,
+        2296
+      ],
+      "webp_thumbnail_sha256": "dd1446ef2fbe7af24288a73b27884a193faba879512a1325cc6f89efe205033f",
+      "review": "unapproved"
+    },
+    {
+      "slot": "confusion-2",
+      "mood": "confusion",
+      "query": "fog mountain lake",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lake_at_D%C3%BCrrensteinalm_with_fog_2022-08-06_01.jpg",
+      "source_name": "File:Lake at Dürrensteinalm with fog 2022-08-06 01.jpg",
+      "photographer_html": "<a href=\"//commons.wikimedia.org/wiki/User:GPSLeo\" title=\"User:GPSLeo\">Leonhard Lenz</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8384,
+        5612
+      ],
+      "webp_thumbnail_sha256": "2ff6c451fd04cfde84813048430dfba4da41c7c3a2e17f57384706232a3b21f1",
+      "review": "unapproved"
+    },
+    {
+      "slot": "confusion-3",
+      "mood": "confusion",
+      "query": "fog mountain lake",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Lake_at_D%C3%BCrrensteinalm_with_fog_2022-08-06_02.jpg",
+      "source_name": "File:Lake at Dürrensteinalm with fog 2022-08-06 02.jpg",
+      "photographer_html": "<a href=\"//commons.wikimedia.org/wiki/User:GPSLeo\" title=\"User:GPSLeo\">Leonhard Lenz</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8384,
+        5612
+      ],
+      "webp_thumbnail_sha256": "1fed87d4692a1132e38c28e96127dc79bfcbfb923a11a27a5e043b532749215c",
+      "review": "unapproved"
+    },
+    {
+      "slot": "fear-1",
+      "mood": "fear",
+      "query": "misty dark forest",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sequoia_Trees_at_Sequoia_National_Park.jpg",
+      "source_name": "File:Sequoia Trees at Sequoia National Park.jpg",
+      "photographer_html": "<bdi>Daniel G. Rego</bdi>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8688,
+        5792
+      ],
+      "webp_thumbnail_sha256": "1253790480a2084e69bf6cb1f5bc38c7b9a1bb3537065c858bfd56fa89e4315c",
+      "review": "unapproved"
+    },
+    {
+      "slot": "tenderness-1",
+      "mood": "tenderness",
+      "query": "flowers butterflies meadow",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Meadow_with_thistles_and_butterflies%2C_Ennerich.jpg",
+      "source_name": "File:Meadow with thistles and butterflies, Ennerich.jpg",
+      "photographer_html": "<a href=\"//commons.wikimedia.org/wiki/User:Gerda_Arendt\" title=\"User:Gerda Arendt\">Gerda Arendt</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        4000,
+        3000
+      ],
+      "webp_thumbnail_sha256": "e78a0d2d68d26018c033b9d13f846d20cf705c6c0fe0c71401ce14253c6ff31b",
+      "review": "unapproved"
+    },
+    {
+      "slot": "renewal-1",
+      "mood": "renewal",
+      "query": "morning sunlight garden",
+      "source_page": "https://commons.wikimedia.org/wiki/File:2013-365-165_Morning_Near_Indian_Gardens_(9050628823).jpg",
+      "source_name": "File:2013-365-165 Morning Near Indian Gardens (9050628823).jpg",
+      "photographer_html": "<a rel=\"mw:ExtLink nofollow\" href=\"https://www.flickr.com/people/37996646802@N01\" class=\"external text\">cogdogblog</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        3481,
+        2609
+      ],
+      "webp_thumbnail_sha256": "5e56d3c200373967f5b81a77c5b24a1e0aa7b172eb0ca752e2ecb536824597a4",
+      "review": "unapproved"
+    },
+    {
+      "slot": "renewal-2",
+      "mood": "renewal",
+      "query": "morning sunlight garden",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sunbird_in_Garden.jpg",
+      "source_name": "File:Sunbird in Garden.jpg",
+      "photographer_html": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:Ujwala_Dahake?action=edit&amp;redlink=1\" title=\"User:Ujwala Dahake (page does not exist)\" class=\"new\" typeof=\"mw:LocalizedAttrs\" data-mw-i18n='{\"title\":{\"lang\":\"x-page\",\"key\":\"red-link-title\",\"params\":[\"User:Ujwala Dahake\"]}}'>Ujwala Dahake</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        3407,
+        2282
+      ],
+      "webp_thumbnail_sha256": "a5d6935e993464a048ca2dd7ed693f096f3b2be1b6e2e2fa4b373fda4ea1e77c",
+      "review": "unapproved"
+    },
+    {
+      "slot": "renewal-3",
+      "mood": "renewal",
+      "query": "morning sunlight garden",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Beauty_in_the_Garden.jpg",
+      "source_name": "File:Beauty in the Garden.jpg",
+      "photographer_html": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:Ujwala_Dahake?action=edit&amp;redlink=1\" title=\"User:Ujwala Dahake (page does not exist)\" class=\"new\" typeof=\"mw:LocalizedAttrs\" data-mw-i18n='{\"title\":{\"lang\":\"x-page\",\"key\":\"red-link-title\",\"params\":[\"User:Ujwala Dahake\"]}}'>Ujwala Dahake</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        2945,
+        2038
+      ],
+      "webp_thumbnail_sha256": "c1d702cbf1af0b611b89233ae9599711bc1df1681732a6a76fe6d74a16b04c39",
+      "review": "unapproved"
+    },
+    {
+      "slot": "courage-1",
+      "mood": "courage",
+      "query": "mountain ridge sunrise",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sunrise_Bettmerhorn_snowy_mountains_(Unsplash).jpg",
+      "source_name": "File:Sunrise Bettmerhorn snowy mountains (Unsplash).jpg",
+      "photographer_html": "Sam Ferrara <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@samferrara\">samferrara</a>",
+      "license_short_name": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8196,
+        5464
+      ],
+      "webp_thumbnail_sha256": "bc206ee72041c15f90d9638a7b4c477c820a0155ccda767cc2d4c0d7616446bf",
+      "review": "unapproved"
+    }
+  ],
+  "search_failures": []
+}
