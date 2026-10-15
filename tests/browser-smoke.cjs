@@ -215,7 +215,7 @@ const server=http.createServer(async(req,res)=>{
       }
       const roomFirst=await selectedScenePixels('paper-01');
       const seaPixels=await selectedScenePixels('paper-03');
-      const roomReturn=await selectedScenePixels('room');
+      const roomReturn=await selectedScenePixels('paper-01');
       assert.notEqual(roomFirst,seaPixels,'Cached layers must show the newly chosen scenery');
       assert.equal(roomReturn,roomFirst,
         'Returning to the same scene must not retain the previously cached photograph');
