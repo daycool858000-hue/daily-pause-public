@@ -179,13 +179,13 @@
             <span class="world-intro-note">不需要登入，也沒有評分</span>
           </div>
           <section class="world-mood-section" aria-labelledby="worldMoodsTitle">
-            <div class="world-section-head"><h2 id="worldMoodsTitle">此刻，比較接近哪種感覺？</h2><p>24 種心情｜每張都有不同紙質背景，切換後作品仍各自保留</p></div>
+            <div class="world-section-head"><h2 id="worldMoodsTitle">此刻，比較接近哪種感覺？</h2><p>24 張獨立創作畫布｜景觀可自由切換，原有作品保留</p></div>
             <div id="worldMoods" class="world-moods" role="group" aria-label="心情與氛圍"></div>
           </section>
           <div class="world-main">
             <div class="world-stage-col">
               <div class="world-stage" id="worldStage">
-                <canvas id="worldCanvas" width="960" height="630" aria-label="紙質背景和生活物件的互動畫布；可單指畫畫或移動物件"></canvas>
+                <canvas id="worldCanvas" width="960" height="630" aria-label="創作畫布，可選擇森林、海洋與生活景觀；可單指畫畫或移動物件"></canvas>
                   <div class="world-quick-tools" aria-label="隨手畫布操作">
                     <button id="worldQuickUndo" type="button" disabled aria-label="復原上一筆">↶</button>
                     <button id="worldQuickRedo" type="button" disabled aria-label="重做上一筆">↷</button>
@@ -194,7 +194,7 @@
                   </div>
               </div>
               <div class="world-caption"><p id="worldSceneLabel">微光停在房間裡。</p><button id="worldPause" type="button">暫停流動</button></div>
-              <p class="world-inline-note">先選「形狀」或「畫筆」再動手創作；換畫布背景不會清空筆跡。小蝴蝶或光點可以點擊互動。</p>
+              <p class="world-inline-note">先選「形狀」或「畫筆」再動手創作；切換景觀不會清空筆跡。小蝴蝶或光點可以點擊互動。</p>
             </div>
             <aside class="world-control-panel" id="worldControlPanel" aria-label="情緒畫室工具">
               <h2>畫布工具</h2>
@@ -204,7 +204,7 @@
                 <button type="button" role="tab" data-world-tab="color" aria-selected="false">顏色</button>
                 <button type="button" role="tab" data-world-tab="element" aria-selected="false">形狀</button>
                 <button type="button" role="tab" data-world-tab="brush" aria-selected="false">畫筆</button>
-                <button type="button" role="tab" data-world-tab="scene" aria-selected="false">畫布</button>
+                <button type="button" role="tab" data-world-tab="scene" aria-selected="false">景觀</button>
                 <button type="button" role="tab" data-world-tab="object" aria-selected="false">物件</button>
               </div>
               <section class="world-panel" data-world-panel="element" role="tabpanel" hidden>
@@ -245,9 +245,9 @@
               <div class="world-actions">
                 <button id="worldUndo" type="button" disabled>↶ 復原</button><button id="worldRedo" type="button" disabled>↷ 重做</button>
                 <button id="worldClearMarks" type="button">清空筆跡與自然元素</button><button id="worldClear" type="button">全部清空</button><button id="worldDownload" type="button">保存 PNG ↓</button>
-                <button id="worldExportEditable" type="button">備份 24 張可編輯畫布</button><button id="worldImportEditable" type="button">匯入畫布備份</button><input id="worldImportFile" type="file" accept=".json,application/json" hidden>
+                <button id="worldExportEditable" type="button" hidden aria-hidden="true" tabindex="-1">備份 24 張可編輯畫布</button><button id="worldImportEditable" type="button" hidden aria-hidden="true" tabindex="-1">匯入畫布備份</button><input id="worldImportFile" type="file" accept=".json,application/json" hidden>
               </div>
-              <p class="world-notice">你的作品僅存在這次開啟的頁面中。保存 PNG 可以留下圖片；「備份 24 張可編輯畫布」則可以下載可繼續編輯的 JSON 檔。重新整理或換裝置前請先下載備份。本站不會自動上傳作品。</p>
+              <p class="world-notice">作品僅保留在這次開啟的頁面，切換情緒或景觀不會清空本次創作。需要保留圖片請按「保存 PNG」。重新整理、關閉或更換裝置後，未另存的作品可能無法找回；本站不會自動上傳作品。</p>
               <p id="worldBackupStatus" class="world-backup-status" aria-live="polite"></p>
             </aside>
           </div>
@@ -497,8 +497,9 @@
     <script src="./palette-history.js?v=20261013-1" defer></script>
     <script src="./world-art.js?v=20261013-3" defer></script>
     <script src="./mood-scenery.js?v=20261015-6" defer></script>
+    <script src="./palette-place-scenes.js?v=20261015-1" defer></script>
     <script src="./mood-atmospheres.js?v=20261014-1" defer></script>
-    <script src="./palette-world.js?v=20261015-7" defer></script>
+    <script src="./palette-world.js?v=20261015-8" defer></script>
     <script src="./photo-rotation.js?v=20261013-1" defer></script>
     <script src="./offline-audio.js?v=20261014-1" defer></script>
     <script src="./soundscape.js?v=20261014-2" defer></script>
