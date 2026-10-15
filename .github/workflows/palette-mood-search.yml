@@ -1,0 +1,35 @@
+name: Draft Mood Art License Search
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - tools/palette/find-mood-photographs.py
+      - .github/workflows/palette-mood-search.yml
+permissions:
+  contents: write
+jobs:
+  draft-photo-candidates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image inspection packages
+        run: python -m pip install --disable-pip-version-check pillow requests
+      - name: Search and source-check CC0-only emotional scene candidates
+        run: python tools/palette/find-mood-photographs.py
+      - name: Preserve review contact sheet and thumbnails away from live media
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p art-review/mood-round3
+          cp art-review/mood-photo-search/* art-review/mood-round3/
+          git add art-review/mood-round3/
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive CC0-only mood photo selection contact"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mood-license-reviewed-contact-not-for-publication
+          path: art-review/mood-photo-search/
+          retention-days: 7
