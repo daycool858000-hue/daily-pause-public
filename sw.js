@@ -1,7 +1,7 @@
 // 今日一息：只快取網站程式與使用者主動選擇的離線聲音。
 // Never touch localStorage, IndexedDB or the Holding Place's private records.
 'use strict';
-const VERSION='20261015-13';
+const VERSION='20261015-14';
 const SHELL='todaypause-shell-'+VERSION;
 const MEDIA='todaypause-audio-v1';
 const CORE=[
@@ -29,7 +29,7 @@ const CORE=[
   "./mood-scenery.js?v=20261015-6",
   "./mood-atmospheres.js?v=20261014-1",
   "./palette-place-scenes.js?v=20261015-2",
-  "./palette-world.js?v=20261015-9",
+  "./palette-world.js?v=20261015-10",
   "./photo-rotation.js?v=20261013-1",
   "./offline-audio.js?v=20261014-1",
   "./soundscape.js?v=20261014-2",
