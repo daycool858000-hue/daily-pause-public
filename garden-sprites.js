@@ -125,5 +125,18 @@
     const paths=shapes[action]||shapes.rest;
     return '<span class="garden-action-vfx" aria-hidden="true"><svg viewBox="0 0 40 40" width="42" height="42">'+paths+'</svg></span>';
   }
-  window.PauseGardenSprites={markup,animal,plant,effect};
+  // CSS-only motion profiles: do not introduce timers or saved personality data.
+  // Each animal species keeps its own idle silhouette/motion; plant families
+  // share botanical movement only when they have the same growth structure.
+  function motionType(species,kind){
+    if(kind==='pet')return animalProfiles[species]?.type||'cat';
+    return plantProfiles[species]?.[2]||'leaf';
+  }
+  // Action reactions are visual only; caregiving never adds attendance pressure.
+  const reactionTypes=Object.freeze({
+    feed:'nibble', play:'play', wash:'shake', rest:'rest',
+    water:'drink', care:'tidy', watch:'observe', harvest:'harvest'
+  });
+  function reactionType(action){return reactionTypes[action]||'';}
+  window.PauseGardenSprites={markup,animal,plant,effect,motionType,reactionType};
 })();
