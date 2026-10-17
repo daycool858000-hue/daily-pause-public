@@ -418,6 +418,7 @@
   }
   function selectItem(id){
     const item=itemsHere().find(x=>x.id===id);if(!item)return;
+    closeTools();
     const panel=by('gardenCarePanel');panel.dataset.selected=id;panel.hidden=false;
     by('gardenDecorSelection').hidden=true;
     by('gardenCareName').textContent=(ICONS[item.species]||'🌱')+' '+(item.name||item.species);
