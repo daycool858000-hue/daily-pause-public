@@ -466,9 +466,27 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('#gardenAddPet').click();
     const dog=page.locator('[data-stage-resident][data-behavior="dog"]');
     assert.equal(await dog.count(),1,'Dog must not inherit duck or cat animation');
+    // A real browser must animate each kind differently when allowed and
+    // stop animations immediately when the system preference changes.
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    assert.equal(await duck.locator('svg.garden-animal').evaluate(
+      node=>getComputedStyle(node).animationName),'garden-duck-idle');
+    assert.equal(await dog.locator('svg.garden-animal').evaluate(
+      node=>getComputedStyle(node).animationName),'garden-dog-idle');
     const dogId=await dog.getAttribute('data-stage-resident');
     await page.locator('[data-resident="'+dogId+'"]').click();
-    await page.locator('[data-garden-action="play"]').click();
+    const played=await page.evaluate(id=>{
+      document.querySelector('[data-garden-action="play"]').click();
+      const marker=document.querySelector('[data-stage-resident="'+id+'"]');
+      return {reaction:marker?.dataset.reaction,
+        animation:marker?getComputedStyle(marker.querySelector('svg.garden-animal')).animationName:''};
+    },dogId);
+    assert.deepEqual(played,{reaction:'play',animation:'garden-pet-play'},
+      'Play action needs a distinct animated gesture in the actual garden scene');
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.equal(await page.locator('[data-stage-resident="'+dogId+'"] svg.garden-animal')
+      .evaluate(node=>getComputedStyle(node).animationName),'none',
+      'The animal must stop moving when reduced motion is selected');
     assert.ok((await page.locator('#gardenCareFeedback').textContent()).includes('玩'),
       'Playing with the animal must visibly acknowledge the action');
     assert.equal(await page.evaluate(()=>JSON.stringify(
