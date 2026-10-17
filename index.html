@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="./world-style.css?v=20261013-7" />
     <link rel="stylesheet" href="./surprise-style.css?v=20261013-2" />
     <link rel="stylesheet" href="./sound-style.css?v=20261013-3" />
-    <link rel="stylesheet" href="./garden.css?v=20261017-1" />
+    <link rel="stylesheet" href="./garden.css?v=20261017-2" />
   </head>
   <body>
     <div class="ambient ambient-one" aria-hidden="true"></div>
@@ -264,7 +264,7 @@
           <div class="garden-gate" id="gardenGate" hidden role="dialog" aria-modal="true" aria-label="走進陪伴花園">
             <div class="garden-door-frame" aria-hidden="true">
               <div class="garden-door-glimpse"></div>
-              <div class="garden-door-leaf a"></div><div class="garden-door-leaf b"></div>
+              <div class="garden-door-flash"></div>
               <div class="garden-door"></div>
             </div>
             <div class="garden-gate-title">
@@ -280,8 +280,14 @@
           </section>
           <section class="garden-room" id="gardenWorldRoom" hidden>
             <div class="garden-room-header">
+              <button type="button" class="garden-hud-back" id="gardenChangeWorld" aria-label="切換五個世界">‹ 五個地方</button>
               <div><h2 id="gardenWorldTitle">花園</h2><p id="gardenWorldSubtitle"></p></div>
-              <button type="button" class="garden-soft-button" id="gardenChangeWorld">換一個地方</button>
+              <button type="button" class="garden-hud-exit" id="gardenLeave" aria-label="離開陪伴花園返回首頁">離開</button>
+            </div>
+            <div class="garden-quick-actions" aria-label="陪伴花園的快捷操作">
+              <button type="button" id="gardenOpenTools" aria-controls="gardenToolsSheet" aria-expanded="false">＋ 種植・寵物・佈置</button>
+              <button type="button" id="gardenOpenCareList" aria-controls="gardenToolsSheet" aria-expanded="false">我的小生命</button>
+              <button type="button" id="gardenOpenAtmosphere" aria-controls="gardenToolsSheet" aria-expanded="false">☀ 光線</button>
             </div>
             <div class="garden-landscape" role="group" aria-label="陪伴花園場景與可互動的動植物">
               <div class="garden-backdrop" id="gardenBackdrop" aria-hidden="true"></div>
@@ -291,6 +297,10 @@
               <p class="garden-landscape-message" id="gardenWorldCount">你可以在這裡待一下</p>
               <p class="garden-explore-message" id="gardenExploreMessage" aria-live="polite" hidden></p>
             </div>
+            <aside class="garden-tools-sheet" id="gardenToolsSheet" hidden aria-label="花園操作選單">
+              <div class="garden-tools-head"><strong>今天想做什麼？</strong><button type="button" id="gardenCloseTools" aria-label="關閉花園操作選單">完成 ✕</button></div>
+              <div class="garden-tools-content" id="gardenToolsContent"></div>
+            </aside>
             <section id="gardenSceneVariant" class="garden-scene-variant" hidden aria-label="切換景觀呈現方式">
               <strong>喜歡哪一種景觀？</strong>
               <div id="gardenSceneVariantOptions" role="group" aria-label="選擇景觀樣式"></div>
@@ -301,7 +311,7 @@
               <div id="gardenLightChoices" class="garden-light-choices" role="group" aria-label="晨光、白天、黃昏或夜晚"></div>
             </div>
             <p class="garden-note" id="gardenStageHint">點一下照顧小生命，按住拖曳可以替牠們換個位置。</p>
-            <p class="garden-note" id="gardenSceneNotice" aria-live="polite">各區專屬寫實場景尚待完成；暫用圖片僅供開發測試。</p>
+            <p class="garden-note" id="gardenSceneNotice" aria-live="polite" hidden></p>
             <div class="garden-controls">
               <section class="garden-control-box" aria-label="選擇寵物">
                 <h3>邀請一個小夥伴</h3>
@@ -513,6 +523,6 @@
     <script src="./garden-motion.js?v=20261014-1" defer></script>
     <script src="./garden-decor.js?v=20261014-1" defer></script>
     <script src="./garden-sprites.js?v=20261017-1" defer></script>
-    <script src="./garden.js?v=20261017-1" defer></script>
+    <script src="./garden.js?v=20261017-2" defer></script>
   </body>
 </html>
