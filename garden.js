@@ -632,7 +632,7 @@
     else if(b.id==='gardenOpenCareList')openTools('.garden-residents-box');
     else if(b.id==='gardenOpenAtmosphere')openTools('.garden-light-control');
     else if(b.id==='gardenCloseTools')closeTools();
-    else if(b.id==='gardenLeave')leaveGarden();
+    else if(b.id==='gardenLeave'||b.id==='gardenLeaveChoices')leaveGarden();
     else if(b.id==='gardenAddDecor'){createDecoration();closeTools();}
     else if(b.id==='gardenRemoveDecor')removeDecoration();
     else if(b.id==='gardenCloseDecor')by('gardenDecorSelection').hidden=true;
