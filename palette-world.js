@@ -145,7 +145,7 @@
       if(!asset?.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
     }
     function primeScenePreviews(){
-      // Warm seven small self-contained SVG scenery assets before the scene panel opens.
+      // Warm all eight static background assets before the scene panel opens.
       placeScenes.forEach(([id],index)=>setTimeout(()=>landscapeState(id),160+index*120));
     }
 
@@ -325,6 +325,8 @@
         for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
       }else if(!model.customScene)drawMoodBackground(model.mood,t);
       else drawLandscape(model.scene,t);
+      // Background-only breathing is rendered before emotion effects and artwork.
+      window.PauseCanvasBreathe?.paint(ctx,model.customScene?model.scene:'paper',model.mood,t);
       const m=moodFor(),special=m[0];
       const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
       if(window.PauseMoodAtmospheres?.paint){
