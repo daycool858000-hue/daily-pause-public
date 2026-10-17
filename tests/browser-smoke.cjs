@@ -374,6 +374,10 @@ const server=http.createServer(async(req,res)=>{
       assert.ok((await page.locator('#gardenBackdrop').getAttribute('style'))
         .includes('/media/garden-worlds/'+world+'.webp'),
         'All five worlds must display the independent owner-approved art: '+world);
+      const computedBackdrop=await page.locator('#gardenBackdrop').evaluate(
+        node=>getComputedStyle(node).backgroundImage);
+      assert.ok(computedBackdrop.includes('/media/garden-worlds/'+world+'.webp'),
+        'Legacy CSS must not override approved garden imagery: '+world+' '+computedBackdrop);
       assert.equal(await page.locator('[data-scene-variant]').count(),0,
         'Do not offer mismatched old photography or SVG alternatives');
     }
