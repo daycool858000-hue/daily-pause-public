@@ -371,25 +371,31 @@ const server=http.createServer(async(req,res)=>{
       await page.locator('[data-choose-world="'+world+'"]').click();
       assert.equal(await page.locator('#gardenSceneFX').getAttribute('data-world'),world);
       assert.equal(await page.locator(selector).count(),count,world+' has wrong environment motion');
-      if(world==='flowers'){
-        await page.locator('[data-scene-variant="greenhouse"]').click();
-        assert.ok((await page.locator('#gardenBackdrop').getAttribute('style')).includes('scene-11.webp'));
-        await page.locator('[data-scene-variant="open"]').click();
-        assert.equal(await page.locator('.garden-environment-art').count(),1);
-      }
-      if(world==='park'){
-        await page.locator('[data-scene-variant="gardenpond"]').click();
-        assert.ok((await page.locator('#gardenBackdrop').getAttribute('style')).includes('scene-08.webp'));
-        await page.locator('[data-scene-variant="open"]').click();
-        assert.equal(await page.locator('.garden-environment-art').count(),1);
-      }
+      assert.ok((await page.locator('#gardenBackdrop').getAttribute('style'))
+        .includes('/media/garden-worlds/'+world+'.webp'),
+        'All five worlds must display the independent owner-approved art: '+world);
+      assert.equal(await page.locator('[data-scene-variant]').count(),0,
+        'Do not offer mismatched old photography or SVG alternatives');
     }
     await page.locator('#gardenChangeWorld').click();
     await page.locator('[data-choose-world="farm"]').click();
-    await page.locator('.garden-environment-art').waitFor();
+    const geometry=await page.locator('.garden-landscape').evaluate(node=>{
+      const r=node.getBoundingClientRect();
+      return {top:r.top,left:r.left,width:r.width,height:r.height,screenW:innerWidth,screenH:innerHeight};
+    });
+    assert.ok(Math.abs(geometry.top)<3&&Math.abs(geometry.left)<3,
+      'World must start at top-left of screen: '+JSON.stringify(geometry));
+    assert.ok(Math.abs(geometry.width-geometry.screenW)<3&&Math.abs(geometry.height-geometry.screenH)<6,
+      'World must use the whole mobile viewport: '+JSON.stringify(geometry));
+    await page.locator('#gardenOpenTools').click();
+    assert.equal(await page.locator('#gardenToolsSheet').isVisible(),true,
+      'Corner tools must open without page scrolling');
     await page.locator('#gardenPlants').selectOption('稻米');
     await page.locator('#gardenAddPlant').click();
+    assert.equal(await page.locator('#gardenToolsSheet').isVisible(),false,
+      'Tools should collapse after an item is placed in the world');
     assert.equal(await page.locator('[data-stage-resident]').count(),1);
+    await page.locator('#gardenOpenTools').click();
     await page.locator('#gardenDecorTypes').selectOption('scarecrow');
     await page.locator('#gardenAddDecor').click();
     assert.equal(await page.locator('[data-stage-decor]').count(),1);
@@ -410,6 +416,7 @@ const server=http.createServer(async(req,res)=>{
     });
     await page.locator('[data-garden-hotspot="crop"]').click();
     assert.ok((await page.locator('#gardenExploreMessage').textContent()).length>5);
+    await page.locator('#gardenOpenTools').click();
     await page.locator('[data-self-care="water"]').click();
     assert.ok((await page.locator('#gardenSelfCareFeedback').textContent()).includes('喝一點水'),
       'Optional self-care needs a visible response');
@@ -418,6 +425,7 @@ const server=http.createServer(async(req,res)=>{
     const storedAfter=await page.evaluate(()=>localStorage.getItem('daily-pause-garden-v1'));
     assert.equal(storedAfter,storedBefore,'Self-care selections must never be tracked');
     await page.locator('[data-garden-light="night"]').click();
+    await page.locator('#gardenCloseTools').click();
     assert.equal(await page.locator('.garden-landscape').getAttribute('data-light'),'night');
     await page.reload({waitUntil:'load'});
     await page.waitForTimeout(500);
@@ -428,6 +436,7 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-choose-world="farm"]').click();
     assert.equal(await page.locator('[data-stage-resident]').count(),1);
     assert.equal(await page.locator('[data-stage-decor]').count(),1,'Decoration must survive reload');
+    await page.locator('#gardenOpenCareList').click();
     await page.locator('[data-resident]').first().click();
     assert.equal(await page.locator('[data-garden-action="harvest"]').count(),0,
       'Freshly planted crops must not be harvestable immediately');
@@ -445,6 +454,7 @@ const server=http.createServer(async(req,res)=>{
     await page.locator('[data-view="garden"]').click();
     await page.locator('#gardenSkipGate').click();
     await page.locator('[data-choose-world="farm"]').click();
+    await page.locator('#gardenOpenCareList').click();
     await page.locator('[data-resident]').first().click();
     await page.locator('[data-garden-action="harvest"]').click();
     const grown=await page.evaluate(()=>{
@@ -458,10 +468,12 @@ const server=http.createServer(async(req,res)=>{
 
     // Distinct care and species motion should be available in the actual stage,
     // without requiring motion to play when reduced-motion is enabled.
+    await page.locator('#gardenOpenTools').click();
     await page.locator('#gardenPets').selectOption('鴨');
     await page.locator('#gardenAddPet').click();
     const duck=page.locator('[data-stage-resident][data-behavior="duck"]');
     assert.equal(await duck.count(),1,'Duck must get its own motion profile');
+    await page.locator('#gardenOpenTools').click();
     await page.locator('#gardenPets').selectOption('狗');
     await page.locator('#gardenAddPet').click();
     const dog=page.locator('[data-stage-resident][data-behavior="dog"]');
@@ -474,7 +486,7 @@ const server=http.createServer(async(req,res)=>{
     assert.equal(await dog.locator('svg.garden-animal').evaluate(
       node=>getComputedStyle(node).animationName),'garden-dog-idle');
     const dogId=await dog.getAttribute('data-stage-resident');
-    await page.locator('[data-resident="'+dogId+'"]').click();
+    await page.locator('[data-stage-resident="'+dogId+'"]').click();
     const played=await page.evaluate(id=>{
       document.querySelector('[data-garden-action="play"]').click();
       const marker=document.querySelector('[data-stage-resident="'+id+'"]');
