@@ -373,3 +373,24 @@ test('immersive garden retains working controls in a mobile drawer',()=>{
    assert.ok(sw.includes('./'+rel));
  }
 });
+
+
+test('five approved garden world artworks match immutable image manifest and stay distinct',()=>{
+ const manifest=JSON.parse(read('media/garden-worlds/manifest.json'));
+ const crypto=require('node:crypto');
+ assert.equal(manifest.length,5);
+ assert.deepEqual(manifest.map(x=>x.id).sort(),['flowers','farm','forest','coast','park'].sort());
+ const ids=new Set(),hashes=new Set();
+ for(const item of manifest){
+   assert.ok(!ids.has(item.id),'Duplicate stage id');ids.add(item.id);
+   const raw=fs.readFileSync(path.join(root,item.path));
+   assert.equal(raw.length,item.size,'Asset bytes changed without manifest update: '+item.id);
+   const hash=crypto.createHash('sha256').update(raw).digest('hex');
+   assert.equal(hash,item.sha256,'Approved art mutated: '+item.id);
+   hashes.add(hash);
+   assert.equal(item.width,790);
+   assert.equal(item.height,1404);
+   assert.ok(item.approved_source.endsWith('.png'));
+ }
+ assert.equal(hashes.size,5,'Each world must use independent image content');
+});
