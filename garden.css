@@ -415,3 +415,132 @@
  .garden-selfcare-options{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.garden-selfcare-appear{animation:none!important}}
+
+
+/* 2026-10-17: distinct resident motions; no timers, no resident data mutations.
+   Motions respond inside the world, rather than only displaying an action icon. */
+.garden-stage-pet > .garden-animal,
+.garden-stage-plant > .garden-plant{
+  animation-delay:var(--garden-motion-delay,0s);
+  transform-origin:50% 85%;
+  will-change:transform;
+}
+.garden-stage-pet[data-behavior="cat"] > .garden-animal{
+  animation:garden-cat-idle 9.6s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="dog"] > .garden-animal{
+  animation:garden-dog-idle 7.8s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="rabbit"] > .garden-animal{
+  animation:garden-rabbit-idle 10.3s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="guinea"] > .garden-animal{
+  animation:garden-guinea-idle 7.1s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="chicken"] > .garden-animal{
+  animation:garden-chicken-idle 8.2s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="duck"] > .garden-animal{
+  animation:garden-duck-idle 8.7s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="cow"] > .garden-animal{
+  animation:garden-cow-idle 11.4s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+/* Staggered, non-competitive idle movement with longer periods of stillness. */
+@keyframes garden-cat-idle{0%,25%,55%,100%{transform:translateY(0) rotate(0)}35%{transform:rotate(-2deg)}72%{transform:translateY(-2px)}}
+@keyframes garden-dog-idle{0%,28%,65%,100%{transform:translateY(0)}42%{transform:translateY(-3px)}48%{transform:translateY(-1px)}}
+@keyframes garden-rabbit-idle{0%,52%,75%,100%{transform:translateY(0)}60%{transform:translateY(-8px)}66%{transform:translateY(-3px)}}
+@keyframes garden-guinea-idle{0%,37%,75%,100%{transform:translateX(0) rotate(0)}48%{transform:translateX(2px) rotate(2deg)}57%{transform:translateX(-2px)}}
+@keyframes garden-chicken-idle{0%,40%,64%,100%{transform:rotate(0)}46%{transform:rotate(5deg)}54%{transform:rotate(-3deg)}}
+@keyframes garden-duck-idle{0%,30%,62%,100%{transform:translateX(0) rotate(0)}38%{transform:translateX(3px) rotate(3deg)}48%{transform:translateX(-2px) rotate(-2deg)}}
+@keyframes garden-cow-idle{0%,40%,100%{transform:scale(1)}55%{transform:scale(1.016,.991)}75%{transform:scale(1.009,1)}}
+/* Keep leaf motion botanical, not the generic pet bob. */
+.garden-stage-plant[data-behavior="tree"] > .garden-plant,
+.garden-stage-plant[data-behavior="palm"] > .garden-plant{
+  animation:garden-canopy-idle 11s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="pine"] > .garden-plant{
+  animation:garden-pine-idle 13s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="spike"] > .garden-plant{
+  animation:garden-stem-idle 9s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="fruit"] > .garden-plant,
+.garden-stage-plant[data-behavior="flower"] > .garden-plant,
+.garden-stage-plant[data-behavior="leaf"] > .garden-plant{
+  animation:garden-leaf-idle 8.8s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+@keyframes garden-canopy-idle{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.2deg)}}
+@keyframes garden-pine-idle{0%,100%{transform:rotate(-.45deg)}50%{transform:rotate(.6deg)}}
+@keyframes garden-stem-idle{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.5deg)}}
+@keyframes garden-leaf-idle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+/* Each care gesture gets a distinct, brief body reaction; the existing VFX remains. */
+.garden-stage-resident[data-reaction="nibble"] > .garden-animal{
+  animation:garden-pet-nibble 1.15s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="play"] > .garden-animal{
+  animation:garden-pet-play 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-pet[data-behavior="rabbit"][data-reaction="play"] > .garden-animal{
+  animation:garden-rabbit-play 1.25s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-pet[data-behavior="duck"][data-reaction="play"] > .garden-animal,
+.garden-stage-pet[data-behavior="chicken"][data-reaction="play"] > .garden-animal{
+  animation:garden-bird-play 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="shake"] > .garden-animal{
+  animation:garden-pet-shake 1.1s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="rest"] > .garden-animal{
+  animation:garden-pet-rest 1.3s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="drink"] > .garden-plant{
+  animation:garden-plant-drink 1.25s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="tidy"] > .garden-plant{
+  animation:garden-plant-tidy 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="observe"] > .garden-plant{
+  animation:garden-plant-observe 1.2s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="harvest"] > .garden-plant{
+  animation:garden-plant-harvest 1.3s ease-out both;
+  animation-delay:0s;
+}
+@keyframes garden-pet-nibble{0%,100%{transform:translateY(0)}30%{transform:translateY(6px) rotate(2deg)}55%{transform:translateY(4px)}78%{transform:translateY(6px)}}
+@keyframes garden-pet-play{0%,100%{transform:translate(0,0)}32%{transform:translate(-3px,-10px) rotate(-4deg)}56%{transform:translate(3px,-4px) rotate(3deg)}}
+@keyframes garden-rabbit-play{0%,100%{transform:translateY(0)}25%{transform:translateY(-17px)}48%{transform:translateY(0)}65%{transform:translateY(-9px)}}
+@keyframes garden-bird-play{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(4px) rotate(6deg)}49%{transform:translateX(-5px) rotate(-5deg)}72%{transform:translateX(3px)}}
+@keyframes garden-pet-shake{0%,100%{transform:rotate(0)}17%,55%{transform:rotate(-5deg)}35%,75%{transform:rotate(5deg)}}
+@keyframes garden-pet-rest{0%,100%{transform:translateY(0) scale(1)}48%{transform:translateY(4px) scale(1.018,.97)}}
+@keyframes garden-plant-drink{0%,100%{transform:scale(1) rotate(0)}48%{transform:scale(1.04) rotate(-2deg)}}
+@keyframes garden-plant-tidy{0%,100%{transform:rotate(0)}35%{transform:rotate(-4deg)}65%{transform:rotate(3deg)}}
+@keyframes garden-plant-observe{0%,100%{transform:scale(1)}50%{transform:scale(1.028)}}
+@keyframes garden-plant-harvest{0%,100%{transform:scale(1) rotate(0)}35%{transform:scale(.97) rotate(-3deg)}64%{transform:scale(1.045) rotate(2deg)}}
+/* Respect motion preferences: fully still sprites remain visible and usable. */
+@media(prefers-reduced-motion:reduce){
+ .garden-stage-resident > .garden-animal,
+ .garden-stage-resident > .garden-plant,
+ .garden-stage-resident[data-reaction] > svg,
+ .garden-stage-resident .garden-tail{animation:none!important;transition:none!important;will-change:auto}
+}
