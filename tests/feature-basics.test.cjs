@@ -314,3 +314,37 @@ test('background micro-motion belongs to the background, not the user artwork',(
   }
   assert.equal(trace('blank','安靜',12000),'[]','Blank canvas stays blank');
 });
+
+
+test('species-specific garden motions and care reactions work without additional saved data',()=>{
+  const win={};load('garden-sprites.js',{window:win});
+  const sprites=win.PauseGardenSprites;
+  const species=['貓','狗','兔子','天竺鼠','雞','鴨','牛'];
+  const modes=species.map(s=>sprites.motionType(s,'pet'));
+  assert.equal(new Set(modes).size,species.length,'Each animal species needs distinct motion');
+  for(const [species,mode] of [['松樹','pine'],['椰子樹','palm'],
+      ['蘋果樹','tree'],['稻米','spike'],['草莓','fruit']]){
+    assert.equal(sprites.motionType(species,'plant'),mode);
+  }
+  for(const [name,reaction] of Object.entries({
+    feed:'nibble',play:'play',wash:'shake',rest:'rest',
+    water:'drink',care:'tidy',watch:'observe',harvest:'harvest'
+  }))assert.equal(sprites.reactionType(name),reaction);
+  assert.equal(sprites.reactionType('unknown'),'');
+  const css=read('garden.css');
+  for(const mode of modes){
+    assert.ok(css.includes('[data-behavior="'+mode+'"]'),mode+' missing CSS-specific motion');
+  }
+  for(const reaction of ['nibble','play','shake','rest','drink','tidy','observe','harvest']){
+    assert.ok(css.includes('[data-reaction="'+reaction+'"]'),reaction+' missing active response');
+  }
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)[^{]*\{[^]*?\.garden-stage-resident > \.garden-animal/);
+  const h=harness(null);
+  h.click('',{chooseWorld:'flowers'});
+  h.el('gardenPets').value='兔子';
+  h.click('gardenAddPet');
+  assert.match(h.el('gardenResidentsStage').innerHTML,/data-behavior="rabbit"/);
+  const stored=h.storage.get('daily-pause-garden-v1');
+  assert.ok(!stored.includes('motionType')&&!stored.includes('reactionType')&&!stored.includes('data-behavior'),
+    'Presentation-only motions must not change stored resident schema');
+});
