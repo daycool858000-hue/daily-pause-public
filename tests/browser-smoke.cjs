@@ -465,6 +465,9 @@ const server=http.createServer(async(req,res)=>{
     assert.ok(grown.lastHarvestAt>0);
     assert.equal(await page.locator('[data-garden-action="harvest"]').count(),0,
       'Plant must need time to regrow after harvest');
+    // Close the care bottom sheet before opening the separate world tools.
+    await page.locator('#gardenCloseCare').click();
+    assert.equal(await page.locator('#gardenCarePanel').isVisible(),false);
 
     // Distinct care and species motion should be available in the actual stage,
     // without requiring motion to play when reduced-motion is enabled.
