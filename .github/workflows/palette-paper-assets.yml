@@ -1,83 +1,38 @@
-name: Draft Palette 24 Paper Background Import
+name: Draft Palette 24 Paper Asset Integrity
 on:
   push:
     branches: [feature/companion-garden-palette-20261014]
     paths:
-      - '.github/workflows/palette-paper-assets.yml'
+      - 'media/palette-paper/**'
+      - 'media/palette-preview/**'
       - 'mood-scenery.js'
-      - 'palette-world.js'
-      - 'tests/feature-basics.test.cjs'
+      - '.github/workflows/palette-paper-assets.yml'
   workflow_dispatch:
 permissions:
-  contents: write
-concurrency:
-  group: palette-paper-import-${{ github.ref }}
-  cancel-in-progress: true
+  contents: read
 jobs:
-  import-paper-images:
-    if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+  verify-paper-assets:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-      - name: Download the supplied 24-canvas package
-        shell: bash
+      - name: Verify preserved paper assets without downloading or rewriting them
         run: |
-          curl --fail --location --retry 4 --retry-delay 3 --max-time 150 \
-            --output /tmp/palette-papers.zip \
-            'https://d2ol7oe51mr4n9.cloudfront.net/user_3Il0Flskfmv62vKn7W4MWtpznGX/95b5f247-265e-4e4e-acc3-c2d40492959c.zip'
-          echo '327014385424e8ceb094223240041906409da57c4d419205e5e9ab750b6264bc  /tmp/palette-papers.zip' | sha256sum --check
-      - name: Verify each source and extract only canvas images
-        shell: bash
-        run: |
-          python -m pip install --disable-pip-version-check pillow
-          python - <<'PY'
-          from pathlib import Path
-          from io import BytesIO
-          from PIL import Image
-          import zipfile,hashlib,json
-          path=Path('media/palette-paper')
-          path.mkdir(parents=True,exist_ok=True)
-          preview=Path('media/palette-preview')
-          preview.mkdir(parents=True,exist_ok=True)
-          manifest=[]
-          with zipfile.ZipFile('/tmp/palette-papers.zip') as archive:
-              doc=json.loads(archive.read('manifest.json'))
-              images=doc['images']
-              assert len(images)==24 and doc['image_count']==24
-              for n,item in enumerate(sorted(images,key=lambda x:x['number']),1):
-                  assert item['number']==n and item['type']=='canvases'
-                  source='canvases/webp/'+f'{n:02}.webp'
-                  assert item['optimized_webp']==source
-                  data=archive.read(source)
-                  sha=hashlib.sha256(data).hexdigest()
-                  assert sha==item['webp_sha256']
-                  with Image.open(BytesIO(data)) as img:
-                      assert img.format=='WEBP' and img.size==(1548,1016)
-                  output=path/f'{n:02}.webp'
-                  output.write_bytes(data)
-                  with Image.open(BytesIO(data)) as original:
-                      small=original.convert('RGB')
-                      small.thumbnail((480,315),Image.Resampling.LANCZOS)
-                      small.save(preview/f'{n:02}.webp','WEBP',quality=72,method=5)
-                  manifest.append({'number':n,'path':'media/palette-paper/'+f'{n:02}.webp',
-                                   'width':1548,'height':1016,'sha256':sha})
-          assert len({item['sha256'] for item in manifest})==24
-          (path/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
-          print('Verified 24 unique independent paper backgrounds; article images untouched.')
-          PY
-      - name: Check palette and prior-feature regression tests
-        run: node --test tests/feature-basics.test.cjs
-      - name: Archive 24 validated canvas assets on Draft branch only
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git branch --show-current)" = "feature/companion-garden-palette-20261014"
-          git add media/palette-paper/ media/palette-preview/
-          if ! git diff --cached --quiet; then
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -m "art(palette): import 24 verified independent paper backgrounds"
-            git push origin HEAD:refs/heads/feature/companion-garden-palette-20261014
-          fi
+          node <<'NODE'
+          const fs=require('node:fs');
+          const crypto=require('node:crypto');
+          const assert=require('node:assert/strict');
+          const manifest=JSON.parse(fs.readFileSync('media/palette-paper/manifest.json','utf8'));
+          assert.equal(manifest.length,24);
+          for(let i=1;i<=24;i++){
+            const id=String(i).padStart(2,'0');
+            const item=manifest.find(s=>s.number===i);
+            assert.ok(item);
+            assert.equal(item.path,'media/palette-paper/'+id+'.webp');
+            const raw=fs.readFileSync(item.path);
+            assert.equal(raw.subarray(0,4).toString(),'RIFF');
+            assert.equal(raw.subarray(8,12).toString(),'WEBP');
+            assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),item.sha256);
+            assert.ok(fs.statSync('media/palette-preview/'+id+'.webp').size>1000);
+          }
+          NODE
