@@ -455,6 +455,26 @@ const server=http.createServer(async(req,res)=>{
     assert.ok(grown.lastHarvestAt>0);
     assert.equal(await page.locator('[data-garden-action="harvest"]').count(),0,
       'Plant must need time to regrow after harvest');
+
+    // Distinct care and species motion should be available in the actual stage,
+    // without requiring motion to play when reduced-motion is enabled.
+    await page.locator('#gardenPets').selectOption('鴨');
+    await page.locator('#gardenAddPet').click();
+    const duck=page.locator('[data-stage-resident][data-behavior="duck"]');
+    assert.equal(await duck.count(),1,'Duck must get its own motion profile');
+    await page.locator('#gardenPets').selectOption('狗');
+    await page.locator('#gardenAddPet').click();
+    const dog=page.locator('[data-stage-resident][data-behavior="dog"]');
+    assert.equal(await dog.count(),1,'Dog must not inherit duck or cat animation');
+    const dogId=await dog.getAttribute('data-stage-resident');
+    await page.locator('[data-resident="'+dogId+'"]').click();
+    await page.locator('[data-garden-action="play"]').click();
+    assert.ok((await page.locator('#gardenCareFeedback').textContent()).includes('玩'),
+      'Playing with the animal must visibly acknowledge the action');
+    assert.equal(await page.evaluate(()=>JSON.stringify(
+      JSON.parse(localStorage.getItem('daily-pause-garden-v1')).items).includes('reactionType')),false,
+      'Motion profiles are presentation-only, never part of personal data');
+
     const width=await page.evaluate(()=>({
       scrollWidth:document.documentElement.scrollWidth,viewport:window.innerWidth
     }));
