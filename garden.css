@@ -728,3 +728,6 @@
  .garden-door,.garden-door-flash,#garden .garden-world-choice img{animation:none!important;transition:none!important}
  .garden-door-open .garden-door-flash{opacity:.9;transform:none}
 }
+
+#garden .garden-choices>h2{padding-right:98px}
+#garden .garden-choice-leave{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 3px);right:14px;border-radius:99px;padding:.55rem .85rem;min-height:40px;border:1px solid #a9bdab;background:#f8f9f1ed;color:#3e5d4d;box-shadow:0 3px 15px #31483533}
