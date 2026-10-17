@@ -161,9 +161,11 @@ test('five worlds have correct geographic visual references',()=>{
  assert.notEqual(sketch.draw('flowers'),sketch.draw('farm'));
  assert.notEqual(sketch.draw('farm'),sketch.draw('park'));
  const js=read('garden.js');
- assert.match(js,/scene-03\.webp/); // forest
- assert.match(js,/scene-02\.webp/); // coast
- assert.match(js,/id:'farm'[^]*?image:null/); // no greenhouse pretending to be a field
+ for(const id of ['flowers','farm','forest','coast','park'])
+   assert.ok(js.includes('media/garden-worlds/'+id+'.webp'),id+' needs an approved scene');
+ assert.ok(!js.includes('scene-03.webp')&&!js.includes('scene-02.webp'),
+   'Retired reference photographs must not be used');
+ assert.ok(js.includes('const sceneVariants={}'),'Legacy alternative images must not reappear');
 });
 
 function harness(saved){
@@ -347,4 +349,27 @@ test('species-specific garden motions and care reactions work without additional
   const stored=h.storage.get('daily-pause-garden-v1');
   assert.ok(!stored.includes('motionType')&&!stored.includes('reactionType')&&!stored.includes('data-behavior'),
     'Presentation-only motions must not change stored resident schema');
+});
+
+
+test('immersive garden retains working controls in a mobile drawer',()=>{
+ const html=read('index.html'),css=read('garden.css'),js=read('garden.js'),sw=read('sw.js');
+ for(const id of ['gardenWorldRoom','gardenOpenTools','gardenOpenCareList',
+   'gardenOpenAtmosphere','gardenCloseTools','gardenToolsSheet','gardenLeave','gardenLeaveChoices']){
+   assert.ok(html.includes('id="'+id+'"'),id);
+ }
+ assert.ok(html.includes('class="garden-door-flash"'));
+ assert.ok(!css.includes("background:url('./media/generated/scene-04.webp')"));
+ assert.ok(css.includes('#garden.view:not([hidden])'));
+ assert.ok(css.includes('height:100dvh'));
+ assert.ok(css.includes('#garden .garden-tools-sheet:not([hidden])'));
+ assert.ok(js.includes('sheetContent.appendChild(node)'));
+ assert.ok(js.includes("function openTools(selector)"));
+ for(const id of ['flowers','farm','forest','coast','park']){
+   const rel='media/garden-worlds/'+id+'.webp';
+   const raw=fs.readFileSync(path.join(root,rel));
+   assert.equal(raw.subarray(0,4).toString('ascii'),'RIFF');
+   assert.equal(raw.subarray(8,12).toString('ascii'),'WEBP');
+   assert.ok(sw.includes('./'+rel));
+ }
 });
