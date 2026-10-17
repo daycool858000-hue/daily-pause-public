@@ -86,39 +86,41 @@ test('old studies remain archived, but never used as new canvas backgrounds',()=
   for(const image of report.scenes)assert.equal(typeof image.sha256,'string');
 });
 
-test('eight distinct painterly scenery backgrounds have ink, pigment and layered depth',()=>{
+test('eight independent generated scenery files replace all retired SVG image sources and thumbnails',()=>{
   const win={};load('palette-place-scenes.js',{window:win});
   const scenes=win.PausePlaceScenes;
   assert.equal(scenes.items.length,8);
   const ids=scenes.items.map(item=>item[0]);
   assert.equal(new Set(ids).size,8);
   const urls=ids.map(id=>scenes.imageUrl(id));
-  assert.equal(new Set(urls).size,8,'Scenery must never reuse one composite picture');
+  assert.equal(new Set(urls).size,8,'Each scene must have its own bitmap');
   for(const id of ids){
-    const svg=scenes.svg(id);
-    assert.match(svg,/viewBox="0 0 960 630"/);
-    assert.match(svg,/filter="url\(#pigment\)"/);
-    assert.match(svg,/id="grain"/);
-    assert.match(svg,/id="glaze"/);
-    assert.ok(svg.length>12000,id+' must contain a painted environment');
-    assert.ok(urls[ids.indexOf(id)].startsWith('data:image/svg+xml;charset=utf-8,'));
+    const expected='./media/palette-scenes/'+id+'.webp';
+    assert.equal(scenes.imageUrl(id),expected);
+    assert.equal(scenes.thumbnailUrl(id),expected,'Thumbnail must show the same new scene, never an old SVG');
   }
-  assert.match(scenes.svg('mountain'),/url\(#lake\)/);
-  assert.match(scenes.svg('street'),/url\(#evening\)/);
-  // Final browser paints are rasterized once and bundled, never recomputed on every tap.
+  assert.equal(scenes.imageUrl('unavailable'),'');
+  assert.equal(scenes.thumbnailUrl('unavailable'),'');
+  const source=read('palette-place-scenes.js');
+  assert.ok(!source.includes('data:image/svg+xml'),'Old scenery generators must stay retired');
   const manifest=JSON.parse(read('media/palette-scenes/manifest.json'));
   assert.equal(manifest.length,8);
-  assert.deepEqual(manifest.map(x=>x.id).sort(),Array.from(ids).sort());
+  assert.deepEqual(manifest.map(s=>s.id).sort(),Array.from(ids).sort());
+  const hashes=new Set();
   for(const scene of manifest){
-    assert.match(scene.path,/^media\/palette-scenes\/[a-z]+\.webp$/);
+    assert.match(scene.path,/^media\\/palette-scenes\\/[a-z]+\\.webp$/);
     const raw=fs.readFileSync(path.join(root,scene.path));
     assert.equal(raw.subarray(0,4).toString('ascii'),'RIFF');
     assert.equal(raw.subarray(8,12).toString('ascii'),'WEBP');
     assert.equal(raw.length,scene.size);
     assert.equal(require('node:crypto').createHash('sha256').update(raw).digest('hex'),scene.sha256);
+    hashes.add(scene.sha256);
+    assert.equal(scene.width,960);assert.equal(scene.height,630);
   }
-  assert.match(read('palette-world.js'),/\.\/media\/palette-scenes\//);
+  assert.equal(hashes.size,8,'All eight images must contain unique content');
+  assert.match(read('palette-world.js'),/\\.\\/media\\/palette-scenes\\//);
 });
+
 test('natural shape marks move subtly, freeze when paused, and preserve mark input',()=>{
   const win={};load('world-art.js',{window:win});
   const brushes=win.PauseWorldArt;
