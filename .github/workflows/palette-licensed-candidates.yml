@@ -1,0 +1,37 @@
+name: Draft Independent CC0 Photo Alternatives
+on:
+  # Reuse is explicit only. The CC0 studies were a one-time review,
+  # not an approved substitute for bespoke emotion-palette artwork.
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  gather-draft-photographic-alternatives:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare dependencies
+        run: python -m pip install --disable-pip-version-check pillow requests
+      - name: Require confirmed CC0 license on each official file page and process images
+        run: python tools/palette/build_licensed_candidates.py
+      - name: Archive candidate assets on unmerged development branch, never main
+        if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p art-review/cc0-photography
+          cp art-review/licensed-photo-candidates/palette-photo-*.webp art-review/cc0-photography/
+          cp art-review/licensed-photo-candidates/source-manifest.json docs/PALETTE_CC0_PHOTO_ALTERNATIVES_20261015.json
+          git add art-review/cc0-photography/palette-photo-*.webp docs/PALETTE_CC0_PHOTO_ALTERNATIVES_20261015.json
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive licensed CC0 photo alternatives for visual review only"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - name: Package temporary review results
+        uses: actions/upload-artifact@v4
+        with:
+          name: palette-eight-cc0-photo-alternatives-unapproved
+          path: art-review/licensed-photo-candidates/
+          retention-days: 7
+          if-no-files-found: error

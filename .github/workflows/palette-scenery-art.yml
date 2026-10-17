@@ -1,0 +1,39 @@
+name: Draft Scenery Asset Integrity
+
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - 'palette-place-scenes.js'
+      - 'media/palette-scenes/**'
+      - '.github/workflows/palette-scenery-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-independent-scenes:
+    if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify eight archived independent generated WebP images
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs');
+          const crypto=require('node:crypto');
+          const assert=require('node:assert/strict');
+          const scenes=JSON.parse(fs.readFileSync('media/palette-scenes/manifest.json','utf8'));
+          assert.equal(scenes.length,8);
+          assert.equal(new Set(scenes.map(s=>s.id)).size,8);
+          for(const scene of scenes){
+            assert.match(scene.path,/^media\/palette-scenes\/[a-z]+\.webp$/);
+            const data=fs.readFileSync(scene.path);
+            assert.equal(data.subarray(0,4).toString(),'RIFF');
+            assert.equal(data.subarray(8,12).toString(),'WEBP');
+            assert.equal(data.length,scene.size);
+            assert.equal(crypto.createHash('sha256').update(data).digest('hex'),scene.sha256);
+          }
+          NODE

@@ -44,7 +44,7 @@
     {id:'somnium',title:'夢境輕語',kind:'music',src:'./media/audio/somnium.mp3',page:'https://opengameart.org/content/somnium',license:'CC0 1.0',artist:'Adiutorium',work:'夢境輕語',level:0.078},
     {id:'river-lapping',title:'細流輕拍',kind:'nature',src:'./media/audio/river-lapping.mp3',page:'https://opengameart.org/content/sea-and-river-wave-sounds',license:'CC0 1.0',artist:'RandomMind',work:'細流輕拍',level:0.055}
   ];
-  const areas=['today','read','curiosity','palette','holding'];
+  const areas=['today','read','curiosity','palette','garden','holding'];
   // Keep existing desktop output behavior. Audio files are now pre-normalized for softer iOS playback.
   // Desktop fine-pointer devices previously had volume levels as low as 0.052.
   const desktopAudio=window.matchMedia?.('(pointer: fine)')?.matches
@@ -289,8 +289,22 @@
         +'<a class="pause-sound-name" target="_blank" rel="noopener noreferrer">輕柔聲景</a>'
         +'<button data-sound-shuffle type="button" aria-label="隨機換一首背景聲" title="隨機">⤨</button>'
         +'<button data-sound-toggle type="button" aria-label="播放背景聲" title="播放或暫停" aria-pressed="false">▷</button>'
-        +'<span class="pause-sound-error">音源目前無法播放，按隨機換一首。</span>';
+        +'<button data-sound-save-offline type="button" aria-label="下載目前配樂供離線播放" title="儲存目前配樂供離線播放">↓</button>'
+        +'<span class="pause-sound-error">音源目前無法播放，按隨機換一首。</span>'
+        +'<span class="pause-sound-offline-hint" role="status" aria-live="polite"></span>';
       bar.querySelector('[data-sound-shuffle]').addEventListener('click',randomNext);
+      bar.querySelector('[data-sound-save-offline]').addEventListener('click',async e=>{
+        const button=e.currentTarget,status=bar.querySelector('.pause-sound-offline-hint');
+        const track=nowTrack()||tracks[0];
+        if(!window.PauseOfflineMusic){status.textContent='此瀏覽器暫不支援離線配樂';return;}
+        button.disabled=true;status.textContent='正在儲存「'+track.title+'」供離線播放…';
+        try{
+          await window.PauseOfflineMusic.save(track);
+          status.textContent='「'+track.title+'」已保留供這台裝置離線播放';
+        }catch(error){
+          status.textContent=error?.message||'離線儲存未成功，請重試';
+        }finally{button.disabled=false;}
+      });
       bar.querySelector('[data-sound-toggle]').addEventListener('click',()=>{
         if(active&&!active.audio.paused)pause();else enable();
       });

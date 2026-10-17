@@ -1,0 +1,59 @@
+name: Draft Original 3D Palette Atmosphere
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - tools/palette/render-original-cloud.py
+      - .github/workflows/palette-original-cloud.yml
+permissions:
+  contents: write
+jobs:
+  render-original-artwork:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender renderer and Pillow
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender xvfb libegl1 libgl1-mesa-dri libopengl0
+          python -m pip install --disable-pip-version-check Pillow
+      - name: Render genuinely original atmosphere without external imagery
+        run: |
+          mkdir -p art-review/original-3d
+          LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless xvfb-run -a blender --background --threads 2 --python tools/palette/render-original-cloud.py
+      - name: Convert 1920 x 1260 PNG to delivery WebP
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          import hashlib,json
+          from pathlib import Path
+          out=Path('art-review/original-3d')
+          src=out/'palette-cloud-original-v1.png'
+          with Image.open(src) as image:
+            assert image.size==(1920,1260),image.size
+            image.convert('RGB').save(out/'palette-cloud-original-v1.webp','WEBP',quality=90,method=6)
+          manifest={'format':'original Blender 3D scene rendered without any external image/texture/model input',
+            'source':'tools/palette/render-original-cloud.py',
+            'scene':'cloud','dimensions':[1920,1260],'license':'original composition',
+            'status':'development-stage visual review only',
+            'sha256':hashlib.sha256((out/'palette-cloud-original-v1.webp').read_bytes()).hexdigest()}
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
+          PY
+      - name: Archive original render for quality inspection only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p art-review/original-cloud
+          cp art-review/original-3d/palette-cloud-original-v1.webp art-review/original-cloud/
+          cp art-review/original-3d/manifest.json art-review/original-cloud/
+          git add art-review/original-cloud/
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): preserve standalone original 3D cloudscape for visual inspection"
+            git push origin "HEAD:refs/heads/feature/companion-garden-palette-20261014"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-3d-cloudscape-study
+          path: art-review/original-3d/
+          retention-days: 7

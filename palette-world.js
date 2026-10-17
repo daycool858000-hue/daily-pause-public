@@ -7,7 +7,7 @@
     ['安靜','room','微光停在房間裡。','☕','#c6a18d'],['疲倦','rain','外面的雨替屋內留了安靜。','☁','#9aa9b2'],
     ['悶住','cloud','窗外仍有空氣在流動。','◌','#b7bbc3'],['混亂','hill','風可以先吹過山坡。','≈','#a6b3aa'],
     ['想哭','rain','雨聲不要求你解釋。','☂','#94a9b9'],['孤單','night','燈還亮著，你可以待在這裡。','☾','#8499b4'],
-    ['想被陪著','room','這張椅子為你留著。','♡','#d3aa8a'],['想躲起來','library','角落裡有自己的距離。','▤','#aa9b8c'],
+    ['想被陪著','living','這張椅子為你留著。','♡','#d3aa8a'],['想躲起來','library','角落裡有自己的距離。','▤','#aa9b8c'],
     ['煩躁','balcony','風吹過陽台，沒有催促。','↝','#b49c8c'],['害怕','room','門和窗都能依自己的步調打開。','⌂','#cab8a7'],
     ['想念','lake','有些想念像水面，會慢慢散開。','○','#a6b5b5'],['心裡很滿','garden','花園留有尚未種滿的角落。','❀','#b8aa9b'],
     ['希望','sunrise','晨光總是從邊緣慢慢走進來。','☼','#d9b38a'],['期待','balcony','遠方的風剛好吹過。','✦','#dcb595'],
@@ -17,13 +17,13 @@
     ['想接近自然','garden','把目光借給一棵樹。','♧','#88a18d'],['需要勇氣','hill','路很長，也有停下的地方。','△','#c0aa93'],
     ['想慢一點','lake','湖面有自己的速度。','〜','#9ebbb7'],['想暖一點','room','有一盞燈為你亮著。','☀','#d2a780']
   ];
-  const scenes=[
-    ['room','晨光房間','窗光、茶與植物'],['sea','海邊','潮線與海風'],['rain','窗邊雨天','雨線與木桌'],
-    ['garden','小花園','草葉與細花'],['night','月光夜晚','夜色與微燈'],['island','慢慢的小島','海面與山影'],
-    ['balcony','黃昏陽台','藤椅與遠方'],['hill','霧中的山坡','山線與老樹'],
-    ['lake','湖邊','水面與山影'],['library','安靜書房','閱讀與溫熱茶氣'],
-    ['cloud','雲上','柔軟的空氣'],['sunrise','初醒時','窗與第一道光'],['blank','空白畫布','暖白紙張，自由創作']
-  ];
+  // Background numbers are purely visual choices; none assigns a prescribed emotion.
+  const scenes=Array.from({length:24},(_,i)=>{
+    const number=String(i+1).padStart(2,'0');
+    return ['paper-'+number,'畫布 '+number,'可以自由創作的紙質背景'];
+  });
+  // The landscape selector is separate from the 24 original paper canvas defaults.
+  const placeScenes=window.PausePlaceScenes?.items||[];
   const elements=[
     ['tree','樹木','♧'],['wave','海浪','≈'],['cloud','雲','☁'],['leaf','葉片','♧'],
     ['flower','小花','✿'],['petal','飄落花瓣','❀'],['star','星光','✧'],['rain','細雨','☂'],
@@ -49,16 +49,167 @@
     const root=$('paletteWorld'), canvas=$('worldCanvas'),wrap=$('worldStage'); if(!root||!canvas)return;
     const ctx=canvas.getContext('2d',{alpha:false}); if(!ctx)return;
     const art=window.PauseWorldArt; if(!art)return;
-    const W=art.W,H=art.H, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const model={mood:'安靜',scene:'room',marks:[],props:[],color:'#b78072',tool:'leaf',size:1,velocity:.5,paused:false,selected:null};
+    const W=art.W,H=art.H, motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+    let reduce=motionPreference.matches;
+    const model={mood:'安靜',scene:'paper-01',marks:[],props:[],color:'#b78072',tool:'pencil',size:1,velocity:.5,paused:false,selected:null,customScene:false};
     const effects=['light','mist','breeze','mist','rain','fireflies','light','light','breeze','light','ripples','petals',
       'sparkle','breeze','mist','leaves','light','petals','sparkle','ripples','leaves','breeze','ripples','light'];
-    let activeTab=null,pointer=null,frames=null,lastMoment=0;
+    let activeTab='brush',pointer=null,frames=null,lastMoment=0;
+    let lastBrush='pencil',lastElement='leaf';
+    const brushTools=[
+      ['pencil','鉛筆'],['ink','細線'],['wash','水彩'],['crayon','蠟筆'],
+      ['pastel','粉彩'],['marker','麥克筆'],['glow','柔光筆'],['eraser','橡皮擦']
+    ];
+    const brushTypes=new Set(brushTools.map(x=>x[0]));
+    const brushName=type=>brushTools.find(x=>x[0]===type)?.[1] || elements.find(x=>x[0]===type)?.[1] || type;
+    // The old landscape/image-restoration drafts are retired from all palette choices.
+    // All 24 choices below use the standalone paper WebP files, never article art.
+    const landscapeArt=Object.freeze(Object.fromEntries(
+      [...scenes.map(([id],i)=>[id,'./media/palette-paper/'+String(i+1).padStart(2,'0')+'.webp']),
+        ...placeScenes.map(([id])=>[id,'./media/palette-scenes/'+id+'.webp'])]
+    ));
+    // Reuse one scaled photograph surface across frames. Photos are otherwise
+    // resampled at every animation tick on high-DPI iPhones, even while untouched.
+    // Atmosphere and visitor-created layers are still rendered live on top.
+    const photoSurface=document.createElement('canvas');
+    photoSurface.width=W; photoSurface.height=H;
+    const photoCtx=photoSurface.getContext('2d',{alpha:false});
+    let lastScaledPhoto=null;
+    let lastScaledPhotoSrc='';
+    let renderingExport=false;
+    function drawCoverPhoto(image){
+      if(!image?.naturalWidth||!image?.naturalHeight)return false;
+      const scale=Math.max(W/image.naturalWidth,H/image.naturalHeight);
+      const width=image.naturalWidth*scale,height=image.naturalHeight*scale;
+      // PNG export renders the source 1548×1016 paper image into a 1920×1260 canvas.
+      // Never magnify the cached 960px preview into the exported PNG.
+      if(renderingExport){
+        ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+        return true;
+      }
+      if(photoCtx){
+        // Keep the cached surface at the actual display resolution, capped
+        // at 2x display resolution. Avoid a needless full-size texture on phones.
+        const resolution=Math.min(2,Math.max(1,canvas.width/W,canvas.height/H));
+        const tw=Math.round(W*resolution),th=Math.round(H*resolution);
+        if(photoSurface.width!==tw||photoSurface.height!==th){
+          photoSurface.width=tw;photoSurface.height=th;
+          lastScaledPhoto=null;
+          lastScaledPhotoSrc='';
+        }
+        // The same Image object can have its src replaced by a fallback.
+        // Compare the decoded source too, or a stale scene stays on canvas.
+        const identity=(image.currentSrc||image.src)+'#'+image.naturalWidth+'x'+image.naturalHeight;
+        if(lastScaledPhoto!==image||lastScaledPhotoSrc!==identity){
+          photoCtx.setTransform(resolution,0,0,resolution,0,0);
+          photoCtx.clearRect(0,0,W,H);
+          photoCtx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+          lastScaledPhoto=image;
+          lastScaledPhotoSrc=identity;
+        }
+        ctx.drawImage(photoSurface,0,0,W,H);
+      }else{
+        ctx.drawImage(image,(W-width)/2,(H-height)/2,width,height);
+      }
+      return true;
+    }
+    const landscapeCache=new Map();
+    const trimCache=(cache,limit,keep)=>{
+      if(cache.size<=limit)return;
+      for(const key of cache.keys()){
+        if(key===keep)continue;
+        cache.delete(key);
+        if(cache.size<=limit)break;
+      }
+    };
+    function drawBlankPaper(){
+      ctx.fillStyle='#f8f5ee';ctx.fillRect(0,0,W,H);
+      ctx.save();ctx.globalAlpha=.13;ctx.fillStyle='#b7a997';
+      for(let j=0;j<90;j++)ctx.fillRect((j*139.7)%W,(j*187.1)%H,1.1,1.1);
+      ctx.restore();
+    }
+    function landscapeState(scene){
+      const src=landscapeArt[scene];if(!src)return null;
+      if(landscapeCache.has(scene))return landscapeCache.get(scene);
+      const img=new Image();img.decoding='async';
+      const asset={img,ready:false,error:false};
+      landscapeCache.set(scene,asset);
+      trimCache(landscapeCache,8,scene);
+      img.onload=()=>{asset.ready=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
+      img.onerror=()=>{asset.error=true;if(model.scene===scene&&model.customScene)paint(performance.now(),true)};
+      img.src=src;
+      return asset;
+    }
+    function drawLandscape(scene,t){
+      const asset=landscapeState(scene);
+      if(!asset?.ready||asset.error||!drawCoverPhoto(asset.img))drawBlankPaper();
+    }
+    function primeScenePreviews(){
+      // Warm all eight static background assets before the scene panel opens.
+      placeScenes.forEach(([id],index)=>setTimeout(()=>landscapeState(id),160+index*120));
+    }
+
+    // 480px previews decode before interaction: no 1.5MP decode on every mood switch.
+    // Full-resolution originals are loaded only when the user saves a PNG.
+    const moodImageCache=new Map();
+    const exportMoodCache=new Map();
+    function moodImageState(name){
+      if(!window.PauseMoodScenes?.imageUrl)return null;
+      if(moodImageCache.has(name))return moodImageCache.get(name);
+      const original=window.PauseMoodScenes.imageUrl(name);if(!original)return null;
+      const src=original.replace('/media/palette-paper/','/media/palette-preview/');
+      const image=new Image();image.decoding='async';
+      const state={image,ready:false,failed:false};
+      moodImageCache.set(name,state);
+      image.onload=()=>{state.ready=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
+      image.onerror=()=>{state.failed=true;if(model.mood===name&&!model.customScene)paint(performance.now(),true)};
+      image.src=src;return state;
+    }
+    function exportMoodState(name){
+      if(exportMoodCache.has(name))return exportMoodCache.get(name);
+      const src=window.PauseMoodScenes?.imageUrl(name);
+      if(!src)return null;
+      const image=new Image();image.decoding='async';
+      const state={image,ready:false,failed:false};
+      exportMoodCache.set(name,state);
+      trimCache(exportMoodCache,2,name);
+      state.promise=new Promise(resolve=>{
+        image.onload=()=>{state.ready=true;resolve(true)};
+        image.onerror=()=>{state.failed=true;resolve(false)};
+      });
+      image.src=src;
+      return state;
+    }
+    function drawMoodBackground(name,t){
+      const preview=moodImageState(name);
+      const original=renderingExport?exportMoodCache.get(name):null;
+      if(original?.ready&&drawCoverPhoto(original.image))return;
+      if(preview?.ready&&drawCoverPhoto(preview.image))return;
+      drawBlankPaper();
+    }
+    function primeMoodPreviews(){
+      // Small staggered requests avoid UI/network contention while keeping every mood warm.
+      let next=0;
+      const batch=()=>{
+        for(let n=0;n<6&&next<moods.length;n++,next++)moodImageState(moods[next][0]);
+        if(next<moods.length)setTimeout(batch,95);
+      };
+      batch();
+    }
     const safeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const moodFor=()=>moods.find(x=>x[0]===model.mood)||moods[0];
     const currentProp=()=>model.props.find(x=>x.id===model.selected);
     const stampMessage=(message)=>window.dispatchEvent(new CustomEvent('pause:companion',{detail:{text:message,kind:'light'}}));
-    const history=window.createPaletteHistory({
+    // Every emotion owns its own composition and brush marks. Drawings are deliberately
+    // memory-only, matching the existing privacy contract: nothing is auto-uploaded or saved.
+    const workspaces=new Map();
+    const histories=new Map();
+    const snapshot=()=>({
+      scene:model.scene,customScene:model.customScene,marks:model.marks,props:model.props,
+      color:model.color,size:model.size
+    });
+    let history;
+    function createHistory(){return window.createPaletteHistory({
       read:()=>JSON.parse(JSON.stringify(model)),
       write:old=>{
         Object.assign(model,JSON.parse(JSON.stringify(old)));
@@ -67,34 +218,126 @@
       },
       onChange:state=>{ for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!state.canUndo; for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!state.canRedo; },
       limit:20
-    });
+    });}
+    history=createHistory();
+    histories.set(model.mood,history);
+    function switchMood(name){
+      if(name===model.mood)return;
+      const entry=moods.find(x=>x[0]===name);
+      if(!entry)return;
+      workspaces.set(model.mood,snapshot());
+      const next=workspaces.get(name) || {
+        scene:'paper-01',customScene:false,marks:[],props:[],color:entry[4],size:1
+      };
+      Object.assign(model,{...next,mood:name,selected:null});
+      if(!histories.has(name))histories.set(name,createHistory());
+      history=histories.get(name);
+      updateSelections();
+      paint(performance.now(),true);
+    }
     const change=fn=>{history.record();fn();updateSelections();paint(performance.now(),true);};
     function drawStroke(stroke) {
-      if(!stroke.coords.length)return;
+      if(!stroke.coords?.length||stroke.type==='eraser')return;
+      const pts=stroke.coords;
+      const unit=Math.max(.5,stroke.size);
       ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-      ctx.lineWidth=(stroke.type==='ink'?3:stroke.type==='pencil'?3.4:15)*stroke.size;
-      ctx.strokeStyle=stroke.color;ctx.globalAlpha=stroke.type==='wash'?.27:stroke.type==='pencil'?.68:.85;
-      ctx.beginPath();ctx.moveTo(stroke.coords[0][0],stroke.coords[0][1]);
-      for(const p of stroke.coords.slice(1))ctx.lineTo(p[0],p[1]);
-      if(stroke.coords.length===1){ctx.lineTo(stroke.coords[0][0]+.1,stroke.coords[0][1]+.1)}
+      ctx.strokeStyle=stroke.color;
+      const widths={ink:3,pencil:3.4,wash:24,crayon:12,pastel:22,marker:15,glow:20};
+      const alpha={ink:.95,pencil:.65,wash:.19,crayon:.84,pastel:.3,marker:.82,glow:.37};
+      ctx.lineWidth=(widths[stroke.type]||4)*unit;
+      ctx.globalAlpha=alpha[stroke.type]??.9;
+      if(stroke.type==='glow'){ctx.shadowColor=stroke.color;ctx.shadowBlur=24*unit;}
+      if(stroke.type==='pastel'){ctx.shadowColor=stroke.color;ctx.shadowBlur=11*unit;}
+      ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+      for(const [x,y] of pts.slice(1))ctx.lineTo(x,y);
+      if(pts.length===1)ctx.lineTo(pts[0][0]+.1,pts[0][1]+.1);
       ctx.stroke();
-      if(stroke.type==='wash'){ctx.lineWidth=stroke.size*25;ctx.globalAlpha=.075;ctx.stroke()}
+      if(stroke.type==='wash'){
+        ctx.lineWidth=unit*39;ctx.globalAlpha=.053;ctx.stroke();
+        ctx.lineWidth=unit*9;ctx.globalAlpha=.1;ctx.stroke();
+      }
+      // Deterministic rough pigment, not freshly randomized on every animation frame.
+      if(stroke.type==='crayon'||stroke.type==='pastel'){
+        let tick=0;ctx.globalAlpha=stroke.type==='crayon'?.22:.12;
+        for(let k=0;k<pts.length;k++){
+          const [x,y]=pts[k],r=(stroke.type==='crayon'?8:17)*unit;
+          for(let n=0;n<5;n++){
+            const a=(tick*2.3999632297)%6.28318530718;
+            const d=Math.sqrt((tick*0.61803398875)%1)*r;
+            ctx.fillStyle=stroke.color;
+            ctx.fillRect(x+Math.cos(a)*d,y+Math.sin(a)*d,stroke.type==='crayon'?2:3,2);
+            tick++;
+          }
+        }
+      }
       ctx.restore();
     }
-    function paint(time=0,still=false) {
+    function eraseAt(p){
+      const radius=16*model.size;
+      const next=[];
+      const near=([x,y])=>Math.hypot(x-p.x,y-p.y)<=radius;
+      for(const mark of model.marks){
+        if(mark.kind==='element'){
+          if(Math.hypot(mark.x-p.x,mark.y-p.y)>radius+(mark.size||0)*.25)next.push(mark);
+          continue;
+        }
+        const pts=mark.coords||[];
+        if(!pts.length)continue;
+        if(pts.length===1){if(!near(pts[0]))next.push(mark);continue;}
+        // Keep untouched segments as separate strokes. Sample long spans so
+        // a quick pointer gesture removes only the contacted part of the line.
+        let chunk=[];
+        const flush=()=>{
+          if(chunk.length)next.push({...mark,coords:chunk});
+          chunk=[];
+        };
+        for(let i=0;i<pts.length;i++){
+          if(i===0){
+            if(!near(pts[0]))chunk.push(pts[0]);
+            continue;
+          }
+          const a=pts[i-1],b=pts[i],length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+          const steps=Math.max(1,Math.ceil(length/Math.max(3,radius*.38)));
+          for(let k=1;k<=steps;k++){
+            const fraction=k/steps;
+            const point=[a[0]+(b[0]-a[0])*fraction,a[1]+(b[1]-a[1])*fraction];
+            if(near(point))flush();
+            else chunk.push(point);
+          }
+        }
+        flush();
+      }
+      // Never discard unrelated artwork if a heavily segmented erasure would
+      // exceed the editable-backup schema limit.
+      if(next.length<=500)model.marks=next;
+    }
+    function selectTool(tool){
+      if(brushTypes.has(tool)){lastBrush=tool;activeTab='brush'}
+      else{lastElement=tool;activeTab='element'}
+      model.tool=tool;updateSelections();
+    }
+    function paint(time=0,still=false,hideSelection=false) {
       const t=reduce||model.paused||still?0:time*model.velocity;
       ctx.save();ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
       if(model.scene==='blank'){
         ctx.fillStyle='#faf7f1';ctx.fillRect(0,0,W,H);
         ctx.save();ctx.globalAlpha=.15;ctx.fillStyle='#b4aa99';
         for(let j=0;j<80;j++){let x=(j*139.7)%W,y=(j*187.1)%H;ctx.fillRect(x,y,1.2,1.2)}ctx.restore();
-      }else art.drawScene(ctx,model.scene,t);
+      }else if(!model.customScene)drawMoodBackground(model.mood,t);
+      else drawLandscape(model.scene,t);
+      // Background-only breathing is rendered before emotion effects and artwork.
+      window.PauseCanvasBreathe?.paint(ctx,model.customScene?model.scene:'paper',model.mood,t);
       const m=moodFor(),special=m[0];
       const moodIndex=Math.max(0,moods.findIndex(item=>item[0]===special));
-      art.drawAtmosphere?.(ctx,{
-        scene:model.scene,moodTone:m[4],accent:model.color,index:moodIndex,
-        effect:effects[moodIndex]
-      },t);
+      if(window.PauseMoodAtmospheres?.paint){
+        window.PauseMoodAtmospheres.paint(ctx,model.mood,t,model.scene);
+      }else{
+        // Keep a fallback for loading errors; this is not the intended final renderer.
+        art.drawAtmosphere?.(ctx,{
+          scene:model.scene,moodTone:m[4],accent:model.color,index:moodIndex,
+          effect:effects[moodIndex]
+        },t);
+      }
       if(model.scene!=='blank' && ['想哭','疲倦','悶住','孤單'].includes(special)){
         ctx.fillStyle='rgba(60,72,86,.11)';ctx.fillRect(0,0,W,H);
       }
@@ -109,7 +352,7 @@
       }
       for(const item of model.props.slice().sort((a,b)=>a.z-b.z)) {
         art.drawProp(ctx,item,t);
-        if(item.id===model.selected && !still){
+        if(item.id===model.selected && !still && !hideSelection){
           ctx.save();ctx.strokeStyle='rgba(84,107,97,.55)';ctx.setLineDash([6,6]);ctx.lineWidth=1.5;
           ctx.strokeRect(item.x-66*item.scale,item.y-82*item.scale,132*item.scale,164*item.scale);ctx.restore();
         }
@@ -117,31 +360,50 @@
       ctx.restore();
     }
     const schedule=()=>{
-      if(frames!==null||document.hidden||$('palette').hidden||model.paused||reduce)return;
-      frames=requestAnimationFrame(t=>{frames=null;if(t-lastMoment>32){paint(t);lastMoment=t}schedule()});
+      if(pointer||frames!==null||document.hidden||$('palette').hidden||model.paused||reduce)return;
+      // Keep the large canvas responsive on phones, even while scenes animate.
+      const interval=(matchMedia('(max-width: 920px)').matches?90:55);
+      frames=requestAnimationFrame(t=>{frames=null;if(t-lastMoment>=interval){paint(t);lastMoment=t}schedule()});
     };
     const stop=()=>{if(frames!==null){cancelAnimationFrame(frames);frames=null}};
     function sizeCanvas(){
       const bounds=canvas.getBoundingClientRect();if(!bounds.width||!bounds.height)return;
-      const dpr=Math.min(window.devicePixelRatio||1,1.6);
-      canvas.width=Math.round(bounds.width*dpr);canvas.height=Math.round(bounds.height*dpr);
+      const dpr=Math.min(window.devicePixelRatio||1,1.5);
+      const w=Math.round(bounds.width*dpr),h=Math.round(bounds.height*dpr);
+      // Assigning canvas.width unconditionally clears the entire bitmap and state.
+      if(canvas.width===w&&canvas.height===h)return;
+      canvas.width=w;canvas.height=h;
       paint(performance.now(),true);
     }
     function renderChoices(){
+      // Use the exact same numbered paper images as the creation canvas.
+      const sceneThumbnail=id=>{
+        const src=window.PausePlaceScenes?.thumbnailUrl?.(id)||landscapeArt[id];if(!src)return '';
+        const safeSrc=src.replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/'/g,'%27');
+        return ' style="background-image:url('+safeSrc+');background-size:cover;background-position:center"';
+      };
       $('worldMoods').innerHTML=moods.map(([name,scene,description,symbol,color])=>
         '<button class="world-mood" type="button" data-mood="'+safeHtml(name)+'" style="--tone:'+color+'" aria-pressed="false"><span class="world-mood-symbol">'+symbol+'</span><strong>'+name+'</strong></button>'
       ).join('');
-      $('worldScenes').innerHTML=scenes.map(([id,name,description])=>
-        '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"></span><strong>'+name+'</strong><small>'+description+'</small></button>'
+      $('worldScenes').innerHTML='<button type="button" class="world-scene-button" data-scene-default="true" aria-pressed="true"><strong>原本畫布</strong><small>回到這張畫布原本的底圖</small></button>'+
+        placeScenes.map(([id,name,description])=>
+        '<button type="button" class="world-scene-button" data-scene="'+id+'" aria-pressed="false"><span class="scene-thumb scene-'+id+'"'+sceneThumbnail(id)+'></span><strong>'+name+'</strong><small>'+description+'</small></button>'
       ).join('');
       $('worldElements').innerHTML=elements.map(([id,name,symbol])=>'<button type="button" data-element="'+id+'" aria-pressed="false"><span>'+symbol+'</span>'+name+'</button>').join('');
       $('worldProps').innerHTML=props.map(([id,name,symbol])=>'<button type="button" data-prop="'+id+'" aria-label="加入'+name+'"><span>'+symbol+'</span>'+name+'</button>').join('');
+      const brushPanel=$('worldBrushPalette');
+      if(brushPanel)brushPanel.innerHTML=brushTools.map(([id,name])=>
+        '<button type="button" data-brush="'+id+'" aria-pressed="false">'+name+'</button>').join('');
       $('worldColors').innerHTML=swatches.map(c=>'<button type="button" data-color="'+c+'" style="--c:'+c+'" aria-label="選擇顏色 '+c+'" title="套用至下一筆 '+c+'"></button>').join('');
     }
     function updateSelections(){
       root.querySelectorAll('[data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mood===model.mood)));
-      root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===model.scene)));
+      root.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(model.customScene&&b.dataset.scene===model.scene)));
+      root.querySelectorAll('[data-scene-default]').forEach(b=>b.setAttribute('aria-pressed',String(!model.customScene)));
       root.querySelectorAll('[data-element]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.element===model.tool)));
+      root.querySelectorAll('[data-brush]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.brush===model.tool)));
+      const currentTool=$('worldCurrentTool');
+      if(currentTool)currentTool.textContent='目前工具：'+brushName(model.tool);
       root.querySelectorAll('[data-color]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===model.color)));
       $('worldCustomColor').value=model.color;
       $('worldActiveColorPreview').style.backgroundColor=model.color;
@@ -153,56 +415,105 @@
       const selection=currentProp();$('worldPropEditor').hidden=!selection;
       if(selection) $('worldPropName').textContent=props.find(p=>p[0]===selection.type)?.[1]||'生活物件';
       $('worldSceneLabel').textContent=moodFor()[2];
+      const workspaceStatus=$('worldWorkspaceStatus');
+      if(workspaceStatus)workspaceStatus.textContent='目前畫布：'+model.mood+'｜切換情緒會保留這次開啟時各自的創作';
       $('worldPause').textContent=model.paused?'恢復流動':'暫停流動';
       $('worldBrushSize').value=String(model.size);
+      // Each mood has a separate undo stack. Recalculate controls after switching,
+      // not just after drawing, or old mood history leaks into the current UI.
+      if(history) {
+        const canUndo=history.canUndo(),canRedo=history.canRedo();
+        for(const id of ['worldUndo','worldQuickUndo']) $(id).disabled=!canUndo;
+        for(const id of ['worldRedo','worldQuickRedo']) $(id).disabled=!canRedo;
+      }
       // No large tool drawer: each category is an inline collapsible panel.
     }
     function screenPosition(e){
       const rect=canvas.getBoundingClientRect();
-      return {x:(e.clientX-rect.left)/rect.width*W,y:(e.clientY-rect.top)/rect.height*H};
+      // Captured touches can drift outside the canvas. Keep exported coordinates valid.
+      const clamp=(v,limit)=>Math.max(0,Math.min(limit,v));
+      return {x:clamp((e.clientX-rect.left)/rect.width*W,W),
+        y:clamp((e.clientY-rect.top)/rect.height*H,H)};
     }
     function hitProp(pos){
       return model.props.slice().sort((a,b)=>b.z-a.z).find(item=>Math.abs(item.x-pos.x)<70*item.scale&&Math.abs(item.y-pos.y)<85*item.scale);
     }
     function createMark(pos){
       const t=model.tool;
-      if(['ink','pencil','wash'].includes(t)){
+      if(brushTypes.has(t)&&t!=='eraser'){
         const stroke={kind:'stroke',type:t,coords:[[pos.x,pos.y]],color:model.color,size:model.size};
         model.marks.push(stroke);return stroke;
       }
       const mark={kind:'element',type:t,x:pos.x,y:pos.y,size:Math.max(14,38*model.size),color:model.color,seed:Math.random()*9,speed:.6+Math.random()*.4};
       model.marks.push(mark);return mark;
     }
-    const canMark=()=>model.marks.length<260;
+    const canMark=()=>model.marks.length<500;
+    // Merge rapid touchmove events into a single render per animation frame.
+    let pendingPointerPaint=null;
+    const requestPointerPaint=()=>{
+      if(pendingPointerPaint!==null)return;
+      pendingPointerPaint=requestAnimationFrame(()=>{
+        pendingPointerPaint=null;
+        if(!document.hidden)paint(performance.now(),true);
+      });
+    };
     canvas.addEventListener('pointerdown',e=>{
       if(pointer||e.button>0)return;e.preventDefault();
-      const p=screenPosition(e);const prop=hitProp(p);
+      const p=screenPosition(e);// Furniture is draggable only while editing objects, so drawing over a sofa
+      // or cup remains a continuous brush stroke on mobile and desktop.
+      const prop=activeTab==='object' && model.tool!=='eraser'?hitProp(p):null;
       if(prop){model.selected=prop.id;pointer={id:e.pointerId,mode:'move',from:p,old:{...prop},recorded:false};}
-      else if(canMark()){
+      else if(model.tool==='eraser'){
+        history.record();model.selected=null;eraseAt(p);
+        pointer={id:e.pointerId,mode:'erase',from:p,last:p};
+      } else if(activeTab==='object'){
+        // Empty space in the object panel deselects; it must not stamp a brush.
+        model.selected=null;
+      } else if(canMark()){
         history.record();model.selected=null;let mark=createMark(p);
         pointer={id:e.pointerId,mode:'mark',from:p,mark,last:p};
-        
       }
+      if(pointer)stop(); // Avoid competing background frames while a finger or pen is drawing.
       try{canvas.setPointerCapture(e.pointerId)}catch(_){}
       updateSelections();paint(performance.now(),true);
     });
     canvas.addEventListener('pointermove',e=>{
       if(!pointer||pointer.id!==e.pointerId)return;e.preventDefault();
-      const p=screenPosition(e);
-      if(pointer.mode==='move'){
-        const item=currentProp();if(!item)return;
-        if(!pointer.recorded){if(Math.hypot(p.x-pointer.from.x,p.y-pointer.from.y)<5)return;history.record();pointer.recorded=true;}
-        item.x=pointer.old.x+p.x-pointer.from.x;item.y=pointer.old.y+p.y-pointer.from.y;
-      } else {
-        const d=Math.hypot(p.x-pointer.last.x,p.y-pointer.last.y);
-        if(d<11)return;
-        if(pointer.mark.kind==='stroke')pointer.mark.coords.push([p.x,p.y]);
-        else if(canMark()){pointer.mark=createMark(p)}
-        pointer.last=p;
+      // On iPhone, touchmove events may jump many pixels in one frame. Interpolate
+      // each segment so lines stay continuous and the eraser cannot skip a gap.
+      const events=typeof e.getCoalescedEvents==='function' ? e.getCoalescedEvents() : [];
+      const samples=events.length?events:[e];
+      for(const sample of samples){
+        const p=screenPosition(sample);
+        if(pointer.mode==='move'){
+          const item=currentProp();if(!item)return;
+          if(!pointer.recorded){if(Math.hypot(p.x-pointer.from.x,p.y-pointer.from.y)<5)continue;
+            history.record();pointer.recorded=true;}
+          item.x=pointer.old.x+p.x-pointer.from.x;item.y=pointer.old.y+p.y-pointer.from.y;
+        } else {
+          const from=pointer.last;
+          const length=Math.hypot(p.x-from.x,p.y-from.y);
+          const spacing=pointer.mode==='erase'?7:pointer.mark.kind==='stroke'?5:23;
+          if(length<spacing*.45)continue;
+          const steps=Math.ceil(length/spacing);
+          for(let i=1;i<=steps;i++){
+            const part={x:from.x+(p.x-from.x)*i/steps,y:from.y+(p.y-from.y)*i/steps};
+            if(pointer.mode==='erase')eraseAt(part);
+            else if(pointer.mark.kind==='stroke'){
+              if(pointer.mark.coords.length<3000)pointer.mark.coords.push([part.x,part.y]);
+            }else if(canMark())pointer.mark=createMark(part);
+          }
+          pointer.last=p;
+        }
       }
-      paint(performance.now(),true);
+      requestPointerPaint();
     });
-    const release=e=>{if(pointer?.id===e.pointerId){pointer=null;try{canvas.releasePointerCapture(e.pointerId)}catch(_){}updateSelections();schedule()}};
+    const release=e=>{if(pointer?.id===e.pointerId){
+      pointer=null;
+      if(pendingPointerPaint!==null){cancelAnimationFrame(pendingPointerPaint);pendingPointerPaint=null;}
+      try{canvas.releasePointerCapture(e.pointerId)}catch(_){}
+      paint(performance.now(),true);updateSelections();schedule();
+    }};
     canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
     function addProp(type){
       if(model.props.length>=45){return}
@@ -230,45 +541,197 @@
       const b=e.target.closest('button');if(!b)return;
       if(b.dataset.mood){
         const name=b.dataset.mood;
-        change(()=>{model.mood=name;model.scene=moods.find(x=>x[0]===name)[1];});
+        switchMood(name);
         stampMessage(moodFor()[2]);return;
       }
-      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;});return;}
-      if(b.dataset.element){model.tool=b.dataset.element;activeTab='element';updateSelections();return;}
+      if(b.dataset.sceneDefault){change(()=>{model.scene='paper-01';model.customScene=false;});return;}
+      if(b.dataset.scene){change(()=>{model.scene=b.dataset.scene;model.customScene=true;});return;}
+      if(b.dataset.element){selectTool(b.dataset.element);return;}
+      if(b.dataset.brush){selectTool(b.dataset.brush);return;}
       if(b.dataset.prop){addProp(b.dataset.prop);activeTab='object';updateSelections();return;}
       if(b.dataset.color){
         model.color=b.dataset.color;
         updateSelections();paint(performance.now(),true);return;
       }
-      if(b.dataset.worldTab){activeTab=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;updateSelections();return;}
+      if(b.dataset.worldTab){
+        const next=activeTab===b.dataset.worldTab?null:b.dataset.worldTab;
+        activeTab=next;
+        if(next==='element')model.tool=lastElement;
+        if(next==='brush')model.tool=lastBrush;
+        updateSelections();return;
+      }
       if(b.dataset.propAction){editProp(b.dataset.propAction);return;}
     });
     $('worldBrushSize').addEventListener('input',e=>model.size=Number(e.target.value));
     $('worldCustomColor').addEventListener('input',e=>{model.color=e.target.value;updateSelections();paint(performance.now(),true)});
-    $('worldBrushInk').addEventListener('click',()=>{model.tool='pencil';updateSelections()});
-    $('worldBrushWash').addEventListener('click',()=>{model.tool='wash';updateSelections()});
-    $('worldBrushLine').addEventListener('click',()=>{model.tool='ink';updateSelections()});
+    // Brush selection is delegated to the [data-brush] tools.
     $('worldUndo').addEventListener('click',()=>history.undo());
     $('worldQuickUndo').addEventListener('click',()=>history.undo());
     $('worldRedo').addEventListener('click',()=>history.redo());
     $('worldQuickRedo').addEventListener('click',()=>history.redo());
-    const clearWorld=()=>{
-      change(()=>{model.marks=[];model.props=[];model.selected=null});
-      
-    };
+    const clearWorld=()=>change(()=>{model.marks=[];model.props=[];model.selected=null});
+    const clearMarks=()=>change(()=>{model.marks=[];});
     $('worldClear').addEventListener('click',clearWorld);
     $('worldQuickClear').addEventListener('click',clearWorld);
+    $('worldClearMarks')?.addEventListener('click',clearMarks);
     $('worldPause').addEventListener('click',()=>{
       model.paused=!model.paused;updateSelections();
       if(model.paused){stop();paint(performance.now(),true)}else schedule();
     });
-    const downloadWorld=()=>{
-      paint(performance.now(),true);
+    // Portable editable backup: manually exported, never persisted or uploaded.
+    // PNG remains a separate final image, while JSON retains all 24 editable layers.
+    const backupStatus=$('worldBackupStatus');
+    const sayBackup=text=>{if(backupStatus)backupStatus.textContent=text};
+    const validColor=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
+    const finite=(x,min,max)=>Number.isFinite(x)&&x>=min&&x<=max;
+    const moodNames=new Set(moods.map(x=>x[0]));
+    const sceneNames=new Set([...scenes.map(x=>x[0]),...placeScenes.map(x=>x[0])]);
+    // Older editable JSON files remain readable; preserve strokes and objects.
+    const legacySceneNames=new Set(['room','living','sea','rain','garden','night','island',
+      'balcony','hill','lake','library','cloud','sunrise','blank']);
+    const elementNames=new Set(elements.map(x=>x[0]));
+    const propNames=new Set(props.map(x=>x[0]));
+    const strokeNames=new Set(brushTools.filter(x=>x[0]!=='eraser').map(x=>x[0]));
+    function cleanCanvas(raw){
+      if(!raw||typeof raw!=='object'||!(sceneNames.has(raw.scene)||legacySceneNames.has(raw.scene))||
+        !Array.isArray(raw.marks)||raw.marks.length>500||
+        !Array.isArray(raw.props)||raw.props.length>45||
+        !validColor(raw.color)||!finite(raw.size,.5,2.4))throw Error('invalid canvas');
+      const marks=raw.marks.map(mark=>{
+        if(!mark||typeof mark!=='object'||!validColor(mark.color))throw Error('invalid mark');
+        if(mark.kind==='stroke'){
+          if(!strokeNames.has(mark.type)||!finite(mark.size,.5,2.4)||
+            !Array.isArray(mark.coords)||mark.coords.length===0||mark.coords.length>3000||
+            !mark.coords.every(p=>Array.isArray(p)&&p.length===2&&
+              finite(p[0],-200,W+200)&&finite(p[1],-200,H+200)))throw Error('invalid stroke');
+          return {kind:'stroke',type:mark.type,color:mark.color,size:mark.size,
+            coords:mark.coords.map(p=>[p[0],p[1]])};
+        }
+        if(mark.kind==='element'){
+          if(!elementNames.has(mark.type)||!finite(mark.x,-200,W+200)||
+            !finite(mark.y,-200,H+200)||!finite(mark.size,1,150)||
+            !finite(mark.seed,0,10)||!finite(mark.speed,.1,2))throw Error('invalid element');
+          return {kind:'element',type:mark.type,x:mark.x,y:mark.y,size:mark.size,
+            color:mark.color,seed:mark.seed,speed:mark.speed};
+        }
+        throw Error('unsupported mark');
+      });
+      const cleanProps=raw.props.map(p=>{
+        if(!p||typeof p!=='object'||!propNames.has(p.type)||
+          typeof p.id!=='string'||p.id.length>90||p.id.length===0||
+          !finite(p.x,-1000,W+1000)||!finite(p.y,-1000,H+1000)||
+          !finite(p.scale,.1,3)||!finite(p.angle,-100,100)||
+          !finite(p.z,-100000,100000))throw Error('invalid object');
+        return {id:p.id,type:p.type,x:p.x,y:p.y,scale:p.scale,angle:p.angle,z:p.z};
+      });
+      if(new Set(cleanProps.map(p=>p.id)).size!==cleanProps.length)throw Error('duplicate objects');
+      return {scene:sceneNames.has(raw.scene)?raw.scene:'paper-01',
+        customScene:sceneNames.has(raw.scene)&&raw.customScene===true,
+        marks,props:cleanProps,color:raw.color,size:raw.size};
+    }
+    function exportEditable(){
       try{
-        const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
-        a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
-        
+        const all=new Map(workspaces);
+        all.set(model.mood,snapshot());
+        const canvases=moods.map(([name])=>
+          ({mood:name,...cleanCanvas(all.get(name)||{
+            scene:'paper-01',customScene:false,marks:[],props:[],
+            color:moods.find(x=>x[0]===name)[4],size:1
+          })}));
+        const doc={format:'today-pause-editable-palette',version:1,
+          exportedAt:new Date().toISOString(),activeMood:model.mood,canvases};
+        const blob=new Blob([JSON.stringify(doc)],{type:'application/json'});
+        const url=URL.createObjectURL(blob),a=document.createElement('a');
+        a.href=url;a.download='今日一息-24種情緒可編輯畫布.json';
+        a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+        sayBackup('已準備下載 24 張可編輯畫布備份；請確認檔案已儲存。');
+      }catch(_){sayBackup('備份沒有成功。請先保留頁面，不要重新整理。')}
+    }
+    function importEditable(file){
+      if(!file||file.size>12*1024*1024){
+        sayBackup('檔案超過 12 MB，未讀取也未更動現有畫布。');return;
+      }
+      file.text().then(raw=>{
+        const doc=JSON.parse(raw);
+        if(doc?.format!=='today-pause-editable-palette'||doc.version!==1||
+          !Array.isArray(doc.canvases)||doc.canvases.length!==24||
+          !moodNames.has(doc.activeMood))throw Error('wrong file');
+        const imported=new Map();
+        for(const item of doc.canvases){
+          if(!item||!moodNames.has(item.mood)||imported.has(item.mood))throw Error('duplicate mood');
+          imported.set(item.mood,cleanCanvas(item));
+        }
+        if(!window.confirm('匯入會取代這次開啟期間的 24 張畫布。請先匯出目前作品備份。確定匯入嗎？'))return;
+        workspaces.clear();histories.clear();
+        for(const [key,value] of imported)workspaces.set(key,value);
+        const selected=workspaces.get(doc.activeMood);
+        Object.assign(model,selected,{mood:doc.activeMood,selected:null});
+        history=createHistory();histories.set(doc.activeMood,history);
+        updateSelections();paint(performance.now(),true);schedule();
+        sayBackup('匯入成功：24 張情緒畫布已恢復，可繼續編輯。');
+      }).catch(()=>sayBackup('檔案內容不符或無法讀取；現有畫布保持不變。'));
+    }
+    $('worldExportEditable')?.addEventListener('click',exportEditable);
+    $('worldImportEditable')?.addEventListener('click',()=>$('worldImportFile')?.click());
+    $('worldImportFile')?.addEventListener('change',e=>{
+      const file=e.target.files?.[0];if(file)importEditable(file);
+      e.target.value='';
+    });
+    // Resolve the chosen mood or free-scenery bitmap before capture.
+    // Slow mobile image decoding must never silently export the SVG preview.
+    async function awaitBackdropReady(){
+      if(model.scene==='blank')return true;
+      if(!model.customScene){
+        const state=exportMoodState(model.mood);
+        if(!state||state.failed)return false;
+        if(state.ready)return true;
+        return Promise.race([state.promise,new Promise(resolve=>setTimeout(()=>resolve(false),12000))]);
+      }
+      drawLandscape(model.scene,0);
+      const state=landscapeCache.get(model.scene);
+      if(!state||state.error)return false;
+      if(state.ready)return true;
+      return new Promise(resolve=>{
+        const image=state.img;
+        const done=ok=>{clearTimeout(timer);image.removeEventListener('load',onload);image.removeEventListener('error',onerror);resolve(ok)};
+        const onload=()=>done(true),onerror=()=>done(false);
+        image.addEventListener('load',onload);image.addEventListener('error',onerror);
+        const timer=setTimeout(()=>done(false),12000);
+        if(state.ready)done(true);
+      });
+    }
+    let exportingWorld=false;
+    const downloadWorld=async()=>{
+      if(exportingWorld)return;
+      exportingWorld=true;
+      const expectedMood=model.mood,expectedScene=model.scene,expectedCustom=model.customScene;
+      try{
+        if(!await awaitBackdropReady()){
+          stampMessage('景觀圖片尚未載入完成，請稍後再儲存。');
+          return;
+        }
+        // A different mood may be selected while a slow bitmap loads.
+        if(expectedMood!==model.mood||expectedScene!==model.scene||expectedCustom!==model.customScene)return;
+        const originalSelection=model.selected;
+        const originalWidth=canvas.width,originalHeight=canvas.height;
+        model.selected=null;
+        try{
+          const captureTime=lastMoment||performance.now();
+          canvas.width=W*2;
+          canvas.height=H*2;
+          renderingExport=true;
+          paint(captureTime,false,true);
+          const a=document.createElement('a');a.href=canvas.toDataURL('image/png');
+          a.download='今日一息-情緒畫室-'+Date.now()+'.png';a.click();
+        }finally{
+          renderingExport=false;
+          canvas.width=originalWidth;
+          canvas.height=originalHeight;
+          model.selected=originalSelection;
+          paint(lastMoment||performance.now());
+        }
       }catch(_){stampMessage('圖片匯出沒有成功，請確認瀏覽器下載權限。')}
+      finally{exportingWorld=false;}
     };
     $('worldDownload').addEventListener('click',downloadWorld);
     $('worldQuickSave').addEventListener('click',downloadWorld);
@@ -278,11 +741,17 @@
       if(document.hidden||$('palette').hidden){stop();return}
       sizeCanvas();schedule();
     };
+    // Match the device's current accessibility setting without needing a reload.
+    motionPreference.addEventListener?.('change',event=>{
+      reduce=event.matches;
+      if(reduce){stop();paint(performance.now(),true)}
+      else {paint(performance.now(),true);schedule()}
+    });
     document.addEventListener('visibilitychange',onVisible);
     window.addEventListener('palette-view-change',onVisible);
     window.addEventListener('resize',onVisible);
     if('ResizeObserver' in window)new ResizeObserver(onVisible).observe(wrap);
-    renderChoices();updateSelections();sizeCanvas();schedule();
+    renderChoices();primeMoodPreviews();primeScenePreviews();updateSelections();sizeCanvas();schedule();
   }
   window.setupPaletteNew=init;
 })();

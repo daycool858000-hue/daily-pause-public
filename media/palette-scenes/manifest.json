@@ -1,0 +1,74 @@
+[
+  {
+    "id": "forest",
+    "path": "media/palette-scenes/forest.webp",
+    "sha256": "4ee08d0baee3b8c685f706a6128fba2391cb10c2e1fb0847d69e5f5a4216ae42",
+    "size": 26004,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "ocean",
+    "path": "media/palette-scenes/ocean.webp",
+    "sha256": "6ff2fb0d17c3521fd9f98db381c72d899971606560c741a188ad778e31d98da8",
+    "size": 15200,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "room",
+    "path": "media/palette-scenes/room.webp",
+    "sha256": "17ab620d7a255f7512d75b764832a9342955656b80f0fe39923acb8ce5116848",
+    "size": 20644,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "living",
+    "path": "media/palette-scenes/living.webp",
+    "sha256": "6f543e75376119c98cb2c906d5dafc747f9b3cb228fb1436b2cc3b16fe00f7ea",
+    "size": 16498,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "cafe",
+    "path": "media/palette-scenes/cafe.webp",
+    "sha256": "ba9f8623f3b6484ffbee42d6406289c9cdb95ade8f7164802e662ce6aa3488d4",
+    "size": 24000,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "park",
+    "path": "media/palette-scenes/park.webp",
+    "sha256": "f5eea3b8aad6e43ec1de985a1efd2c0891af1b98cc96f5a48c1af27421660783",
+    "size": 26418,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "street",
+    "path": "media/palette-scenes/street.webp",
+    "sha256": "ba2ae46200cef2722e19c9f6ace688abdb91b98bc0d47e564d4a5f757e5644ad",
+    "size": 22284,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  },
+  {
+    "id": "mountain",
+    "path": "media/palette-scenes/mountain.webp",
+    "sha256": "cb87ce12f4ef6ed6dc7ee2da79029edc83477a06271ab2448124992ef7cfe911",
+    "size": 24044,
+    "width": 960,
+    "height": 630,
+    "source": "Independent generated artwork, October 2026"
+  }
+]

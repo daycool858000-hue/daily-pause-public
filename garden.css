@@ -1,0 +1,753 @@
+/* 陪伴花園：第一階段手機優先互動骨架。正式寫實場景素材待獨立產製及驗收。 */
+.garden-view{max-width:1140px;margin:0 auto;padding:1.5rem 1.25rem 5rem;color:#574b43}
+.garden-intro h1{font-size:clamp(2rem,5vw,3.8rem);line-height:1.16;letter-spacing:.04em;margin:.4rem 0}
+.garden-intro p{max-width:700px;line-height:1.9;color:#756a60}
+.garden-gate{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:radial-gradient(circle at 55% 30%,#f5ddba,#bda58d 70%,#807369);overflow:hidden}
+.garden-gate[hidden],.garden-choices[hidden],.garden-room[hidden],.garden-care[hidden]{display:none!important}
+.garden-door-frame{width:min(74vw,405px);height:min(74vh,690px);max-height:640px;border:17px solid #b69877;border-bottom-width:5px;border-radius:210px 210px 8px 8px;box-shadow:0 0 0 10px #dbccb3,0 16px 70px #56443688;position:relative;background:linear-gradient(150deg,#e5cfad,#8fae95 66%,#648775);perspective:900px;overflow:hidden}
+.garden-door-glimpse{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,#fffef8,#f9e8c9 44%,#8caa98)}
+.garden-door-leaf{position:absolute;width:34px;height:70px;border-radius:90% 2%;background:#80988488;filter:blur(2px);animation:garden-leaves 5s ease-in-out infinite alternate}
+.garden-door-leaf.a{left:5%;top:10%}.garden-door-leaf.b{right:8%;top:35%;animation-delay:1.2s}
+.garden-door{position:absolute;inset:0;border:2px solid #c9ad88;border-radius:205px 205px 5px 5px;background:linear-gradient(100deg,#97775c,#cfad83 32%,#ad8564 65%,#957155);box-shadow:inset 22px 0 38px #704f3480,inset -18px 0 32px #f2d7a066;transform-origin:left center;transition:transform .7s ease}
+.garden-door:after{content:'';position:absolute;right:11%;top:53%;width:23px;height:23px;border:4px solid #dfc08c;border-radius:50%;box-shadow:0 0 0 3px #80684c}
+.garden-door-open .garden-door{transform:rotateY(-98deg)}
+.garden-gate-title{position:absolute;bottom:9%;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.garden-gate-title button{border:1px solid #e6ddd1;color:#3e554b;background:#faf6ec;padding:.8rem 2.2rem;border-radius:99px;font:inherit;font-weight:600;cursor:pointer}
+.garden-gate-title .garden-skip{font-size:.85rem;background:transparent;color:#fff;border-color:#fffc}
+.garden-gate-title strong{color:#fff9e8;letter-spacing:.1em;text-shadow:0 2px 10px #42352c}
+.garden-choices{margin-top:1.5rem}
+.garden-world-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}
+.garden-world-choice{border:1px solid #d9ccba;border-radius:22px;overflow:hidden;text-align:left;background:#fffbf4;padding:0;cursor:pointer;box-shadow:0 5px 22px #76665413;color:#524c44}
+.garden-world-choice img{display:block;object-fit:cover;width:100%;aspect-ratio:16/9}
+.garden-world-choice span{display:flex;flex-direction:column;gap:4px;padding:1rem}
+.garden-world-choice strong{font-size:1.17rem}.garden-world-choice small{font-size:.88rem;color:#81756b}
+.garden-world-choice:focus-visible,.garden-view button:focus-visible{outline:3px solid #648a7a;outline-offset:3px}
+.garden-room{margin-top:1.7rem}
+.garden-room-header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:.9rem}
+.garden-room-header h2{margin:.2rem 0;font-size:1.8rem}
+.garden-room-header p{margin:0;color:#756a60}
+.garden-view button:not(.garden-world-choice):not(.garden-resident):not(.garden-gate button){font:inherit;cursor:pointer}
+.garden-soft-button,.garden-add-button,.garden-care-actions button{padding:.7rem 1.1rem;border-radius:99px;border:1px solid #c7c9b9;background:#faf9f3;color:#52695e}
+.garden-add-button{background:#567d70!important;color:white!important;border-color:#567d70!important}
+.garden-landscape{position:relative;min-height:340px;aspect-ratio:16/9;max-height:650px;overflow:hidden;border-radius:26px;isolation:isolate;box-shadow:0 15px 40px #73685827}
+.garden-backdrop{position:absolute;inset:0;background-position:center;background-size:cover;transform:scale(1.035);animation:garden-breeze 14s ease-in-out infinite alternate;z-index:-1}
+.garden-landscape:after{content:'';pointer-events:none;position:absolute;inset:0;background:linear-gradient(0deg,#283b3199,transparent 48%)}
+.garden-landscape-message{position:absolute;bottom:1.2rem;left:1.4rem;color:white;z-index:1;text-shadow:0 1px 8px #122a27}
+.garden-pop .garden-backdrop{animation:garden-breeze 1.2s ease-in-out}
+.garden-controls{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+.garden-control-box,.garden-residents-box,.garden-care{background:#fffcf5;border:1px solid #e0d7c9;border-radius:21px;padding:1.2rem}
+.garden-control-box h3,.garden-residents-box h3{margin:.15rem 0 .8rem}
+.garden-control-box select{min-width:0;width:100%;padding:.7rem;border-radius:12px;border:1px solid #c9cbbf;background:#fff;color:#4a554e;font:inherit;margin-bottom:.7rem}
+.garden-residents-box{margin-top:1.4rem}
+.garden-residents{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+.garden-resident{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;min-height:112px;border:1px solid #d3d6c8;border-radius:14px;background:#f7f8f1;padding:.7rem;cursor:pointer;color:#4d6056}
+.garden-resident-icon{font-size:2.1rem}.garden-resident small{font-size:.76rem;color:#79877c}
+.garden-empty{color:#807568;line-height:1.8}
+.garden-care{margin-top:1rem}
+.garden-care-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.garden-care-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+.garden-care label{display:block;margin-bottom:.35rem}
+.garden-care textarea{box-sizing:border-box;width:100%;padding:.8rem;min-height:78px;border-radius:12px;border:1px solid #cdd3c6;resize:vertical;background:white;font:inherit;color:#4d554e}
+.garden-care-feedback{line-height:1.8;min-height:2em;color:#557a6e}
+.garden-backup{display:flex;flex-wrap:wrap;gap:.75rem;margin:1.2rem 0}
+.garden-note{color:#8a7c6b;font-size:.86rem;line-height:1.8}
+.garden-pulse{animation:garden-feedback .7s ease}.garden-save-state{font-size:.8rem;color:#648478}
+@keyframes garden-breeze{to{transform:scale(1.07) translateX(-1%)}}
+@keyframes garden-leaves{to{transform:translateY(14px) rotate(8deg)}}
+@keyframes garden-feedback{from{opacity:.1;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:620px){.garden-view{padding:1rem .85rem 4rem}.garden-world-grid{grid-template-columns:1fr}.garden-landscape{min-height:220px;aspect-ratio:4/3}.garden-controls{grid-template-columns:1fr}.garden-residents{grid-template-columns:repeat(2,minmax(0,1fr))}.garden-gate-title{bottom:5%}.garden-door-frame{height:min(70vh,610px);width:min(80vw,405px)}}
+@media(prefers-reduced-motion:reduce){.garden-door,.garden-backdrop,.garden-door-leaf,.garden-pulse{transition:none!important;animation:none!important}}
+/* Shared mobile navigation: seven destinations must not push the viewport wider. */
+@media(max-width:640px){
+ .site-nav{flex-wrap:wrap;justify-content:center;gap:3px 5px}
+ .site-nav .nav-link{flex:0 0 auto;padding:8px 11px;min-height:38px}
+ .garden-view .garden-intro h1{font-size:2.25rem}
+}
+.world-tool-current{display:inline-flex;align-items:center;margin:.3rem 0 .75rem;padding:.4rem .8rem;border-radius:20px;background:#edf0e8;color:#52766a;font-size:.85rem}
+.world-brushes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem}
+.world-brushes button{min-height:44px}
+.world-brushes button[aria-pressed="true"]{background:#deeae3;border-color:#5e9381;color:#3e6356;box-shadow:inset 0 0 0 1px #5e9381}
+@media(max-width:420px){.world-brushes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Positionable living residents inside the environment. */
+.garden-residents-stage{position:absolute;inset:0;z-index:2;pointer-events:none}
+.garden-stage-resident{position:absolute;transform:translate(-50%,-85%);z-index:2;
+ width:clamp(65px,11vw,122px);height:clamp(72px,12vw,130px);border:0;background:transparent;
+ padding:0;pointer-events:auto;touch-action:none;cursor:grab;filter:drop-shadow(0 5px 5px #263c333c);
+ transition:filter .2s ease,scale .2s ease}
+.garden-stage-resident:hover,.garden-stage-resident:focus-visible{scale:1.08;filter:drop-shadow(0 7px 7px #263c3370)}
+.garden-stage-resident:active{cursor:grabbing}
+.garden-stage-resident svg{width:100%;height:100%;overflow:visible;pointer-events:none}
+.garden-stage-resident[data-activity] svg{animation:garden-welcome .9s ease-in-out}
+.garden-animal{animation:garden-nap 4.8s ease-in-out infinite}
+.garden-tail{transform-box:fill-box;transform-origin:top left;animation:garden-tail 3.1s ease-in-out infinite alternate}
+.garden-plant{transform-origin:50% 100%;animation:garden-leaf 5.8s ease-in-out infinite alternate}
+.garden-landscape-message{pointer-events:none;z-index:3}
+.garden-stage-resident:focus-visible{outline:3px solid #f5e7bb;outline-offset:2px;border-radius:18px}
+@keyframes garden-nap{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes garden-tail{0%{transform:rotate(-9deg)}100%{transform:rotate(12deg)}}
+@keyframes garden-leaf{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes garden-welcome{0%,100%{transform:scale(1)}40%{transform:scale(1.16) translateY(-9px)}70%{transform:scale(.97)}}
+@media(max-width:620px){
+ .garden-stage-resident{width:clamp(48px,17vw,92px);height:clamp(57px,19vw,102px)}
+}
+@media(prefers-reduced-motion:reduce){.garden-stage-resident,.garden-animal,.garden-tail,.garden-plant,.garden-stage-resident[data-activity] svg{transition:none!important;animation:none!important}}
+
+/* Action-specific caring response in the scene, not text alone. */
+.garden-action-vfx{position:absolute;left:55%;top:6%;width:44px;height:44px;z-index:5;pointer-events:none;
+ filter:drop-shadow(0 2px 3px #40514440);animation:garden-effect-rise 1.4s ease-out both}
+.garden-action-vfx svg{display:block}
+@keyframes garden-effect-rise{
+  0%{transform:translate(-50%,5px) scale(.55);opacity:0}
+  18%{transform:translate(-50%,-10px) scale(1.05);opacity:1}
+  65%{opacity:1}
+  100%{transform:translate(-50%,-47px) scale(1.18);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){.garden-action-vfx{animation:none!important;opacity:1}}
+
+.garden-care-nickname{margin-top:.6rem;padding:.7rem .85rem;background:#f5f5ed;border-radius:13px}
+.garden-care-nickname label{font-size:.87rem;color:#657d6d}
+.garden-care-nickname>div{display:flex;align-items:center;gap:.55rem}
+.garden-care-nickname input{min-width:0;flex:1;max-width:280px;border-radius:9px;border:1px solid #c7cabe;
+ padding:.7rem .8rem;font:inherit;background:#fffefb;color:#47584f}
+@media(max-width:460px){.garden-care-nickname>div{flex-wrap:wrap}.garden-care-nickname input{max-width:none;flex-basis:100%}}
+
+/* The following three environments have no accurate generated artwork yet.
+   Do not silently replace a field with a greenhouse or a public park with a private temple. */
+.garden-world-choice .garden-world-preview{
+  display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;
+  aspect-ratio:16/9;margin:0;padding:.75rem;background:#dbe7db;color:#516c5d
+}
+.garden-world-choice .garden-world-preview>span{
+  display:inline-block;flex:none;padding:.4rem .75rem;background:#fffdf3e3;
+  border:1px solid #f4ecdd;border-radius:99px;font-size:.8rem;line-height:1.45
+}
+.garden-world-preview-flowers{
+  background:radial-gradient(ellipse at 18% 88%,#b4bfa5 0 15%,transparent 16%),
+  radial-gradient(ellipse at 87% 78%,#c4b7a2 0 18%,transparent 19%),
+  linear-gradient(#f4dfca 0 39%,#a9bba0 40% 53%,#809e83 54% 100%)!important
+}
+.garden-world-preview-farm{
+  background:repeating-linear-gradient(109deg,#8da079 0 10px,#abb88b 11px 20px,#aa9476 21px 24px),
+    linear-gradient(#e7dbbd,#b7c9b1)!important
+}
+.garden-world-preview-park{
+  background:radial-gradient(ellipse at 10% 21%,#88a17e 0 19%,transparent 20%),
+   radial-gradient(ellipse at 90% 28%,#8fa984 0 20%,transparent 21%),
+   linear-gradient(#d8e1d4 0 46%,#b5c1a7 47% 64%,#8b9f87 65% 100%)!important
+}
+.garden-landscape.garden-scene-pending{border:1px dashed #b9c8b7}
+.garden-landscape.garden-scene-pending .garden-backdrop{filter:saturate(.7)}
+
+/* A distinct, geographically correct SVG environment replaces the fallback bands,
+   while remaining explicitly provisional until realistic scene art is approved. */
+.garden-backdrop.garden-has-original-art,
+.garden-backdrop.garden-has-original-art[data-area="flowers"],
+.garden-backdrop.garden-has-original-art[data-area="farm"],
+.garden-backdrop.garden-has-original-art[data-area="park"]{
+  background:none!important;filter:none!important
+}
+.garden-environment-art{
+  display:block;width:100%;height:100%;
+  object-fit:cover;pointer-events:none;
+}
+.garden-backdrop.garden-has-original-art{
+  transform:scale(1.025);animation:garden-breeze 15s ease-in-out infinite alternate;
+}
+@media(prefers-reduced-motion:reduce){
+ .garden-backdrop.garden-has-original-art{transform:none;animation:none}
+}
+
+/* Gentle, optional micro-interactions within each environment. */
+.garden-hotspots{position:absolute;inset:0;z-index:3;pointer-events:none}
+.garden-hotspot{
+ position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;
+ justify-content:center;flex-direction:column;gap:3px;width:64px;min-height:50px;
+ border:1px solid #fff8e5aa;border-radius:100px;background:#2d504444;
+ color:#fff8e8;cursor:pointer;pointer-events:auto;text-shadow:0 1px 4px #23463f;
+ backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+ box-shadow:0 3px 16px #172d2820;
+}
+.garden-hotspot span{font-size:1.2rem;line-height:1}
+.garden-hotspot small{font-size:.66rem;line-height:1.15;white-space:nowrap}
+.garden-hotspot:focus-visible{outline:3px solid #fff8d5;outline-offset:4px}
+.garden-hotspot-active{background:#5c8476a0}
+.garden-hotspot-active:after{
+ content:attr(data-effect-label);position:absolute;top:-.5rem;left:50%;
+ transform:translateX(-50%);font-size:2.6rem;color:#fff0c5;
+ text-shadow:0 3px 9px #38584a;pointer-events:none;
+ animation:garden-discovery 1.5s ease-out both;
+}
+.garden-explore-message{
+ position:absolute;z-index:5;left:50%;top:8%;transform:translateX(-50%);
+ width:min(85%,480px);padding:.8rem 1.2rem;text-align:center;
+ background:#fdfaf1e8;color:#4e665a;line-height:1.65;
+ border:1px solid #e2e4d7;border-radius:100px;box-shadow:0 8px 25px #324a462a;
+ pointer-events:none;font-size:.84rem;
+}
+.garden-explore-message[hidden]{display:none}
+@keyframes garden-discovery{
+ 0%{opacity:0;transform:translate(-50%,7px) scale(.5)}
+ 25%{opacity:1;transform:translate(-50%,-16px) scale(1)}
+ 80%{opacity:1}
+ 100%{opacity:0;transform:translate(-50%,-60px) scale(1.4)}
+}
+@media(max-width:620px){
+ .garden-hotspot{width:49px;min-height:45px}
+ .garden-hotspot small{font-size:.59rem}
+ .garden-explore-message{font-size:.73rem;padding:.65rem .9rem;border-radius:17px}
+}
+@media(prefers-reduced-motion:reduce){.garden-hotspot-active:after{animation:none;top:-.6rem;opacity:1}}
+
+/* Changeable lighting without reloading the environment or its inhabitants. */
+.garden-light-control{
+ display:flex;align-items:center;justify-content:space-between;gap:1rem;
+ flex-wrap:wrap;margin-top:.8rem;padding:.75rem 1rem;border:1px solid #e0d9c9;
+ border-radius:17px;background:#fffcf6;color:#6b675d;font-size:.88rem;
+}
+.garden-light-choices{display:flex;gap:.4rem;flex-wrap:wrap}
+.garden-light-choices button{
+ border:1px solid #ddd2c2;background:#fffdf9;color:#72685c;cursor:pointer;
+ border-radius:999px;padding:.55rem .85rem;min-height:40px;font:inherit;font-size:.82rem;
+}
+.garden-light-choices button[aria-pressed="true"]{
+ border-color:#7d9b87;background:#e4eee5;color:#3f6454;box-shadow:inset 0 0 0 1px #7d9b87;
+}
+.garden-landscape:before{
+ content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+ transition:background .65s ease;
+}
+.garden-landscape[data-light="morning"]:before{
+ background:linear-gradient(120deg,#ffeabb5a 0%,#fff1d31d 50%,transparent 85%);
+}
+.garden-landscape[data-light="day"]:before{background:transparent}
+.garden-landscape[data-light="dusk"]:before{
+ background:linear-gradient(125deg,#c47e5830 0%,#ebaf6544 45%,#69566b33 100%);
+}
+.garden-landscape[data-light="night"]:before{
+ background:linear-gradient(145deg,#23385298 0%,#364a6f90 52%,#121d3555 100%);
+}
+.garden-landscape[data-light="night"] .garden-stage-resident{
+ filter:drop-shadow(0 1px 10px #f7d38c55);
+}
+@media(max-width:420px){
+ .garden-light-control{padding:.65rem .7rem}
+ .garden-light-choices{gap:.25rem}
+ .garden-light-choices button{padding:.5rem .67rem}
+}
+@media(prefers-reduced-motion:reduce){.garden-landscape:before{transition:none!important}}
+
+/* Editable emotion-canvas backups use the existing palette design tokens. */
+.world-v2 .world-backup-status{
+  margin-top:.75rem;min-height:1.8em;color:#55776b;font-size:.8rem;
+  line-height:1.7;
+}
+.world-v2 #worldExportEditable,.world-v2 #worldImportEditable{
+  background:#e8eee5;color:#4d6c5c;border:1px solid #aec5b6;
+}
+.world-v2 #worldExportEditable:focus-visible,.world-v2 #worldImportEditable:focus-visible{
+  outline:3px solid #5c8879;outline-offset:3px;
+}
+
+/* Existing locally saved life must never be erased by parsing errors. */
+.garden-recovery[hidden]{display:none!important}
+.garden-recovery{
+ margin:1rem 0;padding:1.25rem;
+ background:#fff5e5;color:#73553c;border:2px solid #dcbf8a;border-radius:19px;
+}
+.garden-recovery h3{margin:.1rem 0 .5rem;font-size:1.12rem}
+.garden-recovery p{margin:.3rem 0 1rem;line-height:1.8}
+.garden-recovery-actions{display:flex;flex-wrap:wrap;gap:.7rem}
+.garden-recovery-actions button{font:inherit;border:1px solid #bd9b71;background:#fffdf7;
+ color:#705c48;border-radius:999px;padding:.8rem 1rem;cursor:pointer}
+.garden-recovery-actions button:focus-visible{outline:3px solid #ac7c4e;outline-offset:3px}
+
+/* Personal furnishing collection, visually grouped below the living stage. */
+.garden-decor-controls{
+  margin-top:1.1rem;padding:1.15rem 1.3rem;background:#fffcf5;
+  border:1px solid #ddd9ca;border-radius:20px;color:#637367;
+}
+.garden-decor-controls h3{margin:0 0 .35rem;color:#4d685a;font-size:1.09rem}
+.garden-decor-controls p{margin:.3rem 0 .75rem;line-height:1.7;font-size:.88rem}
+.garden-decor-picker{display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;margin-bottom:.65rem}
+.garden-decor-picker label{font-size:.82rem}
+.garden-decor-picker select{
+  flex:1 1 140px;min-width:0;padding:.65rem .8rem;
+  border:1px solid #d0d6c9;border-radius:12px;background:#fff;color:#506c5a;font:inherit;
+}
+.garden-decor-picker button{white-space:nowrap}
+.garden-decor-selected{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;
+ margin-top:.85rem;padding:.75rem;border:1px solid #d5d3c6;border-radius:13px;background:#f7f7ef}
+.garden-decor-selected[hidden]{display:none}
+.garden-decor-selected button{border:1px solid #bdc9bb;border-radius:999px;
+ padding:.55rem .8rem;background:#fff;color:#587060;font:inherit;cursor:pointer}
+.garden-decor-selected button:focus-visible{outline:3px solid #76998a;outline-offset:2px}
+.garden-stage-decor{width:clamp(64px,11vw,130px);height:clamp(60px,11vw,120px)}
+.garden-stage-decor svg{animation:none!important}
+.garden-stage-decor:focus-visible{outline:3px solid #f3e1b4;outline-offset:2px}
+@media(max-width:620px){.garden-decor-controls{padding:.9rem}.garden-stage-decor{width:clamp(55px,17vw,100px);height:clamp(53px,16vw,94px)}}
+
+/* Visitors may offer a few private words as a passing act of care.
+   The words are transient DOM content and never written to a saved garden. */
+.garden-word-trail{
+ position:absolute;z-index:7;max-width:160px;transform:translate(-50%,-50%);
+ padding:.4rem .75rem;border-radius:16px;background:#fffdf1e8;
+ border:1px solid #f6e4b8;color:#567262;box-shadow:0 5px 25px #344e3c44;
+ pointer-events:none;font-size:.78rem;line-height:1.5;overflow-wrap:anywhere;
+ animation:garden-word-fade 1.9s ease-in-out both;
+}
+.garden-word-trail[data-action="water"],.garden-word-trail[data-action="care"]{background:#e8f4f0ef;color:#577e7c}
+.garden-word-trail[data-action="feed"],.garden-word-trail[data-action="play"]{background:#fff5e3f1;color:#98704f}
+@keyframes garden-word-fade{
+ 0%{opacity:0;transform:translate(-50%,15px) scale(.8)}
+ 22%{opacity:1;transform:translate(-50%,-11px) scale(1)}
+ 65%{opacity:1}
+ 100%{opacity:0;transform:translate(-50%,-50px) scale(.9)}
+}
+@media(prefers-reduced-motion:reduce){.garden-word-trail{animation:none;opacity:1}}
+
+/* Five distinct ambient landscapes; each motion is restrained, not a generic overlay. */
+.garden-scene-fx{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.garden-scene-fx span{position:absolute;display:block;pointer-events:none}
+.garden-ambient-petal{
+ top:-18px;width:13px;height:9px;border-radius:3px 12px 3px 12px;
+ background:linear-gradient(135deg,#f9e4db,#e7b8a7);opacity:.7;
+ animation:garden-falling-petals 15s linear infinite;
+ animation-delay:var(--delay);
+}
+.garden-ambient-stem{
+ bottom:-2%;height:20%;width:3px;background:#9aae78a6;border-radius:100%;
+ transform-origin:50% 100%;box-shadow:4px 4px 4px #667b5230;
+ animation:garden-crop-breeze 6.2s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-stem:before{
+ content:'';position:absolute;left:-7px;top:17%;width:20px;height:10px;
+ border-radius:100% 0;background:#a8bd83c0;transform:rotate(-35deg);
+}
+.garden-ambient-sunray{
+ top:-15%;height:90%;width:13%;opacity:.16;
+ transform:rotate(20deg);
+ background:linear-gradient(to bottom,#fff6d0d1,#fff9df14);
+ filter:blur(15px);animation:garden-rays 13s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-wave{
+ left:15%;width:72%;height:3px;border-radius:100%;opacity:.42;
+ background:linear-gradient(90deg,transparent,#fdf6dd 22%,#fefce9 57%,transparent);
+ box-shadow:0 8px 2px #ebf4e355;
+ animation:garden-water-flow 8s ease-in-out infinite alternate;
+ animation-delay:var(--delay);
+}
+.garden-ambient-ripple{
+ width:14%;aspect-ratio:2.8;border:2px solid #e2eddd85;border-radius:50%;
+ opacity:.7;animation:garden-ripple 8.8s ease-out infinite;
+ animation-delay:var(--delay);
+}
+@keyframes garden-falling-petals{
+ 0%{transform:translateY(-5px) translateX(0) rotate(-28deg) scale(var(--scale));opacity:0}
+ 15%{opacity:.68}
+ 70%{opacity:.55}
+ 100%{transform:translateY(560px) translateX(70px) rotate(340deg) scale(var(--scale));opacity:0}
+}
+@keyframes garden-crop-breeze{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes garden-rays{from{opacity:.07;transform:rotate(17deg)}to{opacity:.23;transform:rotate(22deg)}}
+@keyframes garden-water-flow{from{transform:translateX(-5%) scaleX(.87)}to{transform:translateX(5%) scaleX(1.05)}}
+@keyframes garden-ripple{0%{opacity:0;transform:scale(.3)}25%{opacity:.65}100%{opacity:0;transform:scale(2)}}
+@media(max-width:620px){.garden-ambient-petal{width:9px;height:7px}}
+@media(prefers-reduced-motion:reduce){
+ .garden-scene-fx span{animation:none!important;transform:none!important;opacity:.2}
+ .garden-ambient-petal{display:none}
+}
+
+/* Existing generated scenery is an optional visual reference, never forced. */
+.garden-scene-variant{margin:.85rem 0;padding:.8rem 1rem;
+ border:1px solid #e0d8c6;border-radius:16px;background:#faf8f0;color:#5a6c60}
+.garden-scene-variant[hidden]{display:none}
+.garden-scene-variant strong{display:block;margin-bottom:.55rem;font-size:.86rem}
+.garden-scene-variant>div{display:flex;flex-wrap:wrap;gap:.5rem}
+.garden-scene-variant button{font:inherit;font-size:.8rem;min-height:40px;
+ border:1px solid #c7d2bf;border-radius:99px;background:#fff;color:#577263;padding:.57rem 1rem;cursor:pointer}
+.garden-scene-variant button[aria-pressed="true"]{border-color:#6c9a82;
+ background:#e6f0e8;color:#3d6953;box-shadow:inset 0 0 0 1px #6c9a82}
+.garden-scene-variant button:focus-visible{outline:3px solid #6d9980;outline-offset:2px}
+.garden-scene-variant p{font-size:.76rem;line-height:1.7;margin:.55rem 0 .05rem;color:#849282}
+
+/* Plants reveal their growth gradually; the harvest option appears only when ripe. */
+.garden-care-growth{font-size:.84rem;line-height:1.65;margin:.85rem 0 .45rem;color:#66816f;
+ background:#edf3e9;padding:.55rem .8rem;border-radius:12px}
+.garden-care-actions button[data-garden-action="harvest"]{
+ background:#f2e6bf;color:#87674c;border-color:#d9bc79;
+ font-weight:600;
+}
+.garden-stage-plant[data-activity="harvest"] .garden-plant{
+ animation:garden-harvest-gentle .8s ease-in-out 1;
+}
+@keyframes garden-harvest-gentle{
+  0%{transform:scale(1) rotate(0)}
+  25%{transform:scale(.94) rotate(-7deg)}
+  68%{transform:scale(1.03) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ .garden-stage-plant[data-activity="harvest"] .garden-plant{animation:none!important}
+}
+
+/* Self-care is an optional quiet interaction, with no score or tracking. */
+.garden-selfcare{margin:1.5rem 0;padding:1.3rem;border:1px solid #dddccf;
+ border-radius:22px;background:linear-gradient(130deg,#f8f6ea,#edf3eb);color:#526b59}
+.garden-selfcare-heading h3{margin:0 0 .3rem;font-size:1.18rem}
+.garden-selfcare-heading p{margin:0 0 1rem;line-height:1.8;color:#738174;font-size:.89rem}
+.garden-selfcare-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}
+.garden-selfcare-options button{min-height:51px;padding:.65rem .8rem;
+ background:#fffefa;border:1px solid #cfdacc;border-radius:15px;
+ color:#5b7664;font:inherit;cursor:pointer}
+.garden-selfcare-options button:hover{background:#f5f8ed}
+.garden-selfcare-options button[aria-pressed="true"]{
+ background:#e4eee3;border-color:#729984;color:#456a55}
+.garden-selfcare-options button:focus-visible{outline:3px solid #648f78;outline-offset:3px}
+.garden-selfcare-feedback{margin:.9rem 0 0;min-height:2.2em;
+ padding:.7rem .9rem;border-radius:13px;background:#fffaf0;
+ color:#587766;line-height:1.65;font-size:.9rem}
+.garden-selfcare-appear{animation:garden-feedback .55s ease-out}
+@media(max-width:560px){
+ .garden-selfcare{padding:1rem}
+ .garden-selfcare-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.garden-selfcare-appear{animation:none!important}}
+
+
+/* 2026-10-17: distinct resident motions; no timers, no resident data mutations.
+   Motions respond inside the world, rather than only displaying an action icon. */
+.garden-stage-pet > .garden-animal,
+.garden-stage-plant > .garden-plant{
+  animation-delay:var(--garden-motion-delay,0s);
+  transform-origin:50% 85%;
+  will-change:transform;
+}
+.garden-stage-pet[data-behavior="cat"] > .garden-animal{
+  animation:garden-cat-idle 9.6s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="dog"] > .garden-animal{
+  animation:garden-dog-idle 7.8s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="rabbit"] > .garden-animal{
+  animation:garden-rabbit-idle 10.3s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="guinea"] > .garden-animal{
+  animation:garden-guinea-idle 7.1s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="chicken"] > .garden-animal{
+  animation:garden-chicken-idle 8.2s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="duck"] > .garden-animal{
+  animation:garden-duck-idle 8.7s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-pet[data-behavior="cow"] > .garden-animal{
+  animation:garden-cow-idle 11.4s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+/* Staggered, non-competitive idle movement with longer periods of stillness. */
+@keyframes garden-cat-idle{0%,25%,55%,100%{transform:translateY(0) rotate(0)}35%{transform:rotate(-2deg)}72%{transform:translateY(-2px)}}
+@keyframes garden-dog-idle{0%,28%,65%,100%{transform:translateY(0)}42%{transform:translateY(-3px)}48%{transform:translateY(-1px)}}
+@keyframes garden-rabbit-idle{0%,52%,75%,100%{transform:translateY(0)}60%{transform:translateY(-8px)}66%{transform:translateY(-3px)}}
+@keyframes garden-guinea-idle{0%,37%,75%,100%{transform:translateX(0) rotate(0)}48%{transform:translateX(2px) rotate(2deg)}57%{transform:translateX(-2px)}}
+@keyframes garden-chicken-idle{0%,40%,64%,100%{transform:rotate(0)}46%{transform:rotate(5deg)}54%{transform:rotate(-3deg)}}
+@keyframes garden-duck-idle{0%,30%,62%,100%{transform:translateX(0) rotate(0)}38%{transform:translateX(3px) rotate(3deg)}48%{transform:translateX(-2px) rotate(-2deg)}}
+@keyframes garden-cow-idle{0%,40%,100%{transform:scale(1)}55%{transform:scale(1.016,.991)}75%{transform:scale(1.009,1)}}
+/* Keep leaf motion botanical, not the generic pet bob. */
+.garden-stage-plant[data-behavior="tree"] > .garden-plant,
+.garden-stage-plant[data-behavior="palm"] > .garden-plant{
+  animation:garden-canopy-idle 11s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="pine"] > .garden-plant{
+  animation:garden-pine-idle 13s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="spike"] > .garden-plant{
+  animation:garden-stem-idle 9s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+.garden-stage-plant[data-behavior="fruit"] > .garden-plant,
+.garden-stage-plant[data-behavior="flower"] > .garden-plant,
+.garden-stage-plant[data-behavior="leaf"] > .garden-plant{
+  animation:garden-leaf-idle 8.8s ease-in-out infinite;
+  animation-delay:var(--garden-motion-delay,0s);
+}
+@keyframes garden-canopy-idle{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.2deg)}}
+@keyframes garden-pine-idle{0%,100%{transform:rotate(-.45deg)}50%{transform:rotate(.6deg)}}
+@keyframes garden-stem-idle{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.5deg)}}
+@keyframes garden-leaf-idle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+/* Each care gesture gets a distinct, brief body reaction; the existing VFX remains. */
+.garden-stage-resident[data-reaction="nibble"] > .garden-animal{
+  animation:garden-pet-nibble 1.15s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="play"] > .garden-animal{
+  animation:garden-pet-play 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-pet[data-behavior="rabbit"][data-reaction="play"] > .garden-animal{
+  animation:garden-rabbit-play 1.25s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-pet[data-behavior="duck"][data-reaction="play"] > .garden-animal,
+.garden-stage-pet[data-behavior="chicken"][data-reaction="play"] > .garden-animal{
+  animation:garden-bird-play 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="shake"] > .garden-animal{
+  animation:garden-pet-shake 1.1s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="rest"] > .garden-animal{
+  animation:garden-pet-rest 1.3s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="drink"] > .garden-plant{
+  animation:garden-plant-drink 1.25s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="tidy"] > .garden-plant{
+  animation:garden-plant-tidy 1.2s ease-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="observe"] > .garden-plant{
+  animation:garden-plant-observe 1.2s ease-in-out both;
+  animation-delay:0s;
+}
+.garden-stage-resident[data-reaction="harvest"] > .garden-plant{
+  animation:garden-plant-harvest 1.3s ease-out both;
+  animation-delay:0s;
+}
+@keyframes garden-pet-nibble{0%,100%{transform:translateY(0)}30%{transform:translateY(6px) rotate(2deg)}55%{transform:translateY(4px)}78%{transform:translateY(6px)}}
+@keyframes garden-pet-play{0%,100%{transform:translate(0,0)}32%{transform:translate(-3px,-10px) rotate(-4deg)}56%{transform:translate(3px,-4px) rotate(3deg)}}
+@keyframes garden-rabbit-play{0%,100%{transform:translateY(0)}25%{transform:translateY(-17px)}48%{transform:translateY(0)}65%{transform:translateY(-9px)}}
+@keyframes garden-bird-play{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(4px) rotate(6deg)}49%{transform:translateX(-5px) rotate(-5deg)}72%{transform:translateX(3px)}}
+@keyframes garden-pet-shake{0%,100%{transform:rotate(0)}17%,55%{transform:rotate(-5deg)}35%,75%{transform:rotate(5deg)}}
+@keyframes garden-pet-rest{0%,100%{transform:translateY(0) scale(1)}48%{transform:translateY(4px) scale(1.018,.97)}}
+@keyframes garden-plant-drink{0%,100%{transform:scale(1) rotate(0)}48%{transform:scale(1.04) rotate(-2deg)}}
+@keyframes garden-plant-tidy{0%,100%{transform:rotate(0)}35%{transform:rotate(-4deg)}65%{transform:rotate(3deg)}}
+@keyframes garden-plant-observe{0%,100%{transform:scale(1)}50%{transform:scale(1.028)}}
+@keyframes garden-plant-harvest{0%,100%{transform:scale(1) rotate(0)}35%{transform:scale(.97) rotate(-3deg)}64%{transform:scale(1.045) rotate(2deg)}}
+/* Respect motion preferences: fully still sprites remain visible and usable. */
+@media(prefers-reduced-motion:reduce){
+ .garden-stage-resident > .garden-animal,
+ .garden-stage-resident > .garden-plant,
+ .garden-stage-resident[data-reaction] > svg,
+ .garden-stage-resident .garden-tail{animation:none!important;transition:none!important;will-change:auto}
+}
+
+
+/* 2026-10-17 | Mobile-first immersive five worlds.
+   Existing controls are moved (not duplicated) to a corner-operated sheet. */
+#garden.view:not([hidden]){
+  position:fixed!important;inset:0!important;z-index:90;
+  box-sizing:border-box;width:100vw;max-width:none;height:100vh;height:100dvh;
+  min-height:0;overflow:hidden;margin:0!important;padding:0!important;
+  background:#e9e8dc;transform:none!important;overscroll-behavior:contain;
+}
+#garden #gardenWorld{position:relative;width:100%;height:100%;min-height:0}
+#garden .garden-intro{display:none}
+#garden .garden-choices:not([hidden]){
+  position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;
+  margin:0;padding:max(30px,env(safe-area-inset-top)) 0 max(18px,env(safe-area-inset-bottom));
+  box-sizing:border-box;background:linear-gradient(#edf0e9,#e3e9e0);overflow:hidden;
+}
+#garden .garden-choices>h2{font-size:clamp(1.25rem,4.2vw,2rem);margin:0 5vw .15rem;flex:0 0 auto}
+#garden .garden-choices>p{font-size:.84rem;line-height:1.5;margin:0 5vw .65rem;flex:0 0 auto}
+#garden .garden-world-grid{
+  display:flex;gap:13px;flex:1;min-height:0;margin:0;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  padding:0 9vw 10px;overscroll-behavior-inline:contain;
+  scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+}
+#garden .garden-world-choice{
+  position:relative;display:block;flex:0 0 82vw;height:100%;
+  min-height:0;border:0;outline-offset:-4px;border-radius:26px;
+  overflow:hidden;scroll-snap-align:center;background:#a2b4a0;
+  box-shadow:0 8px 25px #3d51492c;padding:0;color:#fff;
+}
+#garden .garden-world-choice img{
+  position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;object-fit:cover;
+  transition:transform .4s ease;
+}
+#garden .garden-world-choice>span{
+  position:absolute;left:0;right:0;bottom:0;padding:3.5rem 1.25rem 1.4rem;
+  color:white;text-shadow:0 2px 12px #1c302ac4;
+  background:linear-gradient(transparent,#26372bd4);
+  display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;
+}
+#garden .garden-world-choice strong{font-size:1.45rem;color:white}
+#garden .garden-world-choice small{font-size:.83rem;color:#fafaf5}
+#garden .garden-world-choice:focus-visible{outline:3px solid #fff3c7}
+#garden .garden-room:not([hidden]){display:block;position:relative;inset:0;width:100%;height:100%;margin:0}
+#garden .garden-landscape{
+  position:absolute!important;inset:0;width:100%;height:100%;max-height:none;min-height:0;
+  aspect-ratio:auto;border-radius:0;border:0;box-shadow:none;isolation:isolate;
+}
+#garden .garden-backdrop,#garden .garden-backdrop.garden-has-original-art{
+  transform:none;animation:none;background-size:cover;background-position:center center;
+}
+#garden .garden-landscape:after{
+  background:linear-gradient(180deg,#20362838 0%,transparent 24%,transparent 67%,#1b302849 100%);
+  pointer-events:none;z-index:2;
+}
+#garden .garden-landscape:before{z-index:1;pointer-events:none}
+#garden .garden-room-header{
+  position:absolute;z-index:7;top:0;left:0;right:0;display:flex;align-items:flex-start;
+  justify-content:space-between;gap:.55rem;margin:0;
+  padding:calc(env(safe-area-inset-top) + 12px) max(13px,env(safe-area-inset-right)) .75rem;
+  pointer-events:none;color:white;
+}
+#garden .garden-room-header>*{pointer-events:auto}
+#garden .garden-room-header>div{
+  flex:1;min-width:0;text-align:center;text-shadow:0 2px 12px #2b3e37b8;
+  padding:.2rem .1rem 0;
+}
+#garden .garden-room-header h2{font-size:clamp(1.2rem,4vw,1.8rem);color:white;margin:0}
+#garden .garden-room-header p{font-size:.77rem;color:#fffcec;line-height:1.4}
+#garden .garden-hud-back,#garden .garden-hud-exit{
+  flex:0 0 auto;min-height:44px;padding:.5rem .75rem;border:1px solid #ffffffa8;border-radius:999px;
+  background:#263b31a6;color:#fff;backdrop-filter:blur(9px);font-size:.8rem;
+  box-shadow:0 3px 14px #22382940;
+}
+#garden .garden-quick-actions{
+  position:absolute;right:max(14px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 22px);
+  z-index:7;display:flex;flex-direction:column;align-items:flex-end;gap:9px;max-width:74vw;
+}
+#garden .garden-quick-actions button{
+  min-height:46px;border:1px solid #fffcf0d9;border-radius:999px;
+  background:#fcf9ebef;color:#385a4e;padding:.55rem 1rem;
+  font-size:.86rem;font-weight:600;box-shadow:0 3px 16px #26362e66;
+  backdrop-filter:blur(12px);
+}
+#garden .garden-quick-actions button:first-child{
+  background:#456b5de8;color:#fff;font-weight:700;
+}
+#garden .garden-landscape-message{
+  bottom:calc(env(safe-area-inset-bottom) + 16px);left:15px;
+  max-width:42vw;font-size:.77rem;z-index:4;
+}
+#garden .garden-explore-message{z-index:5;bottom:18vh;left:7vw;right:7vw}
+#garden .garden-stage-resident{z-index:3}
+#garden .garden-hotspots{z-index:4}
+#garden .garden-tools-sheet:not([hidden]){
+  position:absolute;z-index:13;right:0;left:0;bottom:0;
+  max-height:min(80vh,80dvh);display:flex;flex-direction:column;overflow:hidden;
+  border-radius:23px 23px 0 0;background:#fffaf1f9;color:#475f52;
+  box-shadow:0 -14px 55px #172e2988;backdrop-filter:blur(16px);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+#garden .garden-tools-head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1rem 1.2rem;border-bottom:1px solid #bfcbbc;flex:0 0 auto;
+}
+#garden .garden-tools-head button{
+  padding:.6rem 1rem;border-radius:999px;border:1px solid #becab9;background:#e7ece3;color:#425d51;
+  min-height:42px;
+}
+#garden .garden-tools-content{
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  min-height:0;padding:12px 14px 24px;
+}
+#garden .garden-tools-content>.garden-controls{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.4rem 0 .8rem}
+#garden .garden-tools-content .garden-control-box,
+#garden .garden-tools-content .garden-decor-controls,
+#garden .garden-tools-content .garden-residents-box,
+#garden .garden-tools-content .garden-selfcare{
+  margin:.55rem 0;padding:.85rem;border-radius:16px;
+}
+#garden .garden-tools-content .garden-control-box h3{font-size:.95rem}
+#garden .garden-tools-content .garden-control-box button,
+#garden .garden-tools-content .garden-control-box select{width:100%;min-height:42px}
+#garden .garden-care:not([hidden]){
+  position:absolute;z-index:14;left:0;right:0;bottom:0;top:auto;
+  display:block;max-height:min(72vh,72dvh);overflow:auto;
+  border-radius:23px 23px 0 0;padding:1rem 1.1rem calc(env(safe-area-inset-bottom) + 12px);
+  margin:0;background:#fffcf3fa;box-shadow:0 -14px 55px #172e2975;
+  -webkit-overflow-scrolling:touch;
+}
+#garden .garden-room>.garden-note,
+#garden #gardenSceneNotice{display:none!important}
+#garden .garden-landscape .garden-residents-stage{z-index:3}
+#garden .garden-tools-sheet[hidden]{display:none!important}
+#garden .garden-room[hidden],#garden .garden-choices[hidden]{display:none!important}
+#garden .garden-care[hidden]{display:none!important}
+/* Door: replace unsuitable photograph with a soft pulse of light behind the opening leaf. */
+.garden-gate{
+  background:radial-gradient(ellipse at 50% 42%,#f9eddb 0%,#c4b7a2 60%,#727e72 100%);
+}
+.garden-door-frame{
+  perspective:1100px;overflow:visible;
+  box-shadow:0 10px 65px #f9ebd977,0 25px 85px #4f4e3d52;
+}
+.garden-door-glimpse{
+  background:radial-gradient(ellipse at 50% 50%,#fffefb 0%,#fff5c5 24%,#f0e6c6 58%,#8da395 100%)!important;
+  animation:none!important;filter:none!important;
+}
+.garden-door-glimpse:after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 45% 54%,#ffffffd0,transparent 68%);
+}
+.garden-door-flash{
+  position:absolute;inset:-20%;pointer-events:none;z-index:3;opacity:0;
+  background:radial-gradient(circle,#ffffff 0%,#fffceaeb 15%,#ffeabf89 39%,transparent 69%);
+  transform:scale(.15);filter:blur(8px);
+}
+.garden-door{transform-origin:0 50%;backface-visibility:hidden;transition:transform .7s cubic-bezier(.2,.7,.3,1)}
+.garden-door-open .garden-door-flash{animation:garden-door-light .73s ease-out both}
+.garden-door-open .garden-door{transform:rotateY(-102deg)}
+@keyframes garden-door-light{
+  0%{opacity:0;transform:scale(.1)}
+  45%{opacity:1;transform:scale(.95)}
+  100%{opacity:.65;transform:scale(1.27)}
+}
+@media (min-width:760px){
+  #garden .garden-world-grid{justify-content:center;gap:17px;padding:0 3vw 18px}
+  #garden .garden-world-choice{flex:0 0 min(17vw,290px);border-radius:18px}
+  #garden .garden-tools-sheet:not([hidden]){left:auto;width:min(410px,34vw);right:18px;bottom:18px;
+    border-radius:22px;max-height:80dvh;padding-bottom:0}
+  #garden .garden-care:not([hidden]){left:auto;right:18px;bottom:18px;width:min(400px,34vw);
+    border-radius:20px}
+}
+@media(max-width:410px){
+ #garden .garden-tools-content>.garden-controls{grid-template-columns:1fr}
+ #garden .garden-room-header h2{font-size:1.08rem}
+ #garden .garden-hud-back,#garden .garden-hud-exit{padding:.45rem .55rem}
+ #garden .garden-quick-actions button{font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){
+ .garden-door,.garden-door-flash,#garden .garden-world-choice img{animation:none!important;transition:none!important}
+ .garden-door-open .garden-door-flash{opacity:.9;transform:none}
+}
+
+#garden .garden-choices>h2{padding-right:98px}
+#garden .garden-choice-leave{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 3px);right:14px;border-radius:99px;padding:.55rem .85rem;min-height:40px;border:1px solid #a9bdab;background:#f8f9f1ed;color:#3e5d4d;box-shadow:0 3px 15px #31483533}
+
+/* iOS and desktop: prevent the original page section's top margin from
+   offsetting the immersive canvas by 1.7rem (previously 28–36px). */
+#garden #gardenWorld{position:absolute!important;inset:0!important;margin:0!important;padding:0!important}
+#garden #gardenWorldRoom.garden-room:not([hidden]){
+  position:absolute!important;inset:0!important;top:0!important;
+  height:100%!important;margin:0!important;margin-top:0!important;padding:0!important;
+}
+#garden #gardenWorldRoom .garden-landscape{
+  top:0!important;left:0!important;right:0!important;bottom:0!important;
+  margin:0!important;margin-top:0!important;
+}
+
+/* Approved scene bitmaps are rendered via inline background-image in garden.js.
+   Retired gradient fallbacks must NEVER override those images with !important. */
+#garden .garden-backdrop[data-area]{
+  background-repeat:no-repeat;
+  background-size:cover!important;
+  background-position:center center!important;
+}

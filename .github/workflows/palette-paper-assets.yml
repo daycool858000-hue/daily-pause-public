@@ -1,0 +1,38 @@
+name: Draft Palette 24 Paper Asset Integrity
+on:
+  push:
+    branches: [feature/companion-garden-palette-20261014]
+    paths:
+      - 'media/palette-paper/**'
+      - 'media/palette-preview/**'
+      - 'mood-scenery.js'
+      - '.github/workflows/palette-paper-assets.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-paper-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify preserved paper assets without downloading or rewriting them
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs');
+          const crypto=require('node:crypto');
+          const assert=require('node:assert/strict');
+          const manifest=JSON.parse(fs.readFileSync('media/palette-paper/manifest.json','utf8'));
+          assert.equal(manifest.length,24);
+          for(let i=1;i<=24;i++){
+            const id=String(i).padStart(2,'0');
+            const item=manifest.find(s=>s.number===i);
+            assert.ok(item);
+            assert.equal(item.path,'media/palette-paper/'+id+'.webp');
+            const raw=fs.readFileSync(item.path);
+            assert.equal(raw.subarray(0,4).toString(),'RIFF');
+            assert.equal(raw.subarray(8,12).toString(),'WEBP');
+            assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),item.sha256);
+            assert.ok(fs.statSync('media/palette-preview/'+id+'.webp').size>1000);
+          }
+          NODE

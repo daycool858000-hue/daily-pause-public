@@ -1,0 +1,114 @@
+{
+  "status": "development-study-only; not standalone original artwork; visual approval needed",
+  "model": "Saafke/FSRCNN_Tensorflow FSRCNN_x2.pb",
+  "model_source": "https://github.com/Saafke/FSRCNN_Tensorflow/blob/master/models/FSRCNN_x2.pb",
+  "model_license": "Apache-2.0 (see source repository LICENSE)",
+  "model_sha256": "366b33f0084c7b3f2bf6724f0a2c77bca94fcec9d7b6d72389d330073b380d5c",
+  "method": "2x pretrained FSRCNN neural super-resolution, not prompt-based scene generation",
+  "scenes": [
+    {
+      "source": "palette-morning-bedroom-v1.webp",
+      "source_sha256": "621489c9fba0ec79f024c12bb6c8aa474bbcca569bdb406ce4f717fe7229a98f",
+      "candidate": "palette-morning-bedroom-sr-v2.webp",
+      "sha256": "82af3acc220eb40cbf7ecd3fa4327be8eb18de57812507bf206b8f1347ea7f2c",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 13.5664,
+      "laplacian_variance_bicubic": 8.3875,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-warm-living-room-v1.webp",
+      "source_sha256": "9ac7c9abb8d5fad6d67be32372f44a2e2cc7d77139a0be12eb0839076c57fb86",
+      "candidate": "palette-warm-living-room-sr-v2.webp",
+      "sha256": "61e6e13ef585fcad9d9f5aa64227ecebbf2002a5ff21333eabdf5a5f7c41073a",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 17.7276,
+      "laplacian_variance_bicubic": 11.4806,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-rain-window-v1.webp",
+      "source_sha256": "c6ae6dca377da4dece4255d4fa3962601cf7fd9b8fac36c4cb189c34fa22c02d",
+      "candidate": "palette-rain-window-sr-v2.webp",
+      "sha256": "fa06ddf754cf0f009023830097e346cad5dd46f38f525f679595e94d01f69c70",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 21.6167,
+      "laplacian_variance_bicubic": 14.9931,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-quiet-study-v1.webp",
+      "source_sha256": "f046b15df52a421ffdd9acc2c2d0175c2b8acc709f2eb3c21698be14c8b377ae",
+      "candidate": "palette-quiet-study-sr-v2.webp",
+      "sha256": "adb1bf31d4fe23838d8ea9d763181545dcc71fb9cab8e728babd2f14b8fbdd52",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 14.1506,
+      "laplacian_variance_bicubic": 7.7807,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-island-v1.webp",
+      "source_sha256": "986d3c76b8453ee975231895efa8af306c47bb61e44cb0f24c2fdae74c2b781a",
+      "candidate": "palette-island-sr-v2.webp",
+      "sha256": "3822a9c95ed1065f54c7229d0d95c6518c37f5c72f98a46a893db5876b73d868",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 12.2852,
+      "laplacian_variance_bicubic": 8.0919,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-balcony-v1.webp",
+      "source_sha256": "a8f5927739305cd89b8067b82a94fae8af5f8853e486c9a25934dd684bc2c415",
+      "candidate": "palette-balcony-sr-v2.webp",
+      "sha256": "4cfe094a7f320174aa422aa7a538cd3c729f4c142570100deb663ef97e1693bb",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 14.6206,
+      "laplacian_variance_bicubic": 9.3428,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-cloud-v1.webp",
+      "source_sha256": "0b567e8e9c09d1487069c01a200a3235c5e5ce12cd9b630138953d9d0f9a1b90",
+      "candidate": "palette-cloud-sr-v2.webp",
+      "sha256": "cc077b7f36019b439485a930170a609a9f17f6b6f963c42b94f5ce95818293ef",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 6.9702,
+      "laplacian_variance_bicubic": 3.5871,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    },
+    {
+      "source": "palette-sunrise-v1.webp",
+      "source_sha256": "3b671643578ff251440f1bc98413922533c822a63fd0d6191bbd8bc5986ba03b",
+      "candidate": "palette-sunrise-sr-v2.webp",
+      "sha256": "1f3590ce2465f0f7582d50de46efa2051603c02c580c810aa88b6b6677fc85b3",
+      "dimensions": [
+        1920,
+        1260
+      ],
+      "laplacian_variance_superres": 18.3486,
+      "laplacian_variance_bicubic": 13.0467,
+      "provenance": "restoration of site-owned cropped concept-grid study; original composition unchanged"
+    }
+  ]
+}

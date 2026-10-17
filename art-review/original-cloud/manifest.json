@@ -1,0 +1,12 @@
+{
+  "format": "original Blender 3D scene rendered without any external image/texture/model input",
+  "source": "tools/palette/render-original-cloud.py",
+  "scene": "cloud",
+  "dimensions": [
+    1920,
+    1260
+  ],
+  "license": "original composition",
+  "status": "development-stage visual review only",
+  "sha256": "a1fbd21d683f6c722ffd069c064529b28885da023b6b72d8a929eaedd92c2187"
+}

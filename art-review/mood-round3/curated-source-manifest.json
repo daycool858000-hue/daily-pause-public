@@ -1,0 +1,66 @@
+{
+  "license_verified_at_source": true,
+  "warning": "These are CC0 images, not new user-owned generative photo-realistic art.",
+  "state": "art review only, not published",
+  "items": [
+    {
+      "mood": "fear",
+      "file": "palette-mood-fear-independent-v2.webp",
+      "checksum_sha256": "b2ff43510777523d56e62f95347c2727ec1f9248f8994c2c81cb5de6c55466b1",
+      "source_title": "Sequoia Trees at Sequoia National Park.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sequoia_Trees_at_Sequoia_National_Park.jpg",
+      "source_license": "CC0",
+      "source_license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8688,
+        5792
+      ],
+      "author_html": "<bdi>Daniel G. Rego</bdi>",
+      "authorship": "third-party photography, NOT original AI generation",
+      "approval": "draft only, manually validate scene suitability",
+      "output_dimensions": [
+        1920,
+        1260
+      ],
+      "exif_gps": "not exported"
+    },
+    {
+      "mood": "courage",
+      "file": "palette-mood-courage-independent-v2.webp",
+      "checksum_sha256": "1238d5ced936c90d65123bdd6bcc8d8092a4513075d4e5e9d4438cc73d30d62e",
+      "source_title": "Sunrise Bettmerhorn snowy mountains (Unsplash).jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Sunrise_Bettmerhorn_snowy_mountains_(Unsplash).jpg",
+      "source_license": "CC0",
+      "source_license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "original_dimensions": [
+        8196,
+        5464
+      ],
+      "author_html": "Sam Ferrara <a rel=\"nofollow\" class=\"external text\" href=\"https://unsplash.com/@samferrara\">samferrara</a>",
+      "authorship": "third-party photography, NOT original AI generation",
+      "approval": "draft only, manually validate scene suitability",
+      "output_dimensions": [
+        1920,
+        1260
+      ],
+      "exif_gps": "not exported"
+    }
+  ],
+  "rejected": [
+    {
+      "mood": "warmth",
+      "file": "Cozy living room with a view of the lake and trees in the background at midday.jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Cozy living room with a view of the lake and trees in the background at midday.jpg"
+    },
+    {
+      "mood": "reassurance",
+      "file": "Cozy reading corner with vintage decor and modern lighting in a sunlit living space.jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Cozy reading corner with vintage decor and modern lighting in a sunlit living space.jpg"
+    },
+    {
+      "mood": "fatigue",
+      "file": "Bedroom window (Unsplash).jpg",
+      "reason": "Not an explicitly verified full-resolution CC0 image: Bedroom window (Unsplash).jpg"
+    }
+  ]
+}
