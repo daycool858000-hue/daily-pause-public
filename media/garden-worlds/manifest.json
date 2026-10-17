@@ -1,0 +1,52 @@
+[
+  {
+    "id": "flowers",
+    "path": "media/garden-worlds/flowers.webp",
+    "width": 790,
+    "height": 1404,
+    "size": 114254,
+    "sha256": "763c8775b478842dd069569a05e62cfe18436f044f886161ae411a5a3f8f1bad",
+    "approved_source": "夢幻薔薇水庭與石徑.png",
+    "origin": "Generated specifically in the ChatGPT conversation; owner approved this second group on 2026-10-17"
+  },
+  {
+    "id": "farm",
+    "path": "media/garden-worlds/farm.webp",
+    "width": 790,
+    "height": 1404,
+    "size": 127700,
+    "sha256": "62787407149576a04fb91962e6ed7c7c5230dae0bfafd6c803576367127e7274",
+    "approved_source": "霧嵐晨光下的水田小徑.png",
+    "origin": "Generated specifically in the ChatGPT conversation; owner approved this second group on 2026-10-17"
+  },
+  {
+    "id": "forest",
+    "path": "media/garden-worlds/forest.webp",
+    "width": 790,
+    "height": 1404,
+    "size": 179194,
+    "sha256": "dc8ce8cae5530f636461497ea0050800c7fda6b48b5313439e09c8edf3b63c51",
+    "approved_source": "夢幻水彩森林中的秋千與溪流.png",
+    "origin": "Generated specifically in the ChatGPT conversation; owner approved this second group on 2026-10-17"
+  },
+  {
+    "id": "coast",
+    "path": "media/garden-worlds/coast.webp",
+    "width": 790,
+    "height": 1404,
+    "size": 112612,
+    "sha256": "565b1970cbf584ebddf209895b33ccbf21d5ee08745ed40a02f6e28cd2060c0f",
+    "approved_source": "夢幻花海海岸夕照景觀.png",
+    "origin": "Generated specifically in the ChatGPT conversation; owner approved this second group on 2026-10-17"
+  },
+  {
+    "id": "park",
+    "path": "media/garden-worlds/park.webp",
+    "width": 790,
+    "height": 1404,
+    "size": 152592,
+    "sha256": "db99001df55bdc997b6c0bcdcc84fbc376f103f42c969397b29a9b06cccf197c",
+    "approved_source": "湖畔花徑與晨霧美景.png",
+    "origin": "Generated specifically in the ChatGPT conversation; owner approved this second group on 2026-10-17"
+  }
+]
