@@ -284,3 +284,31 @@ test('offline shell includes current versioned scripts and verified assets',()=>
    assert.ok(fs.existsSync(path.join(root,local)),'Missing asset: '+local);
  }
 });
+
+test('background micro-motion belongs to the background, not the user artwork',()=>{
+  const win={};load('palette-background-breath.js',{window:win});
+  const breath=win.PauseCanvasBreathe;
+  assert.deepEqual(Object.keys(breath.profiles).sort(),
+    ['forest','ocean','room','living','cafe','park','street','mountain'].sort());
+  assert.match(read('palette-world.js'),/PauseCanvasBreathe\?\.paint\(ctx/);
+  const trace=(scene,mood,t)=>{
+    const ops=[];
+    const ctx={
+      save(){},restore(){},translate(x,y){ops.push(['translate',x,y])},
+      scale(x,y){ops.push(['scale',x,y])},beginPath(){},arc(){},
+      moveTo(x,y){ops.push(['move',x,y])},
+      quadraticCurveTo(x,y,z){ops.push(['curve',x,y,z])},
+      fill(){},stroke(){},
+      createRadialGradient(){return {addColorStop(at,c){ops.push(['stop',at,c])}}}
+    };
+    breath.paint(ctx,scene,mood,t);
+    return JSON.stringify(ops);
+  };
+  for(const scene of ['forest','ocean','room','living','cafe','park','street','mountain','paper']){
+    assert.notEqual(trace(scene,'安靜',0),trace(scene,'安靜',12000),
+      scene+' must have gentle native background motion');
+    assert.equal(trace(scene,'安靜',0),trace(scene,'安靜',0),
+      scene+' must be exactly deterministic when paused or reduced motion');
+  }
+  assert.equal(trace('blank','安靜',12000),'[]','Blank canvas stays blank');
+});
