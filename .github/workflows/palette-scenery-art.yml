@@ -1,40 +1,39 @@
-name: Draft Painted Scenery Asset Build
+name: Draft Scenery Asset Integrity
+
 on:
   push:
     branches: [feature/companion-garden-palette-20261014]
     paths:
       - 'palette-place-scenes.js'
-      - 'tools/render-palette-scenes.cjs'
+      - 'media/palette-scenes/**'
       - '.github/workflows/palette-scenery-art.yml'
   workflow_dispatch:
+
 permissions:
-  contents: write
-concurrency:
-  group: painted-scenes-draft
-  cancel-in-progress: true
+  contents: read
+
 jobs:
-  render-painted-scenes:
+  verify-independent-scenes:
     if: github.ref == 'refs/heads/feature/companion-garden-palette-20261014'
     runs-on: ubuntu-latest
-    timeout-minutes: 14
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Install rendering browser only
+      - name: Verify eight archived independent generated WebP images
         run: |
-          npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
-      - name: Render eight independent self-authored art backgrounds
-        run: node tools/render-palette-scenes.cjs
-      - name: Save WebP assets to development Draft branch only
-        run: |
-          set -euo pipefail
-          test "$(git branch --show-current)" = "feature/companion-garden-palette-20261014"
-          test "$(find media/palette-scenes -maxdepth 1 -name '*.webp' | wc -l)" -eq 8
-          git add media/palette-scenes/
-          if ! git diff --cached --quiet; then
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "art(palette): archive eight independently painted scenic WebP images"
-            git push origin HEAD:refs/heads/feature/companion-garden-palette-20261014
-          fi
+          node <<'NODE'
+          const fs=require('node:fs');
+          const crypto=require('node:crypto');
+          const assert=require('node:assert/strict');
+          const scenes=JSON.parse(fs.readFileSync('media/palette-scenes/manifest.json','utf8'));
+          assert.equal(scenes.length,8);
+          assert.equal(new Set(scenes.map(s=>s.id)).size,8);
+          for(const scene of scenes){
+            assert.match(scene.path,/^media\/palette-scenes\/[a-z]+\.webp$/);
+            const data=fs.readFileSync(scene.path);
+            assert.equal(data.subarray(0,4).toString(),'RIFF');
+            assert.equal(data.subarray(8,12).toString(),'WEBP');
+            assert.equal(data.length,scene.size);
+            assert.equal(crypto.createHash('sha256').update(data).digest('hex'),scene.sha256);
+          }
+          NODE
