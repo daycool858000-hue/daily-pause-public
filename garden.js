@@ -34,52 +34,28 @@
       y:Number.isFinite(item.y)?clamp(item.y,45,90):d.y};
   }
   const worlds=[
-    {id:'flowers',name:'花園',sub:'為自己種一片花與樹',image:null,visual:'pending',
+    {id:'flowers',name:'花園',sub:'為自己種一片花與樹',image:'./media/garden-worlds/flowers.webp',visual:'original',
       plants:['玫瑰','向日葵','繡球花','薰衣草','蘋果樹'],pets:['貓','狗','兔子','天竺鼠']},
-    {id:'farm',name:'田間',sub:'慢慢耕種，等果實長大',image:null,visual:'pending',
+    {id:'farm',name:'田間',sub:'慢慢耕種，等果實長大',image:'./media/garden-worlds/farm.webp',visual:'original',
       plants:['草莓','番茄','稻米','南瓜','橘子樹'],pets:['雞','鴨','牛','狗']},
-    {id:'forest',name:'森林',sub:'沿著樹影走一會兒',image:'./media/generated/scene-03.webp',visual:'reference',
+    {id:'forest',name:'森林',sub:'沿著樹影走一會兒',image:'./media/garden-worlds/forest.webp',visual:'original',
       plants:['松樹','楓樹','蕨類','野花','香草'],pets:['貓','狗','兔子']},
-    {id:'coast',name:'海邊',sub:'聽風來，陪海浪待一下',image:'./media/generated/scene-02.webp',visual:'reference',
+    {id:'coast',name:'海邊',sub:'聽風來，陪海浪待一下',image:'./media/garden-worlds/coast.webp',visual:'original',
       plants:['海濱木槿','馬鞍藤','濱刺麥','椰子樹'],pets:['狗','貓']},
-    {id:'park',name:'公園',sub:'留一張椅子給今天',image:null,visual:'pending',
+    {id:'park',name:'公園',sub:'留一張椅子給今天',image:'./media/garden-worlds/park.webp',visual:'original',
       plants:['櫻花樹','榕樹','雛菊','玫瑰','杜鵑'],pets:['狗','貓','兔子']}
   ];
-  // Two site-existing AI-generated scenes can be reviewed alongside the
-  // authored vector environment. These are already in this repo, not scraped photos.
-  const sceneVariants={
-    flowers:[
-      {id:'open',title:'戶外花園構圖',image:null},
-      {id:'greenhouse',title:'玻璃花房（既有生成圖）',image:'./media/generated/scene-11.webp'}
-    ],
-    park:[
-      {id:'open',title:'公園構圖',image:null},
-      {id:'gardenpond',title:'靜謐庭園（既有生成圖）',image:'./media/generated/scene-08.webp'}
-    ]
-  };
-  function activeVisual(){
-    const world=currentWorld(),list=sceneVariants[world.id];
-    if(!list)return {image:world.image,legacy:world.visual==='reference'};
-    const selected=state.backgrounds?.[world.id]||'open';
-    const variant=list.find(x=>x.id===selected)||list[0];
-    return {image:variant.image,legacy:Boolean(variant.image),variant};
-  }
+  // The five owner-approved images are complete standalone original backgrounds.
+  // Retire mismatched reference photographs, SVG scene-switches and older variants.
+  // Saved residents, plants, lights and decorations keep their existing storage schema.
+  const sceneVariants={};
+  function activeVisual(){return {image:currentWorld().image,legacy:false}}
   function renderSceneVariants(){
-    const root=by('gardenSceneVariant'),options=by('gardenSceneVariantOptions');
-    const list=sceneVariants[state.world];
-    if(!root||!options)return;
-    root.hidden=!list;
-    if(!list){options.innerHTML='';return;}
-    const current=state.backgrounds?.[state.world]||'open';
-    options.innerHTML=list.map(v=>'<button type="button" data-scene-variant="'+v.id+
-      '" aria-pressed="'+(current===v.id)+'">'+v.title+'</button>').join('');
+    const panel=by('gardenSceneVariant'),options=by('gardenSceneVariantOptions');
+    if(panel)panel.hidden=true;
+    if(options)options.innerHTML='';
   }
-  function setSceneVariant(id){
-    if(!sceneVariants[state.world]?.some(v=>v.id===id))return;
-    state.backgrounds[state.world]=id;
-    save();renderCollection();
-    by('gardenFeedback').textContent='已切換這個地方的景觀樣式。寵物與植物的位置都會保留。';
-  }
+  function setSceneVariant(){ /* legacy button retired; no saved data is erased */ }
   const ICONS={'玫瑰':'🌹','向日葵':'🌻','繡球花':'🌸','薰衣草':'🪻','蘋果樹':'🌳',
     '草莓':'🍓','番茄':'🍅','稻米':'🌾','南瓜':'🎃','橘子樹':'🍊','松樹':'🌲',
     '楓樹':'🍁','蕨類':'🌿','野花':'🌼','香草':'🌱','海濱木槿':'🌺','馬鞍藤':'🌿',
@@ -350,9 +326,7 @@
     if(motion){motion.dataset.world=w.id;motion.innerHTML=window.PauseGardenMotion?.render(w.id)||'';}
     stage.classList.toggle('garden-scene-pending',!variant.image&&!backdrop.firstElementChild);
     const sceneNotice=by('gardenSceneNotice');
-    if(sceneNotice)sceneNotice.textContent=variant.legacy
-      ?'開發預覽：此景觀沿用網站現有的 AI 生成素材，與你喜歡的原站圖片一致；仍須完成來源與使用權利查核。'
-      :'開發預覽：'+w.name+'目前使用原創 SVG 空間構圖，專屬寫實景觀仍待完成。';
+    if(sceneNotice){sceneNotice.textContent='';sceneNotice.hidden=true;}
     by('gardenWorldCount').textContent=items.length+' 位小生命在這裡，'+decorsHere().length+' 件擺設';
     renderSceneVariants();
     const decorSelect=by('gardenDecorTypes');
@@ -377,6 +351,7 @@
   }
   function setWorld(id){
     if(!worlds.some(w=>w.id===id))return;
+    closeTools();
     state.world=id;save();renderCollection();
     by('gardenWorldRoom').hidden=false;
     by('gardenChoicesPage').hidden=true;
@@ -450,7 +425,8 @@
     refreshCareOptions(item);
     by('gardenWords').value='';
     by('gardenCareFeedback').textContent='可以只做一個動作，也能留一句話。這裡不會替心情打分數。';
-    panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+    // Care panel floats over the scene; never scroll the stage away on mobile.
+    if(panel.scrollTop!==undefined)panel.scrollTop=0;
   }
   function rename(){
     const panel=by('gardenCarePanel');
@@ -543,7 +519,47 @@
       recoveryUI();renderCollection();by('gardenFeedback').textContent='備份已匯入並儲存在此裝置。';
     }).catch(()=>{by('gardenFeedback').textContent='這份檔案無法讀取，現有花園沒有變更。';});
   }
+  // Move old functional sections into a reversible sheet: no duplicated controls,
+  // no change to the existing data model, no new mandatory scroll to reach actions.
+  const sheet=by('gardenToolsSheet'),sheetContent=by('gardenToolsContent');
+  const toolSections=[
+    '.garden-controls','.garden-decor-controls','.garden-residents-box',
+    '.garden-light-control','#gardenSceneVariant','.garden-selfcare',
+    '.garden-backup','#gardenRecovery'
+  ];
+  if(sheetContent){
+    for(const selector of toolSections){
+      const node=root.querySelector(selector);
+      if(node)sheetContent.appendChild(node);
+    }
+    const feedback=by('gardenFeedback');
+    if(feedback)sheetContent.appendChild(feedback);
+  }
+  function closeTools(){
+    if(sheet)sheet.hidden=true;
+    for(const id of ['gardenOpenTools','gardenOpenCareList','gardenOpenAtmosphere'])
+      by(id)?.setAttribute('aria-expanded','false');
+  }
+  function openTools(selector){
+    if(!sheet)return;
+    by('gardenCarePanel').hidden=true;
+    sheet.hidden=false;
+    for(const id of ['gardenOpenTools','gardenOpenCareList','gardenOpenAtmosphere'])
+      by(id)?.setAttribute('aria-expanded','true');
+    const target=selector?sheet.querySelector(selector):null;
+    // Only the scrollable sheet moves, never the viewport or landscape.
+    if(target){
+      const viewport=by('gardenToolsContent');
+      viewport.scrollTop=Math.max(0,target.offsetTop-viewport.offsetTop-12);
+    }
+  }
+  function leaveGarden(){
+    closeTools();
+    by('gardenCarePanel').hidden=true;
+    document.querySelector('.nav-link[data-view="today"]')?.click();
+  }
   function openGate(){
+    closeTools();
     const gate=by('gardenGate');
     gate.hidden=false;by('gardenChoicesPage').hidden=true;by('gardenWorldRoom').hidden=true;
     gate.classList.remove('garden-door-open');by('gardenEnter').focus({preventScroll:true});
@@ -612,7 +628,12 @@
       if(Date.now()-lastDragEnded<350)return;
       selectDecoration(b.dataset.stageDecor);
     }
-    else if(b.id==='gardenAddDecor')createDecoration();
+    else if(b.id==='gardenOpenTools')sheet?.hidden?openTools('.garden-controls'):closeTools();
+    else if(b.id==='gardenOpenCareList')openTools('.garden-residents-box');
+    else if(b.id==='gardenOpenAtmosphere')openTools('.garden-light-control');
+    else if(b.id==='gardenCloseTools')closeTools();
+    else if(b.id==='gardenLeave')leaveGarden();
+    else if(b.id==='gardenAddDecor'){createDecoration();closeTools();}
     else if(b.id==='gardenRemoveDecor')removeDecoration();
     else if(b.id==='gardenCloseDecor')by('gardenDecorSelection').hidden=true;
     else if(b.dataset.selfCare)chooseSelfCare(b.dataset.selfCare);
@@ -620,9 +641,9 @@
     else if(b.dataset.gardenLight)chooseLighting(b.dataset.gardenLight);
     else if(b.dataset.sceneVariant)setSceneVariant(b.dataset.sceneVariant);
     else if(b.dataset.chooseWorld)setWorld(b.dataset.chooseWorld);
-    else if(b.id==='gardenChangeWorld'){by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
-    else if(b.id==='gardenAddPet')add('pet');
-    else if(b.id==='gardenAddPlant')add('plant');
+    else if(b.id==='gardenChangeWorld'){closeTools();by('gardenCarePanel').hidden=true;by('gardenWorldRoom').hidden=true;by('gardenChoicesPage').hidden=false;}
+    else if(b.id==='gardenAddPet'){add('pet');closeTools();}
+    else if(b.id==='gardenAddPlant'){add('plant');closeTools();}
     else if(b.dataset.resident)selectItem(b.dataset.resident);
     else if(b.dataset.gardenAction)care(b.dataset.gardenAction);
     else if(b.id==='gardenCloseCare')by('gardenCarePanel').hidden=true;
