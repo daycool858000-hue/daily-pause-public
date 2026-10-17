@@ -311,8 +311,11 @@
       const p=position(item),stage=growthLevel(item);
       const label=esc(item.name||item.species)+'，'+(item.kind==='pet'?'點擊照顧':growth(item)+'，點擊照顧');
       const svg=sprites?.markup(item,stage)||'<span aria-hidden="true">'+(ICONS[item.species]||'🌱')+'</span>';
+      const behavior=sprites?.motionType?.(item.species,item.kind)||'leaf';
+      const offset=((hash(item.id)%37)/10).toFixed(1);
       return '<button type="button" class="garden-stage-resident garden-stage-'+item.kind+
-        '" data-stage-resident="'+item.id+'" style="left:'+p.x+'%;top:'+p.y+'%" aria-label="'+label+
+        '" data-behavior="'+behavior+'" data-stage-resident="'+item.id+
+        '" style="left:'+p.x+'%;top:'+p.y+'%;--garden-motion-delay:-'+offset+'s" aria-label="'+label+
         '" title="'+esc(item.species)+'">'+svg+'</button>';
     }).join('');
     area.innerHTML+=decorsHere().slice(0,24).map(item=>{
@@ -496,14 +499,19 @@
     const marker=by('gardenResidentsStage')?.querySelector('[data-stage-resident="'+item.id+'"]');
     if(marker){
       marker.dataset.activity=action;
+      marker.dataset.reaction=sprites?.reactionType?.(action)||action;
       marker.querySelector('.garden-action-vfx')?.remove();
       if(!reduceMotion){
         marker.insertAdjacentHTML('beforeend',sprites?.effect(action)||'');
         setTimeout(()=>{if(marker.isConnected){
           delete marker.dataset.activity;
+          delete marker.dataset.reaction;
           marker.querySelector('.garden-action-vfx')?.remove();
         }},1400);
-      }else delete marker.dataset.activity;
+      }else {
+        delete marker.dataset.activity;
+        delete marker.dataset.reaction;
+      }
     }
   }
   function backup(){
