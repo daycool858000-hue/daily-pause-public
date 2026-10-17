@@ -21,7 +21,7 @@
   const sprites=window.PauseGardenSprites;
   const decor=window.PauseGardenDecor;
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
-  const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
+  const reducedMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
   const hash=id=>{let n=2166136261;for(const c of id){n=Math.imul(n^c.charCodeAt(0),16777619)}return n>>>0};
   function defaultPosition(item){
     const h=hash(item.id),index=h%24;
@@ -494,14 +494,14 @@
       spark.style.left=p.x+'%';
       spark.style.top=clamp(p.y-18,18,75)+'%';
       currentStage.appendChild(spark);
-      setTimeout(()=>spark.remove(),reduceMotion?3000:1900);
+      setTimeout(()=>spark.remove(),reducedMotion()?3000:1900);
     }
     const marker=by('gardenResidentsStage')?.querySelector('[data-stage-resident="'+item.id+'"]');
     if(marker){
       marker.dataset.activity=action;
       marker.dataset.reaction=sprites?.reactionType?.(action)||action;
       marker.querySelector('.garden-action-vfx')?.remove();
-      if(!reduceMotion){
+      if(!reducedMotion()){
         marker.insertAdjacentHTML('beforeend',sprites?.effect(action)||'');
         setTimeout(()=>{if(marker.isConnected){
           delete marker.dataset.activity;
