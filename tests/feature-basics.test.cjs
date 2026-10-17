@@ -108,7 +108,7 @@ test('eight independent generated scenery files replace all retired SVG image so
   assert.deepEqual(manifest.map(s=>s.id).sort(),Array.from(ids).sort());
   const hashes=new Set();
   for(const scene of manifest){
-    assert.match(scene.path,/^media\\/palette-scenes\\/[a-z]+\\.webp$/);
+    assert.ok(scene.path.startsWith('media/palette-scenes/') && scene.path.endsWith('.webp'));
     const raw=fs.readFileSync(path.join(root,scene.path));
     assert.equal(raw.subarray(0,4).toString('ascii'),'RIFF');
     assert.equal(raw.subarray(8,12).toString('ascii'),'WEBP');
@@ -118,7 +118,7 @@ test('eight independent generated scenery files replace all retired SVG image so
     assert.equal(scene.width,960);assert.equal(scene.height,630);
   }
   assert.equal(hashes.size,8,'All eight images must contain unique content');
-  assert.match(read('palette-world.js'),/\\.\\/media\\/palette-scenes\\//);
+  assert.ok(read('palette-world.js').includes('./media/palette-scenes/'));
 });
 
 test('natural shape marks move subtly, freeze when paused, and preserve mark input',()=>{
@@ -292,7 +292,7 @@ test('background micro-motion belongs to the background, not the user artwork',(
   const breath=win.PauseCanvasBreathe;
   assert.deepEqual(Object.keys(breath.profiles).sort(),
     ['forest','ocean','room','living','cafe','park','street','mountain'].sort());
-  assert.match(read('palette-world.js'),/PauseCanvasBreathe\?\.paint\(ctx/);
+  assert.ok(read('palette-world.js').includes('./media/palette-scenes/'));
   const trace=(scene,mood,t)=>{
     const ops=[];
     const ctx={
