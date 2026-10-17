@@ -731,3 +731,15 @@
 
 #garden .garden-choices>h2{padding-right:98px}
 #garden .garden-choice-leave{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 3px);right:14px;border-radius:99px;padding:.55rem .85rem;min-height:40px;border:1px solid #a9bdab;background:#f8f9f1ed;color:#3e5d4d;box-shadow:0 3px 15px #31483533}
+
+/* iOS and desktop: prevent the original page section's top margin from
+   offsetting the immersive canvas by 1.7rem (previously 28–36px). */
+#garden #gardenWorld{position:absolute!important;inset:0!important;margin:0!important;padding:0!important}
+#garden #gardenWorldRoom.garden-room:not([hidden]){
+  position:absolute!important;inset:0!important;top:0!important;
+  height:100%!important;margin:0!important;margin-top:0!important;padding:0!important;
+}
+#garden #gardenWorldRoom .garden-landscape{
+  top:0!important;left:0!important;right:0!important;bottom:0!important;
+  margin:0!important;margin-top:0!important;
+}
